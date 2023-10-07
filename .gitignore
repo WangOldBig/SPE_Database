@@ -1,0 +1,27 @@
+# R
+.Rproj.user
+.Rhistory
+.RData
+
+# Sensitive Files
+
+
+# Office temp Files
+~$*
+
+# Python
+.ipynb_checkpoints/
+
+# Mac OS
+.DS_Store
+
+# Windows OS
+desktop.ini
+
+# LaTex
+*.aux
+*.bcf
+*.log
+*.run.xml
+*.synctex.gz
+
