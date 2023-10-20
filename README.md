@@ -1,7 +1,6 @@
 # SPE Database
 ```
 │  .gitignore
-│  1.txt
 │  README.md
 ├─1_Protocol
 │      README.txt
