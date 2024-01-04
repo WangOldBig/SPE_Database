@@ -5,6 +5,21 @@ date: "2024-01-04"
 output: html_document
 ---
 ```{r}
+df <- list()
+```
 
+```{r}
+file_list <- list.files(
+  "../../4_Data_Extraction/4_2_Open_Data/", 
+  pattern = "_raw.csv", 
+  full.names = TRUE, recursive = TRUE
+)
+
+df <- setNames(
+  lapply(file_list, function(file) read.csv(file)),
+  sapply(file_list, basename)
+)
+
+rm(file_list)
 ```
 
