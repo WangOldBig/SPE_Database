@@ -5,6 +5,11 @@ date: "2024-01-04"
 output: html_document
 ---
 ```{r}
+library(dplyr)
+```
+
+
+```{r}
 df <- list()
 ```
 
@@ -21,5 +26,26 @@ df <- setNames(
 )
 
 rm(file_list)
+names(df) <- paste0("[", seq_along(df), "] ", names(df))
+```
+
+```{r}
+df[[14]] <- df[[14]] %>%
+  dplyr::mutate(
+    Paper = "51_2",
+    ACC = respond3.ACC
+  )
+```
+
+```{r}
+df[[15]] <- df[[15]] %>%
+  dplyr::mutate(
+    Paper = "51_2b",
+    ACC = respond3.ACC
+  )
+```
+
+```{r}
+temp <- dplyr::bind_rows(df[[14]], df[[15]])
 ```
 
