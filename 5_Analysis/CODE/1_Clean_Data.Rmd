@@ -8,7 +8,6 @@ output: html_document
 library(dplyr)
 ```
 
-
 ```{r}
 df <- list()
 ```
@@ -47,5 +46,9 @@ df[[15]] <- df[[15]] %>%
 
 ```{r}
 temp <- dplyr::bind_rows(df[[14]], df[[15]])
+```
+
+```{r}
+ok
 ```
 
