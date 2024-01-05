@@ -29,11 +29,22 @@ names(df) <- paste0("[", seq_along(df), "] ", names(df))
 ```
 
 ```{r}
+df[[13]] <- df[[13]] %>%
+  dplyr::mutate(
+    Paper = "51_1",
+    ACC = respond3.ACC,
+    RT  = respond3.RT,
+  )
+```
+
+```{r}
 df[[14]] <- df[[14]] %>%
   dplyr::mutate(
     Paper = "51_2",
     ACC = respond3.ACC,
-    RT  = respond3.RT
+    RT  = respond3.RT,
+    Condition = condition1correct,
+    Cue = condition1level
   )
 ```
 
@@ -41,12 +52,18 @@ df[[14]] <- df[[14]] %>%
 df[[15]] <- df[[15]] %>%
   dplyr::mutate(
     Paper = "51_2b",
-    ACC = respond3.ACC
+    ACC = respond3.ACC,
+    RT  = respond3.RT,
+    Condition = condition1correct
   )
 ```
 
 ```{r}
-temp <- dplyr::bind_rows(df[[14]], df[[15]])
+temp <- dplyr::bind_rows(df[[13]],df[[14]],df[[15]])
+selected_data <- temp %>% 
+  select(Paper, Subject, Age, Handedness, Arouse.RESP, Valence.RESP, condition, Cue, ACC, RT)
+
+rm(temp)
 ```
 
 ```{r}
