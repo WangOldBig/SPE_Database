@@ -1,0 +1,81 @@
+---
+title: "2_Clean_Data"
+author: "czx"
+date: "2024-1-5"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+df <- list()
+```
+
+```{r}
+file_list <- list.files(
+  "../../4_Data_Extraction/4_2_Open_Data/", 
+  pattern = "_raw.csv", 
+  full.names = TRUE, recursive = TRUE
+)
+
+df <- setNames(
+  lapply(file_list, function(file) read.csv(file)),
+  sapply(file_list, basename)
+)
+
+rm(file_list)
+names(df) <- paste0("[", seq_along(df), "] ", names(df))
+```
+
+```{r}
+df[[6]] <- df[[6]] %>%
+  dplyr::mutate(
+    Paper = "34_Exp1",
+    Subject = subid,
+    Handedness = handedness,
+    Age = age
+  )%>%
+  dplyr::select(-subid, handedness,age)
+```
+
+```{r}
+df[[7]] <- df[[7]] %>%
+  dplyr::mutate(
+    Paper = "34_2",
+    Subject = subid,
+    Handedness = handedness,
+    Age = age
+  )%>%
+  dplyr::select(-subid, handedness,age)
+```
+
+```{r}
+df[[8]] <- df[[8]] %>%
+  dplyr::mutate(
+    Paper = "34_3",
+    Subject = subid,
+    Handedness = handedness,
+    Age = age
+  )%>%
+  dplyr::select(-subid, handedness,age)
+```
+
+```{r}
+temp <- dplyr::bind_rows(df[[6]],df[[7]],df[[8]])
+demographical_variable <- c("Paper", "Subject","Handedness")
+selected_data <- temp %>%
+  select(demographical_variable,everything())
+  # temp <- dplyr::bind_rows(df[[6]], df[[7]], df[[8]])
+  # demographical_variable <- c("Paper", "Subject", "Handedness", "fnir", "fnirscap", "eegsameday", "neurologicalcondition", "headinjury", "unconscious", "elecchemtherapy", "medication", "glassneed", "glasswith", "eatlast", "completededucation", "firstlanguage", "countryself", "countryparents")
+  # 
+  # selected_data <- temp %>%
+  #   dplyr::select(all_of(demographical_variable), everything())
+```
+
+```{r}
+
+```
+
