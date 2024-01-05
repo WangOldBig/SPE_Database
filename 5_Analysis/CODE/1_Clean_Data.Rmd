@@ -32,7 +32,8 @@ names(df) <- paste0("[", seq_along(df), "] ", names(df))
 df[[14]] <- df[[14]] %>%
   dplyr::mutate(
     Paper = "51_2",
-    ACC = respond3.ACC
+    ACC = respond3.ACC,
+    RT  = respond3.RT
   )
 ```
 
@@ -49,6 +50,10 @@ temp <- dplyr::bind_rows(df[[14]], df[[15]])
 ```
 
 ```{r}
-ok
+
+```
+
+```{r}
+
 ```
 
