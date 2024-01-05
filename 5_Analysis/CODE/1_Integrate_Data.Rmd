@@ -1,0 +1,132 @@
+---
+title: "Integrate"
+author: "czx"
+date: "2024-01-05"
+output: html_document
+---
+```{r}
+library(dplyr)
+```
+
+```{r}
+df <- list()
+```
+
+```{r}
+file_list <- list.files(
+  "../../4_Data_Extraction/4_2_Open_Data/", 
+  pattern = "_raw.csv", 
+  full.names = TRUE, recursive = TRUE
+)
+
+df <- setNames(
+  lapply(file_list, function(file) read.csv(file)),
+  sapply(file_list, basename)
+)
+
+rm(file_list)
+names(df) <- paste0("[", seq_along(df), "] ", names(df))
+```
+
+#Paper34
+
+```{r}
+df[[6]] <- df[[6]] %>%
+  dplyr::mutate(
+    Paper = "34_Exp1",
+    Subject = subid,
+    Handedness = handedness,
+    Age = age
+  )%>%
+  dplyr::select(-subid, handedness,age)
+```
+
+```{r}
+df[[7]] <- df[[7]] %>%
+  dplyr::mutate(
+    Paper = "34_2",
+    Subject = subid,
+    Handedness = handedness,
+    Age = age
+  )%>%
+  dplyr::select(-subid, handedness,age)
+```
+
+```{r}
+df[[8]] <- df[[8]] %>%
+  dplyr::mutate(
+    Paper = "34_3",
+    Subject = subid,
+    Handedness = handedness,
+    Age = age
+  )%>%
+  dplyr::select(-subid, handedness,age)
+```
+
+```{r}
+temp <- dplyr::bind_rows(df[[6]],df[[7]],df[[8]])
+demographical_variable <- c("Paper", "Subject","Handedness")
+selected_data_34 <- temp %>%
+  dplyr::select(all_of(demographical_variable), everything())
+
+
+rm(temp)
+```
+
+#Paper51
+
+```{r}
+df[[13]] <- df[[13]] %>%
+  dplyr::mutate(
+    Paper = "51_1",
+    ACC = respond3.ACC,
+    RT  = respond3.RT,
+  )
+```
+
+```{r}
+df[[14]] <- df[[14]] %>%
+  dplyr::mutate(
+    Paper = "51_2",
+    ACC = respond3.ACC,
+    RT  = respond3.RT,
+    Condition = condition1correct,
+    Cue = condition1level
+  )
+```
+
+```{r}
+df[[15]] <- df[[15]] %>%
+  dplyr::mutate(
+    Paper = "51_2b",
+    ACC = respond3.ACC,
+    RT  = respond3.RT,
+    Condition = condition1correct
+  )
+```
+
+```{r}
+temp <- dplyr::bind_rows(df[[13]],df[[14]],df[[15]])
+selected_data_51 <- temp %>% 
+  select(Paper, Subject, Age, Handedness, Arouse.RESP, Valence.RESP, condition, Cue, ACC, RT)
+
+rm(temp)
+```
+
+```{r}
+All_Papers <- dplyr::bind_rows(selected_data_34,selected_data_51)
+```
+
+```{r}
+# 指定存储的目录和文件名
+output_directory <- getwd()
+output_filename <- "All_Papers.csv"
+
+# 创建完整的文件路径
+output_path <- file.path(output_directory, output_filename)
+
+# 将数据库导出为CSV文件
+write.csv(All_Papers, output_path, row.names = FALSE)
+
+```
+

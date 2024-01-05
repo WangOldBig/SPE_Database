@@ -67,7 +67,7 @@ df[[8]] <- df[[8]] %>%
 temp <- dplyr::bind_rows(df[[6]],df[[7]],df[[8]])
 demographical_variable <- c("Paper", "Subject","Handedness")
 selected_data <- temp %>%
-  select(demographical_variable,everything())
+  dplyr::select(all_of(demographical_variable), everything())
   # temp <- dplyr::bind_rows(df[[6]], df[[7]], df[[8]])
   # demographical_variable <- c("Paper", "Subject", "Handedness", "fnir", "fnirscap", "eegsameday", "neurologicalcondition", "headinjury", "unconscious", "elecchemtherapy", "medication", "glassneed", "glasswith", "eatlast", "completededucation", "firstlanguage", "countryself", "countryparents")
   # 
