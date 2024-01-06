@@ -33,7 +33,7 @@ names(df) <- paste0("[", seq_along(df), "] ", names(df))
 ```{r}
 df[[6]] <- df[[6]] %>%
   dplyr::mutate(
-    Paper = "34_Exp1",
+    Paper = "P34_Exp1_Correct_RT",
     Subject = subid,
     Handedness = handedness,
     Age = age
@@ -44,7 +44,7 @@ df[[6]] <- df[[6]] %>%
 ```{r}
 df[[7]] <- df[[7]] %>%
   dplyr::mutate(
-    Paper = "34_2",
+    Paper = "P34_Exp1_foracc",
     Subject = subid,
     Handedness = handedness,
     Age = age
@@ -55,7 +55,7 @@ df[[7]] <- df[[7]] %>%
 ```{r}
 df[[8]] <- df[[8]] %>%
   dplyr::mutate(
-    Paper = "34_3",
+    Paper = "P34_Exp1_foreff",
     Subject = subid,
     Handedness = handedness,
     Age = age
