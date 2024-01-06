@@ -91,18 +91,25 @@ df[[12]] <- df[[12]] %>%
 ```
 
 ```{r}
-temp <- dplyr::bind_rows(df[[9]],df[[10]],df[[11]],df[[12]])
-demographical_variable <- c("Paper", "Subject","Handedness","Age","RT","Gender","First_Lanugage","Stimuli_Type")
-selected_data <- temp %>%
-  dplyr::select(all_of(demographical_variable), everything())
-  # temp <- dplyr::bind_rows(df[[6]], df[[7]], df[[8]])
-  # demographical_variable <- c("Paper", "Subject", "Handedness", "fnir", "fnirscap", "eegsameday", "neurologicalcondition", "headinjury", "unconscious", "elecchemtherapy", "medication", "glassneed", "glasswith", "eatlast", "completededucation", "firstlanguage", "countryself", "countryparents")
-  # 
-  # selected_data <- temp %>%
-  #   dplyr::select(all_of(demographical_variable), everything())
+sapply(df[[9]], class)
+sapply(df[[10]], class)
+sapply(df[[11]], class)
+sapply(df[[12]], class)
+# 继续检查其他数据框
+
+df[[11]]$RT <- as.numeric(df[[11]]$RT)
+
+
 ```
 
 ```{r}
-
+temp <- dplyr::bind_rows(df[[9]],df[[10]],df[[11]],df[[12]])
+demographical_variable <- c("Paper", "Subject","Handedness","Age","RT","Gender","First_Lanugage","Stimuli_Type")
+selected_data1 <- temp %>%
+  dplyr::select(all_of(demographical_variable), everything())
+rm(temp)
 ```
+
+
+
 
