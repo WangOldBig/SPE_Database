@@ -42,7 +42,7 @@ df[[9]] <- df[[9]] %>%
     First_Lanugage = X5..First.Lanugage,
     Stimuli_Type = X6..Stimuli.Type.Self...Positive.Self...Negative.
   )%>%
-  dplyr::select(-X1..Participant.Number,X4..Handedness,X3..Age,rt,X2..Gender..M.F.,X5..First.Lanugage,X6..Stimuli.Type.Self...Positive.Self...Negative.)
+  dplyr::select(-X1..Participant.Number,-X4..Handedness,-X3..Age,-rt,-X2..Gender..M.F.,-X5..First.Lanugage,-X6..Stimuli.Type.Self...Positive.Self...Negative.)
 
 ```
 
@@ -58,7 +58,7 @@ df[[10]] <- df[[10]] %>%
     First_Lanugage = X5..First.Lanugage,
     Stimuli_Type = X6..Stimuli.Type.Self...Positive.Self...Negative.
   )%>%
-  dplyr::select(-X1..Participant.Number,X4..Handedness,X3..Age,rt,X2..Gender..M.F.,X5..First.Lanugage,X6..Stimuli.Type.Self...Positive.Self...Negative.)
+  dplyr::select(-X1..Participant.Number,-X4..Handedness,-X3..Age,-rt,-X2..Gender..M.F.,-X5..First.Lanugage,-X6..Stimuli.Type.Self...Positive.Self...Negative.)
 
 ```
 
@@ -73,7 +73,7 @@ df[[11]] <- df[[11]] %>%
     First_Lanugage = X5..First.Language,
     Stimuli_Type = X6..Stimuli.Type..Self...Negative.Self...Positive.,
   )%>%
-  dplyr::select(-X4..Handedness,X3..Age,rt,X2..Gender,X5..First.Language,X6..Stimuli.Type..Self...Negative.Self...Positive.)
+  dplyr::select(-X4..Handedness,-X3..Age,-rt,-X2..Gender,-X5..First.Language,-X6..Stimuli.Type..Self...Negative.Self...Positive.)
 ```
 
 ```{r}
@@ -87,18 +87,24 @@ df[[12]] <- df[[12]] %>%
     First_Lanugage = X5..First.Language,
     Stimuli_Type = X6..Stimuli.Type..SN.SP.,
   )%>%
-  dplyr::select(-X4..Handedness,X3..Age,rt,X2..Gender..M.F.,X5..First.Language,X6..Stimuli.Type..SN.SP.)
+  dplyr::select(-X4..Handedness,-X3..Age,-rt,-X2..Gender..M.F.,-X5..First.Language,-X6..Stimuli.Type..SN.SP.)
 ```
 
 ```{r}
+
+# sapply(df[[9]], class)
+# sapply(df[[10]], class)
+# sapply(df[[11]], class)
+# sapply(df[[12]], class)
+# 继续检查其他数据框
+df[[9]]$RT <- as.numeric(df[[9]]$RT)
+df[[10]]$RT <- as.numeric(df[[10]]$RT)
+df[[11]]$RT <- as.numeric(df[[11]]$RT)
+df[[12]]$RT <- as.numeric(df[[12]]$RT)
 sapply(df[[9]], class)
 sapply(df[[10]], class)
 sapply(df[[11]], class)
 sapply(df[[12]], class)
-# 继续检查其他数据框
-
-df[[11]]$RT <- as.numeric(df[[11]]$RT)
-
 
 ```
 

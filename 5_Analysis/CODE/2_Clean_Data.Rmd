@@ -38,7 +38,7 @@ df[[6]] <- df[[6]] %>%
     Handedness = handedness,
     Age = age
   )%>%
-  dplyr::select(-subid, handedness,age)
+  dplyr::select(-subid,-handedness,-age)
 ```
 
 ```{r}
@@ -49,7 +49,7 @@ df[[7]] <- df[[7]] %>%
     Handedness = handedness,
     Age = age
   )%>%
-  dplyr::select(-subid, handedness,age)
+  dplyr::select(-subid,-handedness,-age)
 ```
 
 ```{r}
@@ -60,7 +60,7 @@ df[[8]] <- df[[8]] %>%
     Handedness = handedness,
     Age = age
   )%>%
-  dplyr::select(-subid, handedness,age)
+  dplyr::select(-subid,-handedness,-age)
 ```
 
 ```{r}
