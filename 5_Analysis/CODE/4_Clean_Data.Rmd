@@ -1,0 +1,53 @@
+---
+title: "4_Clean_Data"
+author: "czx"
+date: "2024-01-07"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+df <- list()
+```
+
+```{r}
+file_list <- list.files(
+  "../../4_Data_Extraction/4_2_Open_Data/", 
+  pattern = "_raw.csv", 
+  full.names = TRUE, recursive = TRUE
+)
+
+df <- setNames(
+  lapply(file_list, function(file) read.csv(file)),
+  sapply(file_list, basename)
+)
+
+rm(file_list)
+names(df) <- paste0("[", seq_along(df), "] ", names(df))
+```
+
+```{r}
+df[[19]] <- df[[19]] %>%
+  dplyr::mutate(
+    Paper = "P6_Exp1",
+    Subject = Pair.Number,
+    RT = rt
+  )%>%
+  dplyr::select(-Pair.Number,-rt)
+```
+
+```{r}
+temp <- df[[19]]
+demographical_variable <- c("Paper", "RT")
+selected_data <- temp %>%
+  dplyr::select(all_of(demographical_variable), everything())
+```
+
+```{r}
+
+```
+
