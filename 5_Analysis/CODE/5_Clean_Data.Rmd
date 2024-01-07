@@ -35,41 +35,32 @@ df[[16]] <- df[[16]] %>%
   dplyr::mutate(
     Paper = "P54_Exp1",
     Handedness = hand,
-    Age = age
   )%>%
-  dplyr::select(-subid,-handedness,-age)
+  dplyr::select(-hand)
 ```
 
 ```{r}
 df[[17]] <- df[[17]] %>%
   dplyr::mutate(
-    Paper = "P34_Exp1_foracc",
-    Subject = subid,
-    Handedness = handedness,
-    Age = age
+    Paper = "P54_Exp2",
+    Handedness = hand,
   )%>%
-  dplyr::select(-subid,-handedness,-age)
+  dplyr::select(-hand)
 ```
 
 ```{r}
 df[[18]] <- df[[18]] %>%
   dplyr::mutate(
-    Paper = "P34_Exp1_foreff",
-    Subject = subid,
-    Handedness = handedness,
-    Age = age
-  )%>%
-  dplyr::select(-subid,-handedness,-age)
+    Paper = "P54_Exp3",
+  )
 ```
 
 ```{r}
-temp <- dplyr::bind_rows(df[[6]],df[[7]],df[[8]])
+temp <- dplyr::bind_rows(df[[16]],df[[17]],df[[18]])
 demographical_variable <- c("Paper", "Subject","Handedness")
 selected_data <- temp %>%
   dplyr::select(all_of(demographical_variable), everything())
-  # temp <- dplyr::bind_rows(df[[6]], df[[7]], df[[8]])
-  # demographical_variable <- c("Paper", "Subject", "Handedness", "fnir", "fnirscap", "eegsameday", "neurologicalcondition", "headinjury", "unconscious", "elecchemtherapy", "medication", "glassneed", "glasswith", "eatlast", "completededucation", "firstlanguage", "countryself", "countryparents")
-  # 
-  # selected_data <- temp %>%
-  #   dplyr::select(all_of(demographical_variable), everything())
+
+rm(temp)
+rm(demographical_variable)
 ```

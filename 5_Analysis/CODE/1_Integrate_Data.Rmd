@@ -71,6 +71,7 @@ selected_data_34 <- temp %>%
 
 
 rm(temp)
+rm(demographical_variable)
 ```
 
 #Paper51
@@ -200,12 +201,74 @@ demographical_variable <- c("Paper", "Subject","Handedness","Age","RT","Gender",
 selected_data_46 <- temp %>%
   dplyr::select(all_of(demographical_variable), everything())
 rm(temp)
+rm(demographical_variable)
 ```
 
+#Paper6
+
+```{r}
+df[[19]] <- df[[19]] %>%
+  dplyr::mutate(
+    Paper = "P6_Exp1",
+    Subject = Pair.Number,
+    RT = rt
+  )%>%
+  dplyr::select(-Pair.Number,-rt)
+```
+
+```{r}
+temp <- df[[19]]
+demographical_variable <- c("Paper", "RT")
+selected_data_6 <- temp %>%
+  dplyr::select(all_of(demographical_variable), everything())
+
+rm(temp)
+rm(demographical_variable)
+```   
+
+#Paper54
+
+```{r}
+df[[16]] <- df[[16]] %>%
+  dplyr::mutate(
+    Paper = "P54_Exp1",
+    Handedness = hand,
+  )%>%
+  dplyr::select(-hand)
+```
+
+```{r}
+df[[17]] <- df[[17]] %>%
+  dplyr::mutate(
+    Paper = "P54_Exp2",
+    Handedness = hand,
+  )%>%
+  dplyr::select(-hand)
+```
+
+```{r}
+df[[18]] <- df[[18]] %>%
+  dplyr::mutate(
+    Paper = "P54_Exp3",
+  )
+```
+
+```{r}
+temp <- dplyr::bind_rows(df[[16]],df[[17]],df[[18]])
+demographical_variable <- c("Paper", "Subject","Handedness")
+selected_data_54 <- temp %>%
+  dplyr::select(all_of(demographical_variable), everything())
+
+rm(temp)
+rm(demographical_variable)
+```
 #Integrate
 
 ```{r}
-All_Papers <- dplyr::bind_rows(selected_data_34,selected_data_51,selected_data_46)
+selected_data_6$RT <- as.numeric(selected_data_6$RT)
+
+
+All_Papers <- dplyr::bind_rows(selected_data_34,selected_data_51,selected_data_46,selected_data_54,selected_data_6)
 ```
 
 ```{r}
@@ -219,5 +282,9 @@ output_path <- file.path(output_directory, output_filename)
 # 将数据库导出为CSV文件
 write.csv(All_Papers, output_path, row.names = FALSE)
 
+rm(output_directory)
+rm(output_filename)
+rm(output_path)
+rm(df)
 ```
 

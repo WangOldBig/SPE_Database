@@ -47,7 +47,4 @@ selected_data <- temp %>%
   dplyr::select(all_of(demographical_variable), everything())
 ```
 
-```{r}
-
-```
 
