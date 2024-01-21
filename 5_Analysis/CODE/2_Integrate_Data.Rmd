@@ -1,4 +1,10 @@
 ---
+title: "2_Integrate_Data"
+author: "czx"
+date: "2024-01-16"
+output: html_document
+---
+---
 title: "Integrate"
 author: "czx"
 date: "2024-01-05"
@@ -278,8 +284,7 @@ selected_data_6$RT <- as.numeric(selected_data_6$RT)
 
 
 All_Papers <- dplyr::bind_rows(selected_data_34,selected_data_51,
-                               selected_data_46,selected_data_54,
-                               selected_data_6)
+                               selected_data_46,selected_data_54,selected_data_6)
 ```
 
 ```{r}

@@ -27,8 +27,10 @@
 │  └─4_2_Open_Data
 │
 ├─5_Analysis
-│      README.txt
-│
+│ │   5_Analysis.Rproj
+│ │   README.txt
+│ ├─CODE
+│ 
 └─6_Reports
         README.txt
 ```
