@@ -191,7 +191,7 @@ df[[12]] <- df[[12]] %>%
 ```
 
 ```{r}
-
+# 将RT统一为数值型变量
 # sapply(df[[9]], class)
 # sapply(df[[10]], class)
 # sapply(df[[11]], class)

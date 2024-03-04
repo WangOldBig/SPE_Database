@@ -1,0 +1,87 @@
+---
+title: "6_Clean_Data"
+author: "czx"
+date: "2024-03-04"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+df <- list()
+```
+
+```{r}
+file_list <- list.files(
+  "../../4_Data_Extraction/4_2_Open_Data/", 
+  pattern = "_raw.csv", 
+  full.names = TRUE, recursive = TRUE
+)
+
+df <- setNames(
+  lapply(file_list, function(file) read.csv(file)),
+  sapply(file_list, basename)
+)
+
+rm(file_list)
+names(df) <- paste0("[", seq_along(df), "] ", names(df))
+```
+
+```{r}
+df[[20]] <- df[[20]] %>%
+  dplyr::mutate(
+    Paper = "P95_Exp1"
+  )
+```
+
+```{r}
+df[[21]] <- df[[21]] %>%
+  dplyr::mutate(
+    Paper = "P95_Exp2",
+  )
+```
+
+```{r}
+# df[[17]] <- df[[17]] %>%
+#   dplyr::mutate(
+#     Paper = "P54_Exp2",
+#   )%>%
+#   # dplyr::select()
+```
+
+
+```{r}
+# temp <- dplyr::bind_rows(df[[16]],df[[17]],df[[18]])
+# demographical_variable <- c("Paper", "Subject","Handedness")
+# selected_data <- temp %>%
+#   dplyr::select(all_of(demographical_variable), everything())
+# 
+# rm(temp)
+# rm(demographical_variable)
+```
+
+```{r}
+# 使用 bind_rows() 合并数据框
+merged_df <- bind_rows(df[[20]], df[[21]]) 
+```
+
+```{r}
+# 从 df[[20]] 和 df[[21]] 中选择需要的变量
+selected_vars <- bind_rows(df[[20]], df[[21]]) %>%
+  select(
+    Subject, Group, Block, BlockNumber,
+    CorrectAnswer.Block., CorrectKey, IncorrectKey, Label, LabelLeft,
+    LabelRight, LearningInstructions, Picture, PracticeMode, PresentFaceSL.ACC,
+    PresentFaceSL.CRESP, PresentFaceSL.RESP, PresentFaceSL.RT,
+    PresentFaceSL.RTTime, Procedure.Block., Trial, Cue, Cue.ACC,
+    Cue.CRESP, Cue.RESP, Cue.RT, Cue.RTTime
+  )
+```
+
+```{r}
+# 将结果存储为一个新的数据框
+write.csv(selected_vars, "selected_variables.csv", row.names = FALSE)
+```
