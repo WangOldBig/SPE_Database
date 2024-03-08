@@ -1,0 +1,25 @@
+Variable_name	Variable_description	Variable_value	Variable_category
+Shape	Shape assigned to each participant	"Triangle, Diamond, Circle, Pentagon, Star"	Categorical
+Label	Label associated with the shape	Text	Categorical
+ShapeLoc	Location of the shape in the experiment	"Above, Below"	Categorical
+Condition	Different conditions or contexts in the experiment	"Self, Partner, Stranger"	Categorical
+.thisRepN	Repetition number in the current trial	Numeric	Continuous
+.thisTrialN	Trial number in the current session	Numeric	Continuous
+.thisN	Total number of trials in the current session	Numeric	Continuous
+.thisIndex	Index of the current trial	Numeric	Continuous
+resp	Participant's response to the stimulus	Text	Categorical
+rt	Response time in milliseconds	Numeric	Continuous
+Exclude	Exclusion indicator for data analysis	"0, 1"	Binary
+StrangerShape	Shape assigned to the stranger	"Triangle, Diamond, Circle, Pentagon, Star"	Categorical
+P1Shape	Shape assigned to Participant 1	"Triangle, Diamond, Circle, Pentagon, Star"	Categorical
+P2Shape	Shape assigned to Participant 2	"Triangle, Diamond, Circle, Pentagon, Star"	Categorical
+corr	Correctness of the response	"0, 1"	Binary
+Training	Training indicator for learning task	"0, 1"	Binary
+nCorr	Number of correct responses	Numeric	Continuous
+trialinblock	Trial number within a block	Numeric	Continuous
+BlankFrames	Number of blank frames displayed	Numeric	Continuous
+Block	Block number in the experiment	Numeric	Continuous
+Pair Number	Unique identifier for each pair of participants	Numeric	Categorical
+Participant 1 Age	Age of Participant 1	Numeric	Continuous
+Participant 2 Age	Age of Participant 2	Numeric	Continuous
+Phase	Experimental phase indicator	"1, 2"	Categorical

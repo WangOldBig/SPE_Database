@@ -1,5 +1,7 @@
 # SPE Database
+
 ```
+
 │  .gitignore
 │  README.md
 ├─1_Protocol
@@ -23,13 +25,16 @@
 │  │      MEMO.txt
 │  │      MEMO.xlsx # How many papers are open?
 │  │      Papers_Info_v1.xlsx # Papers' Information
-│  ├─4_1_Raw_Data      
+│  ├─4_1_Raw_Data  
 │  └─4_2_Open_Data
+│  	│  Paper_X # X means different Paper number.
+│       │  
+│       └─ 
 │
 ├─5_Analysis
 │ │   5_Analysis.Rproj
 │ │   README.txt
-│ ├─CODE
+│ └─CODE
 │ 
 └─6_Reports
         README.txt
