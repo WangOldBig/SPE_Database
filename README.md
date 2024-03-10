@@ -27,9 +27,12 @@
 │  │      Papers_Info_v1.xlsx # Papers' Information
 │  ├─4_1_Raw_Data  
 │  └─4_2_Open_Data
-│  	│  Paper_X # X means different Paper number.
-│       │  
-│       └─ 
+│  	│  Paper_X                           # X means different Paper number.
+│       │---- Codebook_Data_for_pX_Expn.xlsx # n menas different experiment session.
+│       │---- PX_Expn_raw.csv
+│       │---- PX_Expn_Clean.csv
+│       └──── readme.md
+
 │
 ├─5_Analysis
 │ │   5_Analysis.Rproj
