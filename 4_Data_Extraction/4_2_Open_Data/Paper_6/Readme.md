@@ -28,3 +28,4 @@ In the joint task, participants indicated whether a given shape and an identity 
 "P6_Exp1_raw.csv": raw data from experiment 
 "CodeBook_Data_for_p6_Exp1.xlsx": Codebook for "P6_Exp1_raw.csv"
 ```
+Feel free to explore the data and codebooks provided in this repository for more detailed information.

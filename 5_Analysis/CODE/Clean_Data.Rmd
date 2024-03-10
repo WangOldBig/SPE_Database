@@ -37,7 +37,6 @@ df[[2]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_6/P6_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
-    Phase == 1,
     rt != "None"
   ) %>%
   dplyr::select(
@@ -46,7 +45,8 @@ df[[2]] <- read.csv(
     Identity = Shape,
     ShapeLoc = ShapeLoc,
     RT_sec = rt,
-    ACC = corr
+    ACC = corr,
+    Phase = Phase
   ) %>%
   dplyr::mutate(
     Matching = case_when(
@@ -69,12 +69,16 @@ df[[2]] <- read.csv(
     Identity = factor(
       Identity, levels = c("Self", "Partner", "Stranger")
     ),
+    ShapeLoc = case_when(
+      ShapeLoc == "Top" ~ 1,
+      ShapeLoc == "Bottom" ~ 2,
+    ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, ShapeLoc, RT_ms, RT_sec, ACC
+    Subject, Matching, Identity, ShapeLoc, RT_ms, RT_sec, ACC,Phase
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -98,18 +102,19 @@ write.csv(x = df[[2]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_6/P6_
 "Self", "Stranger"
 ```{r Paper 46}
 df[[3]] <- read.csv(
-  "../4_Data_Extraction/4_2_Open_Data/Paper_46/Exp2/P46_Exp2_raw.csv"
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Exp2/P46_Exp2_raw.csv"
   ) %>%
   # 筛选可以分析的行
   dplyr::filter(
-    rt != "None"
+    rt != "None",
+    Exclude == 0
   ) %>%
   # 选择可以分析的列
   dplyr::select(
     Subject = Subject,
     Matching = Condition,
     Identity = Shape,
-    Session = ShapeLoc,
+    ShapeLoc = ShapeLoc,
     RT_sec = rt,
     ACC = corr,
   ) %>%
@@ -117,9 +122,9 @@ df[[3]] <- read.csv(
   dplyr::mutate(
     Matching = case_when(Matching == "Match" ~ "Matching",
     Matching == "Mismatch" ~ "Nonmatching"),
-    Session = case_when(
-      Session == "Top" ~ 1,
-      Session == "Bottom" ~ 2,
+    ShapeLoc = case_when(
+      ShapeLoc == "Top" ~ 1,
+      ShapeLoc == "Bottom" ~ 2,
     ),
     RT_sec = as.numeric(RT_sec),
     RT_ms = RT_sec * 1000,
@@ -133,13 +138,12 @@ df[[3]] <- read.csv(
     Identity = factor(
       Identity, levels = c("Self", "Stranger")
     ),
-    Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Identity, ShapeLoc, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -150,12 +154,12 @@ df[[3]] <- read.csv(
     ACC == 1 | ACC == 0
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Identity, ShapeLoc
   )
 
 names(df)[3] <- "Paper 46 Exp 2"
 summary(df[[3]])
-write.csv(x = df[[3]], file = "./DATA/df_3.csv")
+write.csv(x = df[[3]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_46/P46_Exp2_Clean.csv")
 ```
 
 # Paper 51 
