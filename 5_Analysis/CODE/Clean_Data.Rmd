@@ -181,9 +181,9 @@ write.csv(x = df[[1]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_6/P6_
 # Paper 46
 ## Experiment 1 (Identtiy = 2)
 "Self", "Stranger"
-```{r Paper 46 Experiment 2}
+```{r Paper 46 Experiment 1}
 df[[3]] <- read.csv(
-  "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Exp1/P46_Exp1_raw.csv"
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Raw_Data/Exp1/P46_Exp1_raw.csv"
   ) %>%
   # 筛选可以分析的行
   dplyr::filter(
@@ -241,7 +241,7 @@ df[[3]] <- read.csv(
 
 names(df)[3] <- "Paper 46 Exp 1"
 summary(df[[3]])
-write.csv(x = df[[3]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Exp1/P46_Exp1_Clean.csv")
+write.csv(x = df[[3]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Clean_Data/P46_Exp1_Clean.csv")
 ```
 
 # Paper 46 (Dark Light Box)
@@ -249,7 +249,7 @@ write.csv(x = df[[3]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Ex
 "Self", "Stranger"
 ```{r Paper 46 Experiment 2}
 df[[4]] <- read.csv(
-  "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Exp2/P46_Exp2_raw.csv"
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Raw_Data/Exp2/P46_Exp2_raw.csv"
   ) %>%
   # 筛选可以分析的行
   dplyr::filter(
@@ -306,7 +306,7 @@ df[[4]] <- read.csv(
 
 names(df)[4] <- "Paper 46 Exp 1"
 summary(df[[4]])
-write.csv(x = df[[4]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Exp2/P46_Exp2_Clean.csv")
+write.csv(x = df[[4]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Clean_Data/P46_Exp2_Clean.csv")
 ```
 
 # Paper 51 
@@ -371,17 +371,14 @@ df[[5]] <- read.csv(
 
 names(df)[5] <- "Paper 51 Exp 1"
 summary(df[[5]])
-write.csv(x = df[[5]], file = "./DATA/df_4.csv")
+write.csv(x = df[[5]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_51/P51_Exp1_Clean.csv")
 ```
 
 ## Experiment 2 (Identtiy = 2)
 "Self", "Celebrity"
 ```{r Paper 51 Experiment 2}
-df[[5]] <- read.csv(
-  "../4_Data_Extraction/4_2_Open_Data/Paper_51/P51_Exp2_raw.csv"
-  ) %>%
-  dplyr::filter(
-    condition1level == "No cue"
+df[[6]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_51/P51_Exp2_raw.csv"
   ) %>%
   tidyr::separate(
     condition1correct,
@@ -397,6 +394,10 @@ df[[5]] <- read.csv(
     Matching = case_when(
       Matching == "Matched" ~ "Matching",
       Matching == "Mismatched" ~ "Nonmatching"
+    ),
+    condition1level = case_when(
+      condition1level == "Alter cue" ~ 1,
+      condition1level == "No cue" ~ 2
     ),
     Session = 1,
     RT_ms = as.numeric(respond3.RT),
@@ -417,7 +418,7 @@ df[[5]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC, condition1level
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -431,9 +432,9 @@ df[[5]] <- read.csv(
     Subject, Matching, Identity, Session
   )
 
-names(df)[5] <- "Paper 51 Exp 2"
-summary(df[[5]])
-write.csv(x = df[[5]], file = "./DATA/df_5.csv")
+names(df)[6] <- "Paper 51 Exp 2"
+summary(df[[6]])
+write.csv(x = df[[6]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_51/P51_Exp2_Clean.csv")
 ```
 
 # Paper 54 
