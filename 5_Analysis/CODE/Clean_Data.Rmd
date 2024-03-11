@@ -5,6 +5,22 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
+#变量名称查询工具
+
+```{r}
+# 设置工作目录，即文件所在的文件夹
+setwd("D:/GitHub_programe/GitHub/SPE_Database/4_Data_Extraction/4_2_Open_Data/Paper_46/Exp1")
+
+# 读取CSV文件
+data <- read.csv("P46_Exp1_raw.csv")
+
+# 打印变量名称
+print(names(data))
+
+```
+
+
+
 ```{r Package, warning = FALSE,message = FALSE}
 # clean data
 library(tidyr)
@@ -33,7 +49,7 @@ df <- list()
 "Self", "Partner", "Stranger"
 
 ```{r Paper 6}
-df[[2]] <- read.csv(
+df[[1]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_6/P6_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
@@ -92,16 +108,147 @@ df[[2]] <- read.csv(
     Subject, Matching, Identity, ShapeLoc
   )
 
-names(df)[2] <- "Paper 6 Exp 1"
-summary(df[[2]])
-write.csv(x = df[[2]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_6/P6_Exp1_Clean.csv")
+names(df)[1] <- "Paper 6 Exp 1"
+summary(df[[1]])
+write.csv(x = df[[1]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_6/P6_Exp1_Clean.csv")
+```
+
+
+
+# Paper 34 
+## Experiment 1 (Identtiy = 3)
+"Self", "Friend", "Stranger"
+```{r Paper 34}
+# df[[2]] <- read.csv(
+#   "../../4_Data_Extraction/4_2_Open_Data/Paper_34/P34_Exp1_correctRT_raw.csv"
+#   ) %>%
+#   # 筛选可以分析的行
+#   dplyr::filter(
+#     reac_time != "None",
+#   ) %>%
+#   # 选择可以分析的列
+#   dplyr::select(
+#     Subject =  subid,
+#     Matching = matching,
+#     Identity = Shape,
+#     ShapeLoc = ShapeLoc,
+#     RT_sec = rt,
+#     ACC = corr,
+#   ) %>%
+#   # 转化为标准化的名称
+#   dplyr::mutate(
+#     Matching = case_when(Matching == "Match" ~ "Matching",
+#     Matching == "Mismatch" ~ "Nonmatching"),
+#     ShapeLoc = case_when(
+#       ShapeLoc == "Top" ~ 1,
+#       ShapeLoc == "Bottom" ~ 2,
+#     ),
+#     RT_sec = as.numeric(RT_sec),
+#     RT_ms = RT_sec * 1000,
+#   ) %>%
+#   # 统一变量的属性
+#   dplyr::mutate(
+#     Subject = as.numeric(Subject),
+#     Matching = factor(
+#       Matching, levels = c("Matching", "Nonmatching")
+#     ),
+#     Identity = factor(
+#       Identity, levels = c("Self", "Stranger")
+#     ),
+#     RT_ms = as.numeric(RT_ms),
+#     RT_sec = as.numeric(RT_sec),
+#     ACC = as.numeric(ACC),
+#   ) %>%
+#   dplyr::select(
+#     Subject, Matching, Identity, ShapeLoc, RT_ms, RT_sec, ACC
+#   ) %>%
+#   dplyr::mutate(
+#     RT_sec = round(RT_sec, 3),
+#     RT_ms = round(RT_ms, 0)
+#   ) %>%
+#   dplyr::filter(
+#     RT_sec >= 0.2 & RT_sec <= 1.5,
+#     ACC == 1 | ACC == 0
+#   ) %>%
+#   dplyr::arrange(
+#     Subject, Matching, Identity, ShapeLoc
+#   )
+# 
+# names(df)[2] <- "Paper 46 Exp 2"
+# summary(df[[2]])
+# write.csv(x = df[[2]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_34/P34_Exp1_Clean.csv")
+```
+# Paper 46
+## Experiment 1 (Identtiy = 2)
+"Self", "Stranger"
+```{r Paper 46 Experiment 2}
+df[[3]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Exp1/P46_Exp1_raw.csv"
+  ) %>%
+  # 筛选可以分析的行
+  dplyr::filter(
+    rt != "None",
+    Exclude == 0
+  ) %>%
+  # 选择可以分析的列
+  dplyr::select(
+    Subject = X1..Participant.Number,
+    Matching = Condition,
+    Identity = Label,
+    ShapeLoc = ShapeLoc,
+    RT_sec = rt,
+    ACC = corr,
+  ) %>%
+  # 转化为标准化的名称
+  dplyr::mutate(
+    Matching = case_when(Matching == "Match" ~ "Matching",
+    Matching == "Mismatch" ~ "Nonmatching"),
+    
+    ShapeLoc = case_when(
+      ShapeLoc == "Top" ~ 1,
+      ShapeLoc == "Bottom" ~ 2,
+    ),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+  ) %>%
+  # 统一变量的属性
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Matching, Identity, ShapeLoc, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::filter(
+    RT_sec >= 0.2 & RT_sec <= 1.5,
+    ACC == 1 | ACC == 0
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity, ShapeLoc
+  )
+
+names(df)[3] <- "Paper 46 Exp 1"
+summary(df[[3]])
+write.csv(x = df[[3]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Exp1/P46_Exp1_Clean.csv")
 ```
 
 # Paper 46 (Dark Light Box)
 ## Experiment 2 (Identtiy = 2)
 "Self", "Stranger"
-```{r Paper 46}
-df[[3]] <- read.csv(
+```{r Paper 46 Experiment 2}
+df[[4]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Exp2/P46_Exp2_raw.csv"
   ) %>%
   # 筛选可以分析的行
@@ -157,17 +304,17 @@ df[[3]] <- read.csv(
     Subject, Matching, Identity, ShapeLoc
   )
 
-names(df)[3] <- "Paper 46 Exp 2"
-summary(df[[3]])
-write.csv(x = df[[3]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_46/P46_Exp2_Clean.csv")
+names(df)[4] <- "Paper 46 Exp 1"
+summary(df[[4]])
+write.csv(x = df[[4]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Exp2/P46_Exp2_Clean.csv")
 ```
 
 # Paper 51 
 ## Experiment 1 (Identtiy = 3)
 "Self", "Celebrity", "Stranger"
 ```{r Paper 51 Experiment 1}
-df[[4]] <- read.csv(
-  "../4_Data_Extraction/4_2_Open_Data/Paper_51/P51_Exp1_raw.csv"
+df[[5]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_51/P51_Exp1_raw.csv"
   ) %>%
   tidyr::separate(
     condition,
@@ -222,9 +369,9 @@ df[[4]] <- read.csv(
     Subject, Matching, Identity, Session
   )
 
-names(df)[4] <- "Paper 51 Exp 1"
-summary(df[[4]])
-write.csv(x = df[[4]], file = "./DATA/df_4.csv")
+names(df)[5] <- "Paper 51 Exp 1"
+summary(df[[5]])
+write.csv(x = df[[5]], file = "./DATA/df_4.csv")
 ```
 
 ## Experiment 2 (Identtiy = 2)
