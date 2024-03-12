@@ -34,7 +34,7 @@ In Experiment 2, participants were assigned to represent themselves with either 
 "P46_Exp2_raw.csv": raw data from experiment 2.
 "P46_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
 "CodeBook_P46_Exp1_Clean.xlsx": Codebook for "P6_Exp1_Clean.csv"
-"P46_Exp2_Clean.csv": Clean data from experiment 1 for SPE analysis.
+"P46_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
 "CodeBook_P46_Exp2_Clean.xlsx": Codebook for "P6_Exp2_Clean.csv"
 ```
 
