@@ -9,10 +9,10 @@ output: html_document
 
 ```{r}
 # 设置工作目录，即文件所在的文件夹
-setwd("D:/GitHub_programe/GitHub/SPE_Database/4_Data_Extraction/4_2_Open_Data/Paper_46/Exp1")
+setwd("D:/GitHub_programe/GitHub/SPE_Database/4_Data_Extraction/4_2_Open_Data/Paper_95/Raw_Data")
 
 # 读取CSV文件
-data <- read.csv("P46_Exp1_raw.csv")
+data <- read.csv("P95_Exp1_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -468,7 +468,6 @@ df[[7]] <- read.csv(
       flanker == "none" ~ "none",
       flanker == "Bekannter" ~ "Acquaintance"
     ),
-    Session = 1,
     RT_ms = fl.RT,
     RT_sec = fl.RT / 1000,
     ACC = as.numeric(fl.ACC)
@@ -481,13 +480,12 @@ df[[7]] <- read.csv(
     Identity = factor(
       Identity, levels = c("Self", "Mother", "none", "Acquaintance")
     ),
-    Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Identity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -498,7 +496,7 @@ df[[7]] <- read.csv(
     ACC == 1 | ACC == 0
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Identity
   )
 
 names(df)[7] <- "Paper 54 Exp 1"
@@ -526,7 +524,6 @@ df[[8]] <- read.csv(
       Identity == "Mutter" ~ "Mother",
       Identity == "Bekannter" ~ "Acquaintance"
     ),
-    Session = 1,
     RT_ms = RT,
     RT_sec = RT / 1000,
     ACC = as.numeric(ACC)
@@ -539,13 +536,12 @@ df[[8]] <- read.csv(
     Identity = factor(
       Identity, levels = c("Self", "Mother", "Acquaintance")
     ),
-    Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Identity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -556,7 +552,7 @@ df[[8]] <- read.csv(
     ACC == 1 | ACC == 0
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Identity,
   )
 
 names(df)[8] <- "Paper 54 Exp 3"
@@ -564,12 +560,125 @@ summary(df[[8]])
 write.csv(x = df[[8]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_54/Clean_Data/P54_Exp3_Clean.csv")
 ```
 
+# Paper 95
+## Experiment 1 (Identtiy = 3)
+"Self", "Friend", "Stranger"
+```{r Paper n4 Experiment 1}
+df[[9]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_95/Raw_Data/P95_Exp1_raw.csv"
+  ) %>%
+  dplyr::filter(
+    Running.Trial. == "TrialList"
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = case_when(
+      Cue == "You" ~ "Matching",
+      Cue != "You" ~ "Nonmatching",
+    ),
+    Identity = case_when(
+      Cue == "You" ~ "Self",
+      Cue == "Friend" ~ "Friend",
+      Cue == "Stranger" ~ "Stranger"
+    ),
+    RT_ms = as.numeric(Cue.RT),
+    RT_sec = RT_ms / 1000,
+    ACC = as.numeric(Cue.ACC)
+  ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Matching, Identity, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::filter(
+    RT_sec >= 0.2 & RT_sec <= 1.5,
+    ACC == 1 | ACC == 0
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[9] <- "Papaer 95 Exp 1"
+summary(df[[9]])
+write.csv(x = df[[9]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_95/Clean_Data/P95_Exp1_Clean.csv")
+```
+
+## Experiment 2 (Identtiy = 3)
+"Self", "Friend", "Stranger"
+```{r Paper n4 Experiment 1}
+df[[9]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_95/Raw_Data/P95_Exp1_raw.csv"
+  ) %>%
+  dplyr::filter(
+    Running.Trial. == "TrialList"
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = case_when(
+      Cue == "You" ~ "Matching",
+      Cue != "You" ~ "Nonmatching",
+    ),
+    Identity = case_when(
+      Cue == "You" ~ "Self",
+      Cue == "Friend" ~ "Friend",
+      Cue == "Stranger" ~ "Stranger"
+    ),
+    RT_ms = as.numeric(Cue.RT),
+    RT_sec = RT_ms / 1000,
+    ACC = as.numeric(Cue.ACC)
+  ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Matching, Identity, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::filter(
+    RT_sec >= 0.2 & RT_sec <= 1.5,
+    ACC == 1 | ACC == 0
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[9] <- "Papaer 95 Exp 1"
+summary(df[[9]])
+write.csv(x = df[[9]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_95/Clean_Data/P95_Exp1_Clean.csv")
+```
+
 # Paper n4
 ## Experiment 1 (Identtiy = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n4 Experiment 1}
 df[[8]] <- read.csv(
-  "../4_Data_Extraction/4_2_Open_Data/Paper_n4/Pn4_Exp1_raw.csv"
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_n4/Pn4_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
     blocktype == "mixed"

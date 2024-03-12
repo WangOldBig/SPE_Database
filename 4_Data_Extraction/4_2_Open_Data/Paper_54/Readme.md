@@ -23,8 +23,8 @@ Participants completed a series of three experiments, each involving a label-sha
 "P54_Exp3_raw.csv": raw data from experiment 3.
 "P54_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
 "CodeBook_P51_Exp1_Clean.xlsx": Codebook for "P51_Exp1_Clean.csv"
-"P54_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
-"CodeBook_P51_Exp2_Clean.xlsx": Codebook for "P51_Exp2_Clean.csv"
+"P54_Exp3_Clean.csv": Clean data from experiment 3 for SPE analysis.
+"CodeBook_P51_Exp3_Clean.xlsx": Codebook for "P51_Exp3_Clean.csv"
 ```
 
 Feel free to explore the data and codebooks provided in this repository for more detailed information.
