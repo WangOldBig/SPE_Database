@@ -337,6 +337,12 @@ df[[5]] <- read.csv(
       Session == "S3" ~ 3,
       Session == "S4" ~ 4
     ),
+    Mood = case_when(
+      mood == "anxious" ~ 1,
+      mood == "depression" ~ 2,
+      mood == "happy" ~ 3,
+      mood == "serenity" ~ 4
+    ),
   RT_ms = as.numeric(respond3.RT),
   RT_sec = RT_ms / 1000,
   ACC = as.numeric(respond3.ACC),
@@ -355,7 +361,7 @@ df[[5]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC, Mood
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
