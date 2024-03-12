@@ -451,7 +451,7 @@ write.csv(x = df[[6]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_51/Cl
 "Self", "Mother","none", "Acquaintance"
 ```{r Paper 54 Experiment 1}
 df[[7]] <- read.csv(
-  "../../4_Data_Extraction/4_2_Open_Data/Paper_54/P54_Exp1_raw.csv"
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_54/Raw_Data/P54_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
     Procedure.Trial. == "FLproc"
@@ -503,14 +503,14 @@ df[[7]] <- read.csv(
 
 names(df)[7] <- "Paper 54 Exp 1"
 summary(df[[7]])
-write.csv(x = df[[7]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_54/P54_Exp1_Clean.csv")
+write.csv(x = df[[7]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_54/Clean_Data/P54_Exp1_Clean.csv")
 ```
 
 ## Experiment 3 (Identtiy = 3)
 "Self", "Mother", "Acquaintance"
 ```{r Paper 54 Experiment 3}
 df[[8]] <- read.csv(
-  "../../4_Data_Extraction/4_2_Open_Data/Paper_54/P54_Exp3_raw.csv"
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_54/Raw_Data/P54_Exp3_raw.csv"
   ) %>%
   dplyr::filter(
     Procedure == "RPproc"
@@ -561,7 +561,7 @@ df[[8]] <- read.csv(
 
 names(df)[8] <- "Paper 54 Exp 3"
 summary(df[[8]])
-write.csv(x = df[[8]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_54/P54_Exp3_Clean.csv")
+write.csv(x = df[[8]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_54/Clean_Data/P54_Exp3_Clean.csv")
 ```
 
 # Paper n4
