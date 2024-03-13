@@ -733,6 +733,10 @@ df[[11]] <- read.csv(
       type == "match" ~ "Matching",
       type == "nonmatch" ~ "Nonmatching"
     ),
+    blocktype = case_when(
+      blocktype == "mixed" ~ 1,
+      blocktype == "blocked" ~ 2
+    ),
     Identity = as.character(shape),
     RT_ms = as.numeric(latency),
     RT_sec = RT_ms / 1000,
@@ -745,10 +749,6 @@ df[[11]] <- read.csv(
     ),
     Identity = factor(
       Identity, levels = c("Self", "Friend", "Stranger")
-    ),
-    blocktype = case_when(
-      blocktype == "mixed" ~ 1,
-      blocktype == "blocked" ~ 2
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
@@ -779,9 +779,6 @@ write.csv(x = df[[11]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n4/C
 ```{r Paper n4 Experiment 1}
 df[[12]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_n4/Raw_Data/Pn4_Exp1_raw.csv"
-  ) %>%
-  dplyr::filter(
-    blocktype == "mixed"
   ) %>%
   dplyr::mutate(
     Subject = as.numeric(subject),
@@ -834,8 +831,8 @@ write.csv(x = df[[12]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n4/C
 ## Experiment 1 (Identtiy = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n13 Experiment 1}
-df[[9]] <- read.csv(
-  "../4_Data_Extraction/4_2_Open_Data/Paper_n13/Exp1/Pn13_Exp1_raw.csv"
+df[[13]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Raw_Data/Exp1/Pn13_Exp1_raw.csv"
   ) %>%
   dplyr::select(
     Subject,
@@ -859,7 +856,6 @@ df[[9]] <- read.csv(
       Identity == Label ~ "Matching",
       Identity != Label ~ "Nonmatching",
     ),
-    Session = 1,
     RT_ms = as.numeric(RT),
     RT_sec = RT_ms / 1000,
     ACC = as.numeric(ACC),
@@ -872,13 +868,12 @@ df[[9]] <- read.csv(
     Identity = factor(
       Identity, levels = c("Self", "Friend", "Stranger")
     ),
-    Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Identity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -888,12 +883,12 @@ df[[9]] <- read.csv(
     ACC == 1 | ACC == 0
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Identity
   )
 
-names(df)[9] <- "Papaer n13 Exp 1"
-summary(df[[9]])
-write.csv(x = df[[9]], file = "./DATA/df_9.csv")
+names(df)[13] <- "Papaer n13 Exp 1"
+summary(df[[13]])
+write.csv(x = df[[13]], file = "./DATA/df_9.csv")
 ```
 
 ## Experiment 3 (Identtiy = 3)
