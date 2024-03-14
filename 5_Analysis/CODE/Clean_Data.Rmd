@@ -1083,7 +1083,7 @@ write.csv(x = df[[15]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n13/
 "Self", "Friend"
 ```{r Paper n16 Experiment 1}
 df[[16]] <- read.csv(
-  "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Pn16_Exp1_raw.csv"
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Raw_Data/Pn16_Exp1_raw.csv"
   ) %>%
   dplyr::select(
     Subject = Participant..,
@@ -1093,7 +1093,6 @@ df[[16]] <- read.csv(
     ACC = Target.Accuracy
     ) %>%
   dplyr::mutate(
-    Session = 1,
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000
     ) %>%
@@ -1105,13 +1104,12 @@ df[[16]] <- read.csv(
     Identity = factor(
       Identity, levels = c("Self", "Friend")
       ),
-    Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
     ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Identity, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1122,19 +1120,19 @@ df[[16]] <- read.csv(
     ACC == 1 | ACC == 0
     ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Identity
     )
 
-names(df)[12] <- "Papaer n16 Exp 1"
-summary(df[[12]])
-write.csv(x = df[[12]], file = "./DATA/df_12.csv")
+names(df)[16] <- "Papaer n16 Exp 1"
+summary(df[[16]])
+write.csv(x = df[[16]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp1_Clean.csv")
 ```
 
 ## Experiment 2 (Identtiy = 2)
 "Self", "Friend"
 ```{r Paper n16 Experiment 2}
-df[[13]] <- read.csv(
-  "../4_Data_Extraction/4_2_Open_Data/Paper_n16/Pn16_Exp2_raw.csv"
+df[[17]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Raw_Data/Pn16_Exp2_raw.csv"
   ) %>%
   dplyr::select(
     Subject = Participant,
@@ -1144,7 +1142,6 @@ df[[13]] <- read.csv(
     ACC = Target.Accuracy
     ) %>%
   dplyr::mutate(
-    Session = 1,
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000
     ) %>%
@@ -1156,13 +1153,12 @@ df[[13]] <- read.csv(
     Identity = factor(
       Identity, levels = c("Self", "Friend")
       ),
-    Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
     ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Identity, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1172,19 +1168,19 @@ df[[13]] <- read.csv(
     ACC == 1 | ACC == 0
     ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Identity
     )
 
-names(df)[13] <- "Papaer n16 Exp 2"
-summary(df[[13]])
-write.csv(x = df[[13]], file = "./DATA/df_13.csv")
+names(df)[17] <- "Papaer n16 Exp 2"
+summary(df[[17]])
+write.csv(x = df[[17]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp2_Clean.csv")
 ```
 
 ## Experiment 3 (Identtiy = 2)
 "Self", "Friend"
 ```{r Paper n16 Experiment 3}
-df[[14]] <- read.csv(
-  "../4_Data_Extraction/4_2_Open_Data/Paper_n16/Pn16_Exp3_raw.csv"
+df[[18]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Raw_Data/Pn16_Exp3_raw.csv"
   ) %>%
   dplyr::select(
     Subject = Participant,
@@ -1194,7 +1190,6 @@ df[[14]] <- read.csv(
     ACC = Target.Accuracy
     ) %>%
   dplyr::mutate(
-    Session = 1,
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000
     ) %>%
@@ -1206,13 +1201,12 @@ df[[14]] <- read.csv(
     Identity = factor(
       Identity, levels = c("Self", "Friend")
       ),
-    Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
     ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Identity, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1223,26 +1217,26 @@ df[[14]] <- read.csv(
     ACC == 1 | ACC == 0
     ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Identity
     )
 
-names(df)[14] <- "Papaer n16 Exp 3"
-summary(df[[14]])
-write.csv(x = df[[14]], file = "./DATA/df_14.csv")
+names(df)[18] <- "Papaer n16 Exp 3"
+summary(df[[18]])
+write.csv(x = df[[18]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp3_Clean.csv")
 ```
 
 # Paper n23
 ## Experiment 1 (Identtiy = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n23 Experiment 1}
-df[[15]] <- read.csv(
-  "../4_Data_Extraction/4_2_Open_Data/Paper_n23/Pn23_Exp1_raw.csv"
+df[[19]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_n23/Pn23_Exp1_raw.csv"
   ) %>%
   dplyr::select(
     Subject = Subject,
     Matching = Correctanswer,
     Identity = Shape,
-    Session = Group,
+    Group = Group,
     RT_ms = iti.RT,
     ACC = iti.ACC,
     ) %>%
@@ -1261,13 +1255,13 @@ df[[15]] <- read.csv(
     Identity = factor(
       Identity, levels = c("Self", "Friend", "Stranger")
       ),
-    Session = as.factor(Session),
+    Group = as.factor(Group),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
     ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Identity, Group, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1278,22 +1272,20 @@ df[[15]] <- read.csv(
     ACC == 1 | ACC == 0
     ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Identity, Group
     )
 
-names(df)[15] <- "Papaer n23 Exp 1"
-summary(df[[15]])
-write.csv(x = df[[15]], file = "./DATA/df_15.csv")
+names(df)[19] <- "Papaer n23 Exp 1"
+summary(df[[19]])
+write.csv(x = df[[19]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n23/Pn23_Exp1_Clean.csv")
 ```
-
-
 
 # Paper s1 (Face)
 ## Experiment 1 (Identtiy = 2)
 "Self", "Stranger"
 ```{r Paper s1 Experiment 1}
 df_Ps1_E1 <- read.csv(
-  "../4_Data_Extraction/4_2_Open_Data/Paper_s1/Ps1_Exp1_raw.csv"
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_s1/Ps1_Exp1_raw.csv"
   ) %>%
   dplyr::select(
     Subject = Participant.Public.ID,
@@ -1311,7 +1303,6 @@ df_Ps1_E1 <- read.csv(
       Identity == "User" ~ "Self",
       Identity == "Other" ~ "Stranger"
     ),
-    Session = 1,
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
     ACC = as.numeric(ACC)
@@ -1331,7 +1322,7 @@ df_Subject_ID <- df_Ps1_E1 %>% # nolint
     Subject, Subject_ID
   )
 
-df[[18]] <- df_Ps1_E1 %>%
+df[[20]] <- df_Ps1_E1 %>%
   dplyr::left_join(
     df_Subject_ID,
     by = "Subject"
@@ -1347,13 +1338,12 @@ df[[18]] <- df_Ps1_E1 %>%
     Identity = factor(
       Identity, levels = c("Self", "Stranger")
     ),
-    Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Identity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1364,22 +1354,22 @@ df[[18]] <- df_Ps1_E1 %>%
     ACC == 1 | ACC == 0
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Identity
   )
 
 rm(df_Subject_ID, df_Ps1_E1)
 
-names(df)[18] <- "Paper s1 Exp 1"
-summary(df[[18]])
-write.csv(x = df[[18]], file = "./DATA/df_18.csv")
+names(df)[20] <- "Paper s1 Exp 1"
+summary(df[[20]])
+write.csv(x = df[[20]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_s1/Ps1_Exp1_Clean.csv")
 ```
 
 # Paper s2
 ## Experiment 1 (Identtiy = 2)
 "Self", "Stranger"
 ```{r Paper s2 Experiment 1}
-df[[19]] <- read.csv(
-  "../4_Data_Extraction/4_2_Open_Data/Paper_s2/Ps2_Exp1_raw.csv"
+df[[21]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_s2/Ps2_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
     Session != 3,
@@ -1433,17 +1423,17 @@ df[[19]] <- read.csv(
     Subject, Matching, Identity, Session
   )
 
-names(df)[19] <- "Paper s2 Exp 1"
-summary(df[[19]])
-write.csv(x = df[[19]], file = "./DATA/df_19.csv")
+names(df)[21] <- "Paper s2 Exp 1"
+summary(df[[21]])
+write.csv(x = df[[21]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_s2/Ps2_Exp1_Clean.csv")
 ```
 
 # Paper s3
 ## Experiment 1 (Identtiy = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper s3 Experiment 1}
-df[[20]] <- read.csv(
-  "../4_Data_Extraction/4_2_Open_Data/Paper_s3/Ps3_Exp1_raw.csv"
+df[[22]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_s3/Ps3_Exp1_raw.csv"
   ) %>%
   dplyr::select(
     Subject = Subject,
@@ -1492,9 +1482,9 @@ df[[20]] <- read.csv(
     Subject, Matching, Identity, Session
   )
 
-names(df)[20] <- "Paper s3 Exp 1"
-summary(df[[20]])
-write.csv(x = df[[20]], file = "./DATA/df_20.csv")
+names(df)[22] <- "Paper s3 Exp 1"
+summary(df[[22]])
+write.csv(x = df[[22]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_s3/Ps3_Exp1_Clean.csv")
 ```
 
 # Paper s4
@@ -1503,7 +1493,7 @@ write.csv(x = df[[20]], file = "./DATA/df_20.csv")
 ```{r Paper s4 Experiment 1}
 # 获取文件夹内所有满足条件的文件名
 file_list <- list.files(
-  path = "../4_Data_Extraction/4_2_Open_Data/Paper_s4/Source/",
+  path = "../../4_Data_Extraction/4_2_Open_Data/Paper_s4/Source/",
   pattern = "^PractExperiment_1.*\\.mat$",
   full.names = TRUE
 )
@@ -1519,7 +1509,7 @@ for (file in file_list) {
 
 rm(file, file_list)
 
-df[[21]] <- read.mat(
+df[[23]] <- read.mat(
   list = list_mat_e1
   ) %>%
   dplyr::mutate(
@@ -1564,9 +1554,9 @@ df[[21]] <- read.mat(
 
 rm(list_mat_e1)
 
-names(df)[21] <- "Paper s4 Exp 1"
-summary(df[[21]])
-write.csv(x = df[[21]], file = "./DATA/df_21.csv")
+names(df)[23] <- "Paper s4 Exp 1"
+summary(df[[23]])
+write.csv(x = df[[23]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_s4/Source/Ps4_Exp1_Clean.csv")
 ```
 
 # Paper s4
