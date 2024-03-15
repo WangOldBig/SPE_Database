@@ -2,29 +2,39 @@
 
 ## Authors
 
-Sarah Schäfer(Department of Cognitive Psychology and Statistics, University of Trier, Trier, Germany)
+Marius Golubickis(School of Psychology, University of Plymouth, Plymouth, England, UK)
 
-Christian Frings(Department of Cognitive Psychology and Statistics, University of Trier, Trier, Germany)
+C.Neil Macrae(School of Psychology, University of Aberdeen, Aberdeen, Scotland, UK)
 
-### Experiment 1
+### Experiment 1  ：simultaneous shape-label matching task
 
 #### Participants
 
-The study included 103 students from the University of Trier, predominantly female (90 females), with a median age of 20 years (range: 18 to 39). All participants had normal or corrected-to-normal vision.
+Thirty participants (9 male, Mage = 22.67, SD = 3.11) were recruited using Prolific (www.prolific.co), with each receiving compensation at the rate of £7.50/h. Informed consent was obtained from participants prior to the commencement of the experiment and the protocol was reviewed and approved by the Ethics Committee at the School of Psychology, University of Plymouth.
 
 #### Procedure
-Participants completed a series of three experiments, each involving a label-shape matching task and explicit self-esteem assessment using the RSES. Each session began with a learning phase where participants memorized label-shape associations. Subsequently, participants performed the matching task, indicating whether presented combinations matched the initial assignments. Afterward, they completed the RSES items. The experiment adhered to ethical principles, including informed consent and Declaration of Helsinki guidelines.
+
+The experimental procedure consisted of two phases. In the initial phase, participants learned associations between geometric shapes and labels representing themselves, friends, and strangers. Following this, participants engaged in a shape-label matching task where they quickly determined if presented shape-label pairs corresponded to the previously learned associations, responding via keyboard keys. Feedback on response accuracy was provided after each trial. Stimuli comprised grey images of geometric shapes displayed on a white background, with participants completing practice trials before progressing to six blocks of experimental trials, where stimuli were presented in either mixed or blocked fashion, ensuring equal distribution of matching and nonmatching trials.
+
+### Experiment 2  ：sequential shape-label matching task
+
+#### Participants
+
+Thirty participants (10 male, Mage = 23.13, SD = 3.22) were recruited via Prolific, receiving compensation at £7.50/h. Informed consent was obtained, and the protocol was approved by the Ethics Committee at the School of Psychology, University of Plymouth. The study employed a 3 (Shape Association: self vs. friend vs. stranger) × 2 (Presentation: mixed vs. blocked) × 2 (Trial Type: matching vs. nonmatching) repeated measures design, with sample size estimation similar to Experiment 1.
+
+#### Procedure
+
+The experimental procedure was akin to Experiment 1, involving a shape-label matching task. However, in Experiment 2, shape-label pairs were presented sequentially. Each trial commenced with a fixation cross (500 ms), followed by a centrally presented shape (100 ms). After a brief interval (200 ms), a label appeared, and participants determined whether the pairing matched or mismatched previously learned associations. Upon task completion, participants received debriefing.
 
 # Data files
 
 ```
-"P54_Exp1_raw.csv": raw data from experiment 1.
-"P54_Exp2_raw.csv": raw data from experiment 2.
-"P54_Exp3_raw.csv": raw data from experiment 3.
-"P54_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
-"CodeBook_P51_Exp1_Clean.xlsx": Codebook for "P51_Exp1_Clean.csv"
-"P54_Exp3_Clean.csv": Clean data from experiment 3 for SPE analysis.
-"CodeBook_P51_Exp3_Clean.xlsx": Codebook for "P51_Exp3_Clean.csv"
+"Pn4_Exp1_raw.csv": raw data from experiment 1.
+"Pn4_Exp2_raw.csv": raw data from experiment 2.
+"Pn4_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
+"CodeBook_P51_Exp1_Clean.xlsx": Codebook for "Pn4_Exp1_Clean.csv"
+"Pn4_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
+"CodeBook_Pn4_Exp2_Clean.xlsx": Codebook for "Pn4_Exp2_Clean.csv"
 ```
 
 Feel free to explore the data and codebooks provided in this repository for more detailed information.

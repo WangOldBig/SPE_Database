@@ -29,9 +29,9 @@ library(data.table) # some functions need it
 # for ICC
 library(psych)
 
-# for DDM
-library(hausekeep) # ez ddm
-library(RWiener) # RW ddm
+# # for DDM
+# library(hausekeep) # ez ddm
+# library(RWiener) # RW ddm
 # Plot
 library(ggplot2)
 library(see)
@@ -502,7 +502,6 @@ df[[6]] <- read.csv(
       condition1level == "Alter cue" ~ 1,
       condition1level == "No cue" ~ 2
     ),
-    Session = 1,
     RT_ms = as.numeric(respond3.RT),
     RT_sec = RT_ms / 1000,
     ACC = as.numeric(respond3.ACC)
@@ -515,13 +514,12 @@ df[[6]] <- read.csv(
     Identity = factor(
       Identity, levels = c("Self", "Celebrity")
     ),
-    Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC, condition1level
+    Subject, Matching, Identity, RT_ms, RT_sec, ACC, condition1level
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -532,7 +530,7 @@ df[[6]] <- read.csv(
     ACC == 1 | ACC == 0
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Identity
   )
 
 names(df)[6] <- "Paper 51 Exp 2"
@@ -815,9 +813,6 @@ write.csv(x = df[[10]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_95/C
 ```{r Paper n4 Experiment 1}
 df[[11]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_n4/Raw_Data/Pn4_Exp1_raw.csv"
-  ) %>%
-  dplyr::filter(
-    blocktype == "mixed"
   ) %>%
   dplyr::mutate(
     Subject = as.numeric(subject),
@@ -1470,7 +1465,6 @@ df[[21]] <- read.csv(
     Subject = Subject,
     Matching = CorrectAnswer,
     Identity = identity,
-    Session = Session,
     RT = Target.RT,
     ACC = Target.ACC
   ) %>%
@@ -1494,13 +1488,12 @@ df[[21]] <- read.csv(
     Identity = factor(
       Identity, levels = c("Self", "Stranger")
     ),
-    Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Identity,RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1511,7 +1504,7 @@ df[[21]] <- read.csv(
     ACC == 1 | ACC == 0
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Identity
   )
 
 names(df)[21] <- "Paper s2 Exp 1"
