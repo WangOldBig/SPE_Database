@@ -46,7 +46,7 @@ library(doParallel)
 library(AATtools)
 ```
 
-```{r}
+```{r Matlab小工具}
 # Read MATLAB .mat
 
 read.mat <- function(list) {
@@ -141,7 +141,7 @@ df <- list()
 
 ```{r Paper 6}
 df[[1]] <- read.csv(
-  "../../4_Data_Extraction/4_2_Open_Data/Paper_6/P6_Exp1_raw.csv"
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_6/Raw_Data/P6_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
     rt != "None"
@@ -180,12 +180,13 @@ df[[1]] <- read.csv(
       ShapeLoc == "Top" ~ 1,
       ShapeLoc == "Bottom" ~ 2,
     ),
+    ShapeLoc = as.factor(ShapeLoc),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, ShapeLoc, RT_ms, RT_sec, ACC,Phase
+    Subject, Matching, Identity, ShapeLoc, RT_ms, RT_sec, ACC, Phase
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -201,7 +202,7 @@ df[[1]] <- read.csv(
 
 names(df)[1] <- "Paper 6 Exp 1"
 summary(df[[1]])
-write.csv(x = df[[1]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_6/P6_Exp1_Clean.csv")
+write.csv(x = df[[1]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_6/Clean_Data/P6_Exp1_Clean.csv")
 ```
 
 
@@ -270,11 +271,12 @@ write.csv(x = df[[1]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_6/P6_
 # write.csv(x = df[[2]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_34/P34_Exp1_Clean.csv")
 ```
 
+
 # Paper 46
 ## Experiment 1 (Identtiy = 2)
 "Self", "Stranger"
 ```{r Paper 46 Experiment 1}
-df[[3]] <- read.csv(
+df[[2]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Raw_Data/Exp1/P46_Exp1_raw.csv"
   ) %>%
   # 筛选可以分析的行
@@ -332,16 +334,16 @@ df[[3]] <- read.csv(
     Subject, Matching, Identity, ShapeLoc
   )
 
-names(df)[3] <- "Paper 46 Exp 1"
-summary(df[[3]])
-write.csv(x = df[[3]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Clean_Data/P46_Exp1_Clean.csv")
+names(df)[2] <- "Paper 46 Exp 1"
+summary(df[[2]])
+write.csv(x = df[[2]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Clean_Data/P46_Exp1_Clean.csv")
 ```
 
 # Paper 46 (Dark Light Box)
 ## Experiment 2 (Identtiy = 2)
 "Self", "Stranger"
 ```{r Paper 46 Experiment 2}
-df[[4]] <- read.csv(
+df[[3]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Raw_Data/Exp2/P46_Exp2_raw.csv"
   ) %>%
   # 筛选可以分析的行
@@ -398,16 +400,16 @@ df[[4]] <- read.csv(
     Subject, Matching, Identity, ShapeLoc
   )
 
-names(df)[4] <- "Paper 46 Exp 1"
-summary(df[[4]])
-write.csv(x = df[[4]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Clean_Data/P46_Exp2_Clean.csv")
+names(df)[3] <- "Paper 46 Exp 2"
+summary(df[[3]])
+write.csv(x = df[[3]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_46/Clean_Data/P46_Exp2_Clean.csv")
 ```
 
 # Paper 51 
 ## Experiment 1 (Identtiy = 3)
 "Self", "Celebrity", "Stranger"
 ```{r Paper 51 Experiment 1}
-df[[5]] <- read.csv(
+df[[4]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_51/Raw_Data/P51_Exp1_raw.csv"
   ) %>%
   tidyr::separate(
@@ -472,15 +474,15 @@ df[[5]] <- read.csv(
     Subject, Matching, Identity, Session
   )
 
-names(df)[5] <- "Paper 51 Exp 1"
-summary(df[[5]])
-write.csv(x = df[[5]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_51/Clean_Data/P51_Exp1_Clean.csv")
+names(df)[4] <- "Paper 51 Exp 1"
+summary(df[[4]])
+write.csv(x = df[[4]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_51/Clean_Data/P51_Exp1_Clean.csv")
 ```
 
 ## Experiment 2 (Identtiy = 2)
 "Self", "Celebrity"
 ```{r Paper 51 Experiment 2}
-df[[6]] <- read.csv(
+df[[5]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_51/Raw_Data/P51_Exp2_raw.csv"
   ) %>%
   tidyr::separate(
@@ -533,16 +535,16 @@ df[[6]] <- read.csv(
     Subject, Matching, Identity
   )
 
-names(df)[6] <- "Paper 51 Exp 2"
-summary(df[[6]])
-write.csv(x = df[[6]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_51/Clean_Data/P51_Exp2_Clean.csv")
+names(df)[5] <- "Paper 51 Exp 2"
+summary(df[[5]])
+write.csv(x = df[[5]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_51/Clean_Data/P51_Exp2_Clean.csv")
 ```
 
 # Paper 54 
 ## Experiment 1 (Identtiy = 4)
 "Self", "Mother","none", "Acquaintance"
 ```{r Paper 54 Experiment 1}
-df[[7]] <- read.csv(
+df[[6]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_54/Raw_Data/P54_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
@@ -591,15 +593,15 @@ df[[7]] <- read.csv(
     Subject, Matching, Identity
   )
 
-names(df)[7] <- "Paper 54 Exp 1"
-summary(df[[7]])
-write.csv(x = df[[7]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_54/Clean_Data/P54_Exp1_Clean.csv")
+names(df)[6] <- "Paper 54 Exp 1"
+summary(df[[6]])
+write.csv(x = df[[6]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_54/Clean_Data/P54_Exp1_Clean.csv")
 ```
 
 ## Experiment 3 (Identtiy = 3)
 "Self", "Mother", "Acquaintance"
 ```{r Paper 54 Experiment 3}
-df[[8]] <- read.csv(
+df[[7]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_54/Raw_Data/P54_Exp3_raw.csv"
   ) %>%
   dplyr::filter(
@@ -647,16 +649,16 @@ df[[8]] <- read.csv(
     Subject, Matching, Identity,
   )
 
-names(df)[8] <- "Paper 54 Exp 3"
-summary(df[[8]])
-write.csv(x = df[[8]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_54/Clean_Data/P54_Exp3_Clean.csv")
+names(df)[7] <- "Paper 54 Exp 3"
+summary(df[[7]])
+write.csv(x = df[[7]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_54/Clean_Data/P54_Exp3_Clean.csv")
 ```
 
 # Paper 95 (Face)
 ## Experiment 1 (Identtiy = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper 95 Experiment 1}
-df[[9]] <- read.csv(
+df[[8]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_95/Raw_Data/P95_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
@@ -725,15 +727,15 @@ df[[9]] <- read.csv(
     Subject, Matching, Identity
   )
 
-names(df)[9] <- "Paper 95 Exp 1"
-summary(df[[9]])
-write.csv(x = df[[9]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_95/Clean_Data/P95_Exp1_Clean.csv")
+names(df)[8] <- "Paper 95 Exp 1"
+summary(df[[8]])
+write.csv(x = df[[8]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_95/Clean_Data/P95_Exp1_Clean.csv")
 ```
 
 ## Experiment 2 (Identtiy = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper 95 Experiment 2}
-df[[10]] <- read.csv(
+df[[9]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_95/Raw_Data/P95_Exp2_raw.csv"
   ) %>%
   dplyr::filter(
@@ -802,13 +804,66 @@ df[[10]] <- read.csv(
     Subject, Matching, Identity
   )
 
-names(df)[10] <- "Paper 95 Exp 2"
-summary(df[[10]])
-write.csv(x = df[[10]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_95/Clean_Data/P95_Exp2_Clean.csv")
+names(df)[9] <- "Paper 95 Exp 2"
+summary(df[[9]])
+write.csv(x = df[[9]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_95/Clean_Data/P95_Exp2_Clean.csv")
 ```
 
 # Paper n4
 ## Experiment 1 (Identtiy = 3)
+"Self", "Friend", "Stranger"
+```{r Paper n4 Experiment 1}
+df[[10]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_n4/Raw_Data/Pn4_Exp1_raw.csv"
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(subject),
+    Matching = case_when(
+      type == "match" ~ "Matching",
+      type == "nonmatch" ~ "Nonmatching"
+    ),
+    blocktype = case_when(
+      blocktype == "mixed" ~ 1,
+      blocktype == "blocked" ~ 2
+    ),
+    Identity = as.character(shape),
+    RT_ms = as.numeric(latency),
+    RT_sec = RT_ms / 1000,
+    ACC = as.numeric(correct)
+  ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Matching, Identity, RT_ms, RT_sec, ACC, blocktype
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::filter(
+    RT_sec >= 0.2 & RT_sec <= 1.5,
+    ACC == 1 | ACC == 0
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[10] <- "Papaer n4 Exp 1"
+summary(df[[10]])
+write.csv(x = df[[10]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n4/Clean_Data/Pn4_Exp1_Clean.csv")
+```
+
+## Experiment 2 (Identtiy = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n4 Experiment 1}
 df[[11]] <- read.csv(
@@ -856,69 +911,16 @@ df[[11]] <- read.csv(
     Subject, Matching, Identity
   )
 
-names(df)[11] <- "Papaer n4 Exp 1"
+names(df)[11] <- "Papaer n4 Exp 2"
 summary(df[[11]])
-write.csv(x = df[[11]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n4/Clean_Data/Pn4_Exp1_Clean.csv")
-```
-
-## Experiment 2 (Identtiy = 3)
-"Self", "Friend", "Stranger"
-```{r Paper n4 Experiment 1}
-df[[12]] <- read.csv(
-  "../../4_Data_Extraction/4_2_Open_Data/Paper_n4/Raw_Data/Pn4_Exp1_raw.csv"
-  ) %>%
-  dplyr::mutate(
-    Subject = as.numeric(subject),
-    Matching = case_when(
-      type == "match" ~ "Matching",
-      type == "nonmatch" ~ "Nonmatching"
-    ),
-    blocktype = case_when(
-      blocktype == "mixed" ~ 1,
-      blocktype == "blocked" ~ 2
-    ),
-    Identity = as.character(shape),
-    RT_ms = as.numeric(latency),
-    RT_sec = RT_ms / 1000,
-    ACC = as.numeric(correct)
-  ) %>%
-  dplyr::mutate(
-    Subjcet = as.numeric(Subject),
-    Matching = factor(
-      Matching, levels = c("Matching", "Nonmatching")
-    ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "Stranger")
-    ),
-    RT_ms = as.numeric(RT_ms),
-    RT_sec = as.numeric(RT_sec),
-    ACC = as.numeric(ACC),
-  ) %>%
-  dplyr::select(
-    Subject, Matching, Identity, RT_ms, RT_sec, ACC, blocktype
-  ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-  ) %>%
-  dplyr::filter(
-    RT_sec >= 0.2 & RT_sec <= 1.5,
-    ACC == 1 | ACC == 0
-  ) %>%
-  dplyr::arrange(
-    Subject, Matching, Identity
-  )
-
-names(df)[12] <- "Papaer n4 Exp 2"
-summary(df[[12]])
-write.csv(x = df[[12]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n4/Clean_Data/Pn4_Exp2_Clean.csv")
+write.csv(x = df[[11]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n4/Clean_Data/Pn4_Exp2_Clean.csv")
 ```
 
 # Paper n13
 ## Experiment 1 (Identtiy = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n13 Experiment 1}
-df[[13]] <- read.csv(
+df[[12]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Raw_Data/Pn13_Exp1_raw.csv"
   ) %>%
   dplyr::select(
@@ -973,9 +975,9 @@ df[[13]] <- read.csv(
     Subject, Matching, Identity
   )
 
-names(df)[13] <- "Papaer n13 Exp 1"
-summary(df[[13]])
-write.csv(x = df[[13]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Clean_Data/Pn13_Exp1_Clean.csv")
+names(df)[12] <- "Papaer n13 Exp 1"
+summary(df[[12]])
+write.csv(x = df[[12]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Clean_Data/Pn13_Exp1_Clean.csv")
 ```
 
 ## Experiment 2 (Identtiy = 3)
@@ -1044,7 +1046,7 @@ write.csv(x = df[[13]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n13/
 ## Experiment 3 (Identtiy = 3)
 "Self", "Father", "Stranger"
 ```{r Paper n13 Experiment 3}
-df[[14]] <- read.csv(
+df[[13]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Raw_Data/Pn13_Exp3_raw.csv"
   ) %>%
   dplyr::select(
@@ -1097,15 +1099,15 @@ df[[14]] <- read.csv(
     Subject, Matching, Identity
   )
 
-names(df)[14] <- "Papaer n13 Exp 3"
-summary(df[[14]])
-write.csv(x = df[[14]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Clean_Data/Pn13_Exp3_Clean.csv")
+names(df)[13] <- "Papaer n13 Exp 3"
+summary(df[[13]])
+write.csv(x = df[[13]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Clean_Data/Pn13_Exp3_Clean.csv")
 ```
 
 ## Experiment 4 (Identtiy = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n13 Experiment 4}
-df[[15]] <- read.csv(
+df[[14]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Raw_Data/Pn13_Exp4_raw.csv"
   ) %>%
   dplyr::select(
@@ -1159,16 +1161,16 @@ df[[15]] <- read.csv(
     Subject, Matching, Identity
     )
 
-names(df)[15] <- "Papaer n13 Exp 4"
-summary(df[[15]])
-write.csv(x = df[[15]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Clean_Data/Pn13_Exp4_Clean.csv")
+names(df)[14] <- "Papaer n13 Exp 4"
+summary(df[[14]])
+write.csv(x = df[[14]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Clean_Data/Pn13_Exp4_Clean.csv")
 ```
 
 # Paper n16
 ## Experiment 1 (Identtiy = 2)
 "Self", "Friend"
 ```{r Paper n16 Experiment 1}
-df[[16]] <- read.csv(
+df[[15]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Raw_Data/Pn16_Exp1_raw.csv"
   ) %>%
   dplyr::select(
@@ -1209,15 +1211,15 @@ df[[16]] <- read.csv(
     Subject, Matching, Identity
     )
 
-names(df)[16] <- "Papaer n16 Exp 1"
-summary(df[[16]])
-write.csv(x = df[[16]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp1_Clean.csv")
+names(df)[15] <- "Papaer n16 Exp 1"
+summary(df[[15]])
+write.csv(x = df[[15]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp1_Clean.csv")
 ```
 
 ## Experiment 2 (Identtiy = 2)
 "Self", "Friend"
 ```{r Paper n16 Experiment 2}
-df[[17]] <- read.csv(
+df[[16]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Raw_Data/Pn16_Exp2_raw.csv"
   ) %>%
   dplyr::select(
@@ -1257,15 +1259,15 @@ df[[17]] <- read.csv(
     Subject, Matching, Identity
     )
 
-names(df)[17] <- "Papaer n16 Exp 2"
-summary(df[[17]])
-write.csv(x = df[[17]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp2_Clean.csv")
+names(df)[16] <- "Papaer n16 Exp 2"
+summary(df[[16]])
+write.csv(x = df[[16]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp2_Clean.csv")
 ```
 
 ## Experiment 3 (Identtiy = 2)
 "Self", "Friend"
 ```{r Paper n16 Experiment 3}
-df[[18]] <- read.csv(
+df[[17]] <- read.csv(
   "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Raw_Data/Pn16_Exp3_raw.csv"
   ) %>%
   dplyr::select(
@@ -1306,17 +1308,17 @@ df[[18]] <- read.csv(
     Subject, Matching, Identity
     )
 
-names(df)[18] <- "Papaer n16 Exp 3"
-summary(df[[18]])
-write.csv(x = df[[18]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp3_Clean.csv")
+names(df)[17] <- "Papaer n16 Exp 3"
+summary(df[[17]])
+write.csv(x = df[[17]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp3_Clean.csv")
 ```
 
 # Paper n23
 ## Experiment 1 (Identtiy = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n23 Experiment 1}
-df[[19]] <- read.csv(
-  "../../4_Data_Extraction/4_2_Open_Data/Paper_n23/Pn23_Exp1_raw.csv"
+df[[18]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_n23/Raw_Data/Pn23_Exp1_raw.csv"
   ) %>%
   dplyr::select(
     Subject = Subject,
@@ -1361,9 +1363,9 @@ df[[19]] <- read.csv(
     Subject, Matching, Identity, Group
     )
 
-names(df)[19] <- "Papaer n23 Exp 1"
-summary(df[[19]])
-write.csv(x = df[[19]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n23/Pn23_Exp1_Clean.csv")
+names(df)[18] <- "Papaer n23 Exp 1"
+summary(df[[18]])
+write.csv(x = df[[18]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n23/Clean_Data/Pn23_Exp1_Clean.csv")
 ```
 
 # Paper s1 (Face)
@@ -1371,7 +1373,7 @@ write.csv(x = df[[19]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_n23/
 "Self", "Stranger"
 ```{r Paper s1 Experiment 1}
 df_Ps1_E1 <- read.csv(
-  "../../4_Data_Extraction/4_2_Open_Data/Paper_s1/Ps1_Exp1_raw.csv"
+  "../../4_Data_Extraction/4_2_Open_Data/Paper_s1/Raw_Data/Ps1_Exp1_raw.csv"
   ) %>%
   dplyr::select(
     Subject = Participant.Public.ID,
@@ -1408,7 +1410,7 @@ df_Subject_ID <- df_Ps1_E1 %>% # nolint
     Subject, Subject_ID
   )
 
-df[[20]] <- df_Ps1_E1 %>%
+df[[19]] <- df_Ps1_E1 %>%
   dplyr::left_join(
     df_Subject_ID,
     by = "Subject"
@@ -1445,17 +1447,17 @@ df[[20]] <- df_Ps1_E1 %>%
 
 rm(df_Subject_ID, df_Ps1_E1)
 
-names(df)[20] <- "Paper s1 Exp 1"
-summary(df[[20]])
-write.csv(x = df[[20]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_s1/Ps1_Exp1_Clean.csv")
+names(df)[19] <- "Paper s1 Exp 1"
+summary(df[[19]])
+write.csv(x = df[[19]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_s1/Clean_Data/Ps1_Exp1_Clean.csv")
 ```
 
 # Paper s2
 ## Experiment 1 (Identtiy = 2)
 "Self", "Stranger"
 ```{r Paper s2 Experiment 1}
-df[[21]] <- read.csv(
-  "../../4_Data_Extraction/4_2_Open_Data/Paper_s2/Ps2_Exp1_raw.csv"
+df[[20]] <- read.csv(
+  "../../4_Data_Extraction/4_2_Open_Data/Not_Good/Paper_s2/Ps2_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
     Session != 3,
@@ -1507,9 +1509,9 @@ df[[21]] <- read.csv(
     Subject, Matching, Identity
   )
 
-names(df)[21] <- "Paper s2 Exp 1"
-summary(df[[21]])
-write.csv(x = df[[21]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_s2/Ps2_Exp1_Clean.csv")
+names(df)[20] <- "Paper s2 Exp 1"
+summary(df[[20]])
+write.csv(x = df[[20]], file = "../../4_Data_Extraction/4_2_Open_Data/Not_Good/Paper_s2/Ps2_Exp1_Clean.csv")
 ```
 
 # Paper s3
@@ -1714,13 +1716,80 @@ summary(df[[24]])
 write.csv(x = df[[24]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_s4/Ps4_Exp2_Clean.csv")
 ```
 
+```{r List for Data Frame}
+df <- list()
+df[[1]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_6/Clean_Data/P6_Exp1_Clean.csv")
+df[[2]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_46/Clean_Data/P46_Exp1_Clean.csv")
+df[[3]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_46/Clean_Data/P46_Exp2_Clean.csv")
+df[[4]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_51/Clean_Data/P51_Exp1_Clean.csv")
+df[[5]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_51/Clean_Data/P51_Exp2_Clean.csv")
+df[[6]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_54/Clean_Data/P54_Exp1_Clean.csv")
+df[[7]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_54/Clean_Data/P54_Exp3_Clean.csv")
+df[[8]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_95/Clean_Data/P95_Exp1_Clean.csv")
+df[[9]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_95/Clean_Data/P95_Exp2_Clean.csv")
+df[[10]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n4/Clean_Data/Pn4_Exp1_Clean.csv")
+df[[11]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n4/Clean_Data/Pn4_Exp2_Clean.csv")
+df[[12]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Clean_Data/Pn13_Exp1_Clean.csv")
+df[[13]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Clean_Data/Pn13_Exp3_Clean.csv")
+df[[14]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Clean_Data/Pn13_Exp4_Clean.csv")
+df[[15]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp1_Clean.csv")
+df[[16]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp2_Clean.csv")
+df[[17]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp3_Clean.csv")
+df[[18]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n23/Clean_Data/Pn23_Exp1_Clean.csv")
+df[[19]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_s1/Clean_Data/Ps1_Exp1_Clean.csv")
+df[[20]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Not_Good/Paper_s2/Ps2_Exp1_Clean.csv")
+
+```
+
+```{r}
+# 定义函数
+combine_data <- function(df, key_columns) {
+  # 提取关键列
+  key_data <- df[, key_columns]
+  
+  # 返回提取的数据
+  return(key_data)
+}
+
+# 示例调用函数
+key_columns <- c("Subject","Matching","Identity","RT_ms","ACC")  # 替换为您想要提取的关键列
+combined_data <- combine_data(df, key_columns)
+```
+
+
 # Check ACC
 ```{r}
 min_ACC_list <- list()
 
-for (i in 1:22) {
+for (i in 1:20) {
+  if (!is.null(df[[i]])) {
+    min_ACC <- df[[i]] %>%
+      dplyr::group_by(Subject) %>%
+      dplyr::summarise(mean_ACC = mean(ACC)) %>%
+      dplyr::ungroup() %>%
+      dplyr::filter(mean_ACC < 0.5) %>%
+      dplyr::arrange(mean_ACC)
+    
+    min_ACC_list[[i]] <- min_ACC
+    cat(
+      "For df[[", i, "]], the min ACC is:",
+      ifelse(nrow(min_ACC) > 0, min(min_ACC$mean_ACC), "No data"), # Check if min_ACC is empty
+      "\n"
+    )
+  } else {
+    cat("df[[", i, "]] is empty.\n")
+  }
+}
+
+rm(min_ACC, i)
+```
+
+```{r}
+min_ACC_list <- list()
+
+for (i in 1:20) {
   min_ACC <- df[[i]] %>%
-    dplyr::group_by(Subject, Matching, Identity, Session) %>%
+    dplyr::group_by(Subject, Matching, Identity) %>%
     #dplyr::group_by(Subject) %>%
     dplyr::summarise(mean_ACC = mean(ACC)) %>%
     dplyr::ungroup() %>%
@@ -1738,31 +1807,8 @@ for (i in 1:22) {
 rm(min_ACC, i)
 ```
 
-```{r List for Data Frame}
-df <- list()
-df[[1]] <- read.csv("./DATA/df_1.csv")
-df[[2]] <- read.csv("./DATA/df_2.csv")
-df[[3]] <- read.csv("./DATA/df_3.csv")
-df[[4]] <- read.csv("./DATA/df_4.csv")
-df[[5]] <- read.csv("./DATA/df_5.csv")
-df[[6]] <- read.csv("./DATA/df_6.csv")
-df[[7]] <- read.csv("./DATA/df_7.csv")
-df[[8]] <- read.csv("./DATA/df_8.csv")
-df[[9]] <- read.csv("./DATA/df_9.csv")
-df[[10]] <- read.csv("./DATA/df_10.csv")
-df[[11]] <- read.csv("./DATA/df_11.csv")
-df[[12]] <- read.csv("./DATA/df_12.csv")
-df[[13]] <- read.csv("./DATA/df_13.csv")
-df[[14]] <- read.csv("./DATA/df_14.csv")
-df[[15]] <- read.csv("./DATA/df_15.csv")
-df[[16]] <- read.csv("./DATA/df_16.csv")
-df[[17]] <- read.csv("./DATA/df_17.csv")
-df[[18]] <- read.csv("./DATA/df_18.csv")
-df[[19]] <- read.csv("./DATA/df_19.csv")
-df[[20]] <- read.csv("./DATA/df_20.csv")
-df[[21]] <- read.csv("./DATA/df_21.csv")
-df[[22]] <- read.csv("./DATA/df_22.csv")
-```
+
+
 
 
 ```{r}
