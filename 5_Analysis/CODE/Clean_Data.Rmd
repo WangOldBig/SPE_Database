@@ -1742,72 +1742,103 @@ df[[20]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Not_Good/Paper_s2/Ps
 ```
 
 ```{r}
-# 定义函数
-combine_data <- function(df, key_columns) {
-  # 提取关键列
-  key_data <- df[, key_columns]
+combine_data <- function(df_list, key_columns) {
+  combined_data <- data.frame()
   
-  # 返回提取的数据
-  return(key_data)
+  for (i in seq_along(df_list)) {
+    key_data <- df_list[[i]][, key_columns]
+    combined_data <- bind_rows(combined_data, key_data)
+  }
+  
+  return(combined_data)
 }
-
 # 示例调用函数
 key_columns <- c("Subject","Matching","Identity","RT_ms","ACC")  # 替换为您想要提取的关键列
 combined_data <- combine_data(df, key_columns)
 ```
 
+```{r}
+combine_data <- function(data_list) {
+  # 创建一个空数据框
+  combined_df <- data.frame()
+  
+  # 循环遍历数据列表中的每个数据框
+  for (i in seq_along(data_list)) {
+    # 提取关键列
+    key_columns <- data_list[[i]][c("Subject", "Matching", "Identity", "RT_ms", "RT_sec", "ACC")]
+    
+    # 添加 Paper 列
+    key_columns$Paper <- paste0("df_", i)
+    
+    # 将数据框添加到组合数据框中
+    combined_df <- rbind(combined_df, key_columns)
+  }
+  
+  # 返回组合后的数据框
+  return(combined_df)
+}
+
+# 使用函数
+combined_data <- combine_data(df)
+
+```
 
 # Check ACC
 ```{r}
-min_ACC_list <- list()
+calculate_min_ACC <- function(data_list) {
+  min_ACC_list <- list()
+  
+  for (i in seq_along(data_list)) {
+    if (!is.null(data_list[[i]])) {
+      min_ACC <- data_list[[i]] %>%
+        group_by(Subject) %>%
+        summarise(mean_ACC = mean(ACC)) %>%
+        ungroup() %>%
+        filter(mean_ACC < 0.5) %>%
+        arrange(mean_ACC)
+      
+      min_ACC_list[[i]] <- min_ACC
+      
+      cat(
+        "For df[[", i, "]], the min ACC is:",
+        ifelse(nrow(min_ACC) > 0, min(min_ACC$mean_ACC), "No data"), # 检查 min_ACC 是否为空
+        "\n"
+      )
+    } else {
+      cat("df[[", i, "]] is empty.\n")
+    }
+  }
+  
+  rm(min_ACC, i)
+  
+  return(min_ACC_list)
+}
 
-for (i in 1:20) {
+# 使用函数
+min_ACC_list <- calculate_min_ACC(df)
+
+```
+```{r}
+for (i in seq_along(df)) {
   if (!is.null(df[[i]])) {
-    min_ACC <- df[[i]] %>%
-      dplyr::group_by(Subject) %>%
-      dplyr::summarise(mean_ACC = mean(ACC)) %>%
-      dplyr::ungroup() %>%
-      dplyr::filter(mean_ACC < 0.5) %>%
-      dplyr::arrange(mean_ACC)
+    filtered_df <- df[[i]] %>%
+      anti_join(min_ACC_list[[i]], by = "Subject") 
     
-    min_ACC_list[[i]] <- min_ACC
-    cat(
-      "For df[[", i, "]], the min ACC is:",
-      ifelse(nrow(min_ACC) > 0, min(min_ACC$mean_ACC), "No data"), # Check if min_ACC is empty
-      "\n"
+    write.csv(
+      x = filtered_df,
+      file = paste0("./DATA/df_", i, "_filtered.csv"),
+      row.names = FALSE
     )
+    
+    cat("Filtered data for df[[", i, "]] has been saved to ./DATA/df_", i, "_filtered.csv\n")
   } else {
     cat("df[[", i, "]] is empty.\n")
   }
 }
 
-rm(min_ACC, i)
+rm(filtered_df, i)
+
 ```
-
-```{r}
-min_ACC_list <- list()
-
-for (i in 1:20) {
-  min_ACC <- df[[i]] %>%
-    dplyr::group_by(Subject, Matching, Identity) %>%
-    #dplyr::group_by(Subject) %>%
-    dplyr::summarise(mean_ACC = mean(ACC)) %>%
-    dplyr::ungroup() %>%
-    dplyr::filter(mean_ACC < 0.5) %>%
-    dplyr::arrange(mean_ACC)
-  
-  min_ACC_list[[i]] <- min_ACC
-  cat(
-    "For df[[", i, "]], the min ACC is:",
-    min(min_ACC$mean_ACC),
-    "\n"
-  )
-}
-
-rm(min_ACC, i)
-```
-
-
 
 
 
