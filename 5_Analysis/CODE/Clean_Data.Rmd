@@ -1452,6 +1452,14 @@ summary(df[[19]])
 write.csv(x = df[[19]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_s1/Clean_Data/Ps1_Exp1_Clean.csv")
 ```
 
+```{r}
+df[[19]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_s1/Clean_Data/Ps1_Exp1_Clean.csv") %>%
+  dplyr::filter(
+    !(Subject %in% c(51, 143, 153, 158, 212, 255, 257))
+  )
+write.csv(x = df[[19]], file = "../../4_Data_Extraction/4_2_Open_Data/Paper_s1/Clean_Data/Ps1_Exp1_Clean.csv")
+```
+
 # Paper s2
 ## Experiment 1 (Identtiy = 2)
 "Self", "Stranger"
@@ -1741,22 +1749,7 @@ df[[20]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Not_Good/Paper_s2/Ps
 
 ```
 
-```{r}
-combine_data <- function(df_list, key_columns) {
-  combined_data <- data.frame()
-  
-  for (i in seq_along(df_list)) {
-    key_data <- df_list[[i]][, key_columns]
-    combined_data <- bind_rows(combined_data, key_data)
-  }
-  
-  return(combined_data)
-}
-# 示例调用函数
-key_columns <- c("Subject","Matching","Identity","RT_ms","ACC")  # 替换为您想要提取的关键列
-combined_data <- combine_data(df, key_columns)
-```
-
+#整合数据
 ```{r}
 combine_data <- function(data_list) {
   # 创建一个空数据框
@@ -1781,6 +1774,7 @@ combine_data <- function(data_list) {
 # 使用函数
 combined_data <- combine_data(df)
 
+rm(key_columns,combine_data)
 ```
 
 # Check ACC
@@ -1816,21 +1810,36 @@ calculate_min_ACC <- function(data_list) {
 
 # 使用函数
 min_ACC_list <- calculate_min_ACC(df)
-
+rm(calculate_min_ACC)
 ```
+
+#Clean data by ACC
 ```{r}
 for (i in seq_along(df)) {
   if (!is.null(df[[i]])) {
     filtered_df <- df[[i]] %>%
       anti_join(min_ACC_list[[i]], by = "Subject") 
     
+    file_path <- paste0("../../4_Data_Extraction/4_3_Clean_Data/df_", i, "_filtered.csv")
+    
+    if (!file.exists(file_path)) {
+      # 如果文件不存在，则创建一个空的文件
+      write.csv(
+        x = data.frame(),  # 创建一个空的数据框
+        file = file_path,
+        row.names = FALSE
+      )
+    }
+    
+    
+    # 追加数据到文件末尾
     write.csv(
       x = filtered_df,
-      file = paste0("./DATA/df_", i, "_filtered.csv"),
-      row.names = FALSE
+      file = file_path,
+      row.names = FALSE,
     )
     
-    cat("Filtered data for df[[", i, "]] has been saved to ./DATA/df_", i, "_filtered.csv\n")
+    cat("Filtered data for df[[", i, "]] has been appended to ", file_path, "\n")
   } else {
     cat("df[[", i, "]] is empty.\n")
   }
@@ -1842,29 +1851,4 @@ rm(filtered_df, i)
 
 
 
-```{r}
-for (i in 1:length(df)) {
-  filtered_df <- df[[i]] %>%
-    dplyr::anti_join(min_ACC_list[[i]], by = "Subject") 
-  
-  df[[i]] <- filtered_df
-  
-  write.csv(
-    x = filtered_df,
-    file = paste0("./DATA/df_", i, ".csv"),
-    row.names = FALSE
-  )
-}
-
-rm(filtered_df, i)
-```
-
-
-```{r}
-df[[18]] <- read.csv("./DATA/df_18.csv") %>%
-  dplyr::filter(
-    !(Subject %in% c(51, 143, 153, 158, 212, 255, 257))
-  )
-write.csv(x = df[[18]], file = "./DATA/df_18.csv")
-```
 
