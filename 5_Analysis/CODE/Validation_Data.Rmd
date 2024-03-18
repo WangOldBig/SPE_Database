@@ -148,7 +148,8 @@ calculate_d_prime <- function(Hit_rate, False_alarm_rate) {
 # 函数：根据数据计算d'值
 compute_d_prime <- function(data, matching_type, identity_type) {
   d_prime <- data %>%
-    filter(Matching == matching_type & Identity == identity_type) %>%
+    filter(Matching == matching_type 
+         & Identity == identity_type) %>%
     summarize(d_prime = calculate_d_prime(mean(ACC),
                                           1 - mean(ACC)))
   if (length(d_prime$d_prime) != 1) {
@@ -194,6 +195,106 @@ print("2. 每个Paper的d'值")
 print(d_prime_per_paper)
 
 rm(calculate_d_prime,compute_d_prime,compute_rt_acc)
+```
+
+```{r}
+# 定义计算d'的函数
+calculate_d_prime <- function(hit_rate, fa_rate, miss_rate, cr_rate) {
+  d_prime <- qnorm(hit_rate) - qnorm(fa_rate)
+  return(d_prime)
+}
+
+# 函数：根据数据计算d'值
+compute_d_prime <- function(data, matching_type, identity_type) {
+  d_prime <- data %>%
+    filter(Matching == matching_type & Identity == identity_type) %>%
+    summarize(
+      hit_rate = mean(ACC[ACC == 1 & Matching == matching_type & Identity == identity_type]),
+      fa_rate = mean(ACC[ACC == 0 & Matching != matching_type & Identity == identity_type]),
+      miss_rate = mean(ACC[ACC == 0 & Matching == matching_type & Identity == identity_type]),
+      cr_rate = mean(ACC[ACC == 1 & Matching != matching_type & Identity == identity_type])
+    ) %>%
+    mutate(d_prime = calculate_d_prime(hit_rate, fa_rate, miss_rate, cr_rate))
+  
+  if (sum(is.na(d_prime)) > 0) {
+    return(NA)  # 如果计算结果中存在NA，则返回NA
+  } else {
+    return(d_prime$d_prime)
+  }
+}
+
+# 函数：计算各种Identity的RT和ACC
+compute_rt_acc <- function(data) {
+  result <- data %>%
+    group_by(Paper, Matching, Identity) %>%
+    summarize(mean_RT = mean(RT_ms),
+              mean_ACC = mean(ACC),
+              .groups = 'drop')
+  return(result)
+}
+
+# 1. 报告不同Matching、Nonmatching条件下各种Identity的RT、ACC
+result1 <- compute_rt_acc(combined_data)
+
+# 将Identity中除了Self外的所有身份都归为Others
+combined_data$Identity <- ifelse(combined_data$Identity == "Self", "Self", "Others")
+
+# 2. 根据Paper计算每个Paper的d'值
+d_prime_per_paper <- lapply(unique(combined_data$Paper), function(paper) {
+  tibble(
+    Paper = paper,
+    d_prime_matching_self = compute_d_prime(filter(combined_data, Paper == paper), "Matching", "Self"),
+    d_prime_nonmatching_self = compute_d_prime(filter(combined_data, Paper == paper), "Nonmatching", "Self"),
+    d_prime_matching_other = compute_d_prime(filter(combined_data, Paper == paper), "Matching", "Others"),
+    d_prime_nonmatching_other = compute_d_prime(filter(combined_data, Paper == paper), "Nonmatching", "Others")
+  )
+}) %>%
+  bind_rows()  # 组合每个Paper的d'值结果
+
+# 输出结果
+print("1. 报告不同Matching、Nonmatching条件下各种Identity的RT、ACC")
+print(result1)
+
+print("2. 每个Paper的d'值")
+print(d_prime_per_paper)
+
+```
+
+```{r}
+df_dp <- function(df, i) {
+  result <- df %>%
+    dplyr::group_by(Subject, Session, Identity) %>%
+    dplyr::summarise(
+      hit = sum(ACC[Matching == "Matching" & ACC == 1]),
+      fa = sum(ACC[Matching == "Nonmatching" & ACC == 0]),
+      miss = sum(ACC[Matching == "Matching" & ACC == 0]),
+      cr = sum(ACC[Matching == "Nonmatching" & ACC == 1]),
+      Dprime = qnorm(ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))) -
+               qnorm(ifelse(fa / (fa + cr) > 0, fa / (fa + cr), 1 / (2 * (fa + cr))))
+    )
+  return(result)
+}
+```
+
+```{r}
+df_dp <- function(df) {
+  result <- df %>%
+    dplyr::group_by(Subject, Session, Identity) %>%
+    dplyr::summarise(
+      hit = sum(ACC[Matching == "Matching" & ACC == 1]),
+      fa = sum(ACC[Matching == "Nonmatching" & ACC == 0]),
+      miss = sum(ACC[Matching == "Matching" & ACC == 0]),
+      cr = sum(ACC[Matching == "Nonmatching" & ACC == 1])
+    ) %>%
+    mutate(
+      hit_rate = hit / (hit + miss),
+      fa_rate = fa / (fa + cr),
+      d_prime = calculate_d_prime(hit_rate, fa_rate)
+    ) %>%
+    select(Subject, Session, Identity, d_prime)
+  
+  return(result)
+}
 ```
 
 
