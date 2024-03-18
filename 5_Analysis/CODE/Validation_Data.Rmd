@@ -137,7 +137,7 @@ rm(filtered_df, i, file_path)
 
 ```
 
-#Version 10
+#Compute d'(Matching-Self;Nonmatching-Self;Matching-Others;Nonmatching-Others)
 ```{r}
 # 定义计算d'的函数
 calculate_d_prime <- function(Hit_rate, False_alarm_rate) {
@@ -168,11 +168,11 @@ compute_rt_acc <- function(data) {
   return(result)
 }
 
-# 将Identity中除了Self外的所有身份都归为Others
-combined_data$Identity <- ifelse(combined_data$Identity == "Self", "Self", "Others")
-
 # 1. 报告不同Matching、Nonmatching条件下各种Identity的RT、ACC
 result1 <- compute_rt_acc(combined_data)
+
+# 将Identity中除了Self外的所有身份都归为Others
+combined_data$Identity <- ifelse(combined_data$Identity == "Self", "Self", "Others")
 
 # 2. 根据Paper计算每个Paper的d'值
 d_prime_per_paper <- lapply(unique(combined_data$Paper), function(paper) {
@@ -195,4 +195,5 @@ print(d_prime_per_paper)
 
 rm(calculate_d_prime,compute_d_prime,compute_rt_acc)
 ```
+
 
