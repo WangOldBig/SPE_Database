@@ -1,0 +1,198 @@
+---
+title: "Validation_Data"
+author: "czx"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r Package, warning = FALSE,message = FALSE}
+# clean data
+library(tidyr)
+library(dplyr)
+```
+
+
+
+```{r List for Data Frame}
+df <- list()
+df[[1]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_6/Clean_Data/P6_Exp1_Clean.csv")
+df[[2]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_46/Clean_Data/P46_Exp1_Clean.csv")
+df[[3]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_46/Clean_Data/P46_Exp2_Clean.csv")
+df[[4]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_51/Clean_Data/P51_Exp1_Clean.csv")
+df[[5]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_51/Clean_Data/P51_Exp2_Clean.csv")
+df[[6]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_54/Clean_Data/P54_Exp1_Clean.csv")
+df[[7]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_54/Clean_Data/P54_Exp3_Clean.csv")
+df[[8]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_95/Clean_Data/P95_Exp1_Clean.csv")
+df[[9]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_95/Clean_Data/P95_Exp2_Clean.csv")
+df[[10]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n4/Clean_Data/Pn4_Exp1_Clean.csv")
+df[[11]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n4/Clean_Data/Pn4_Exp2_Clean.csv")
+df[[12]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Clean_Data/Pn13_Exp1_Clean.csv")
+df[[13]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Clean_Data/Pn13_Exp3_Clean.csv")
+df[[14]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n13/Clean_Data/Pn13_Exp4_Clean.csv")
+df[[15]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp1_Clean.csv")
+df[[16]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp2_Clean.csv")
+df[[17]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n16/Clean_Data/Pn16_Exp3_Clean.csv")
+df[[18]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_n23/Clean_Data/Pn23_Exp1_Clean.csv")
+df[[19]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Paper_s1/Clean_Data/Ps1_Exp1_Clean.csv")
+df[[20]] <- read.csv("../../4_Data_Extraction/4_2_Open_Data/Not_Good/Paper_s2/Ps2_Exp1_Clean.csv")
+```
+
+#整合数据
+```{r}
+combine_data <- function(data_list) {
+  # 创建一个空数据框
+  combined_df <- data.frame()
+  
+  # 循环遍历数据列表中的每个数据框
+  for (i in seq_along(data_list)) {
+    # 提取关键列
+    key_columns <- data_list[[i]][c("Subject", "Matching", "Identity", "RT_ms", "RT_sec", "ACC")]
+    
+    # 添加 Paper 列
+    key_columns$Paper <- paste0("df_", i)
+    
+    # 将数据框添加到组合数据框中
+    combined_df <- rbind(combined_df, key_columns)
+  }
+  
+  # 返回组合后的数据框
+  return(combined_df)
+}
+
+# 使用函数
+combined_data <- combine_data(df)
+
+rm(combine_data)
+```
+
+# Check ACC
+```{r}
+calculate_min_ACC <- function(data_list) {
+  min_ACC_list <- list()
+  
+  for (i in seq_along(data_list)) {
+    if (!is.null(data_list[[i]])) {
+      min_ACC <- data_list[[i]] %>%
+        group_by(Subject) %>%
+        summarise(mean_ACC = mean(ACC)) %>%
+        ungroup() %>%
+        filter(mean_ACC < 0.5) %>%
+        arrange(mean_ACC)
+      
+      min_ACC_list[[i]] <- min_ACC
+      
+      cat(
+        "For df[[", i, "]], the min ACC is:",
+        ifelse(nrow(min_ACC) > 0, min(min_ACC$mean_ACC), "No data"), # 检查 min_ACC 是否为空
+        "\n"
+      )
+    } else {
+      cat("df[[", i, "]] is empty.\n")
+    }
+  }
+  
+  rm(min_ACC, i)
+  
+  return(min_ACC_list)
+}
+
+# 使用函数
+min_ACC_list <- calculate_min_ACC(df)
+rm(calculate_min_ACC)
+```
+
+#Clean data by ACC
+```{r}
+for (i in seq_along(df)) {
+  if (!is.null(df[[i]])) {
+    filtered_df <- df[[i]] %>%
+      anti_join(min_ACC_list[[i]], by = "Subject") 
+    
+    file_path <- paste0("../../4_Data_Extraction/4_3_Clean_Data/df_", i, "_filtered.csv")
+    
+    if (!file.exists(file_path)) {
+      # 如果文件不存在，则创建一个空的文件
+      write.csv(
+        x = data.frame(),  # 创建一个空的数据框
+        file = file_path,
+        row.names = FALSE
+      )
+    }
+    
+    
+    # 追加数据到文件末尾
+    write.csv(
+      x = filtered_df,
+      file = file_path,
+      row.names = FALSE,
+    )
+    
+    cat("Filtered data for df[[", i, "]] has been appended to ", file_path, "\n")
+  } else {
+    cat("df[[", i, "]] is empty.\n")
+  }
+}
+
+rm(filtered_df, i, file_path)
+
+```
+
+#Version 10
+```{r}
+# 定义计算d'的函数
+calculate_d_prime <- function(Hit_rate, False_alarm_rate) {
+  d_prime <- qnorm(Hit_rate) - qnorm(False_alarm_rate)
+  return(d_prime)
+}
+
+# 函数：根据数据计算d'值
+compute_d_prime <- function(data, matching_type, identity_type) {
+  d_prime <- data %>%
+    filter(Matching == matching_type & Identity == identity_type) %>%
+    summarize(d_prime = calculate_d_prime(mean(ACC),
+                                          1 - mean(ACC)))
+  if (length(d_prime$d_prime) != 1) {
+    return(NA)  # 如果计算结果的长度不为1，则返回NA
+  } else {
+    return(d_prime$d_prime)
+  }
+}
+
+# 函数：计算各种Identity的RT和ACC
+compute_rt_acc <- function(data) {
+  result <- data %>%
+    group_by(Paper, Matching, Identity) %>%
+    summarize(mean_RT = mean(RT_ms),
+              mean_ACC = mean(ACC),
+              .groups = 'drop')
+  return(result)
+}
+
+# 将Identity中除了Self外的所有身份都归为Others
+combined_data$Identity <- ifelse(combined_data$Identity == "Self", "Self", "Others")
+
+# 1. 报告不同Matching、Nonmatching条件下各种Identity的RT、ACC
+result1 <- compute_rt_acc(combined_data)
+
+# 2. 根据Paper计算每个Paper的d'值
+d_prime_per_paper <- lapply(unique(combined_data$Paper), function(paper) {
+  tibble(
+    Paper = paper,
+    d_prime_matching_self = compute_d_prime(filter(combined_data, Paper == paper), "Matching", "Self"),
+    d_prime_nonmatching_self = compute_d_prime(filter(combined_data, Paper == paper), "Nonmatching", "Self"),
+    d_prime_matching_other = compute_d_prime(filter(combined_data, Paper == paper), "Matching", "Others"),
+    d_prime_nonmatching_other = compute_d_prime(filter(combined_data, Paper == paper), "Nonmatching", "Others")
+  )
+}) %>%
+  bind_rows()  # 组合每个Paper的d'值结果
+
+# 输出结果
+print("1. 报告不同Matching、Nonmatching条件下各种Identity的RT、ACC")
+print(result1)
+
+print("2. 每个Paper的d'值")
+print(d_prime_per_paper)
+
+rm(calculate_d_prime,compute_d_prime,compute_rt_acc)
+```
+
