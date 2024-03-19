@@ -25,12 +25,13 @@
 │  │      MEMO.txt
 │  │      MEMO.xlsx # How many papers are open?
 │  │      Papers_Info_v1.xlsx # Papers' Information
-│  ├─4_1_Raw_Data  
+│  ├─4_1_Raw_Data 
+│  │  <Paper ID>_<Exp ID>_raw.csv
 │  └─4_2_Open_Data
-│  	│  Paper_X                           # X means different Paper number.
-│       │---- Codebook_Data_for_pX_Expn.xlsx # n menas different experiment session.
-│       │---- PX_Expn_raw.csv
-│       │---- PX_Expn_Clean.csv
+│  	│  Paper_X                           
+│       │---- Codebook_<Paper ID>_<Exp ID>_Clean.csv.xlsx 
+│       │---- <Paper ID>_<Exp ID>_raw.csv
+│       │---- <Paper ID>_<Exp ID>_Clean.csv
 │       └──── readme.md
 
 │

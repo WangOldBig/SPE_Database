@@ -1,8 +1,7 @@
 |---4_Data_Extraction
 |----------Open_Data.xlsx
 |----------4_1_Raw_Data
-|-----------------SciDataBank
-|-----------------SPMT_raw.csv
+|--------------<Paper ID>_<Exp ID>_raw.csv
 |----------4_2_Open_Data
 |--------------Paper_0
 |--------------Paper_6
