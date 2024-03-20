@@ -28,7 +28,7 @@
 │  ├─4_1_Raw_Data 
 │  │      <Paper ID>_<Exp ID>_raw.csv
 │  ├─4_2_Open_Data
-│  │	├─Paper_X   
+│  │	├─Paper_ID   
 │  │    │    Clean_Data
 │  │    │       <Paper ID>_<Exp ID>_Clean.csv
 │  │    │       Codebook_<Paper ID>_<Exp ID>_Clean.csv.xlsx 
