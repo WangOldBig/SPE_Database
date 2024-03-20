@@ -174,7 +174,7 @@ compute_rt_acc <- function(data) {
   return(result)
 }
 
-# 函数：计算独立样本T检验
+# 函数：计算独立样本T检验 (Self-Others)
 compute_paper_t_test <- function(data) {
   result <- data %>%
     group_by(Paper) %>%

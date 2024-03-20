@@ -27,17 +27,18 @@
 │  │      Papers_Info_v1.xlsx # Papers' Information
 │  ├─4_1_Raw_Data 
 │  │      <Paper ID>_<Exp ID>_raw.csv
-│  └─4_2_Open_Data
-│  	├─Paper_X                           
-│       │    Clean_Data
-│       │       <Paper ID>_<Exp ID>_Clean.csv
-│       │       Codebook_<Paper ID>_<Exp ID>_Clean.csv.xlsx 
-│       │    Raw_Data
-│       │       <Paper ID>_<Exp ID>_raw.csv
-│       │    Source    #Pdf and relevant files.
-│       │       <Paper ID>.pdf
-│       └─── Readme.md #Including 'Authors'、'Participants'、'Procedure'、'Data Files'.
-│
+│  ├─4_2_Open_Data
+│  │	├─Paper_X   
+│  │    │    Clean_Data
+│  │    │       <Paper ID>_<Exp ID>_Clean.csv
+│  │    │       Codebook_<Paper ID>_<Exp ID>_Clean.csv.xlsx 
+│  │    │    Raw_Data
+│  │    │       <Paper ID>_<Exp ID>_raw.csv
+│  │    │    Source    #Pdf and relevant files.
+│  │    │       <Paper ID>.pdf
+│  │    └─── Readme.md #Including 'Authors'、'Participants'、'Procedure'、'Data Files'.
+│  │
+│  └─4_3_Clean_Data
 ├─5_Analysis
 │ │   5_Analysis.Rproj
 │ │   README.txt
