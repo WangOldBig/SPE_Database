@@ -3,7 +3,7 @@
 .Rhistory
 .RData
 # Datasets
-/Datasets
+Datasets/
 
 # Office temp Files
 ~$*
