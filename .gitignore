@@ -2,9 +2,8 @@
 .Rproj.user
 .Rhistory
 .RData
-
-# Sensitive Files
-2_Literature_Search/2_1_All_Papers/
+# Datasets
+/Datasets
 
 # Office temp Files
 ~$*
