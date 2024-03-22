@@ -14,11 +14,8 @@
 │       Readme.md  #Including 'Authors'、'Participants'、'Procedure'、'Data Files'.
 ├─3_Code
 │   Clean_Data.Rproj
+│   Clean_Data.Rmd
 │   README.md
-│   CODE
-│       Clean_Data.Rmd
-│ 
-│ 
 └─4_Reports
       README.md
 
