@@ -299,7 +299,7 @@ df[[3]] <- read.csv(
 
 names(df)[3] <- "Merryn Dale Constable_2020_CE Exp 2"
 summary(df[[3]])
-write.csv(x = df[[3]], file = "../1_Clean_Data/Merryn Dale Constable_2020_CE_Exp2_Clean.csv")
+write.csv(x = df[[3]], file = "../1_Clean_Data/Merryn Dale Constable_2020_CE/Merryn Dale Constable_2020_CE_Exp2_Clean.csv")
 ```
 
 # Haoyue Qian_2019_QJEP 
