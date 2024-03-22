@@ -4,21 +4,22 @@
 
 │  .gitignore
 │  README.md
-├─Raw_Data 
-│   <Author>_<Year>_<Journal>
-│       <Author>_<Year>_<Journal>_<Exp-id>_raw.csv
-├─Clean_Data 
+│  Dataset_inf.xlsx 
+├─1_Clean_Data 
 │       <Author>_<Year>_<Journal>_<Exp-id>_Clean.csv
 │       Codebook_<Author>_<Year>_<Journal>_<Exp-id>_Clean.xlsx
-├─Datasets
+├─2_Raw_Data 
 │   <Author>_<Year>_<Journal>
+│       <Author>_<Year>_<Journal>_<Exp-id>_raw.csv
 │       Readme.md  #Including 'Authors'、'Participants'、'Procedure'、'Data Files'.
-│  
-├─Code
-│ │   Clean_Data.Rproj
-│ │   README.md
-│ └─CODE
+├─3_Code
+│   Clean_Data.Rproj
+│   README.md
+│   CODE
+│       Clean_Data.Rmd
 │ 
-└─Reports
-        README.md
+│ 
+└─4_Reports
+      README.md
+
 ```
