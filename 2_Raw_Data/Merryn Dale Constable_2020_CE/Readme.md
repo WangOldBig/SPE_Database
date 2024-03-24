@@ -10,6 +10,9 @@ Ye-In Oh(Department of Cognitive Science, Central European University, Budapest,
 
 Günther Knoblich(Department of Cognitive Science, Central European University, Budapest, Hungary)
 
+## Citation
+Constable, M. D., Becker, M. L., Oh, Y. I., & Knoblich, G. (2021). Affective compatibility with the self modulates the self-prioritisation effect. Cognition and Emotion, 35(2), 291-304.
+
 ### Experiment 1: Emotional valence
 
 #### Participants
@@ -30,12 +33,12 @@ In Experiment 2, participants were assigned to represent themselves with either 
 # Data files
 
 ```
-"P46_Exp1_raw.csv": raw data from experiment 1.
-"P46_Exp2_raw.csv": raw data from experiment 2.
-"P46_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
-"CodeBook_P46_Exp1_Clean.xlsx": Codebook for "P6_Exp1_Clean.csv"
-"P46_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
-"CodeBook_P46_Exp2_Clean.xlsx": Codebook for "P6_Exp2_Clean.csv"
+"Merryn Dale Constable_2020_CE_Exp1_raw.csv": raw data from experiment 1.
+"Merryn Dale Constable_2020_CE_Exp2_raw.csv": raw data from experiment 2.
+"Merryn Dale Constable_2020_CE_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
+"CodeBook_Merryn Dale Constable_2020_CE_Exp1_Clean.xlsx": Codebook for "P6_Exp1_Clean.csv"
+"Merryn Dale Constable_2020_CE_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
+"CodeBook_Merryn Dale Constable_2020_CE_Exp2_Clean.xlsx": Codebook for "P6_Exp2_Clean.csv"
 ```
 
 Feel free to explore the data and codebooks provided in this repository for more detailed information.

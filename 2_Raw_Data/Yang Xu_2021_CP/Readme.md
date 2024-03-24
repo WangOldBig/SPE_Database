@@ -12,6 +12,9 @@ Hui Tan(School of Psychology, Northeast Normal University, 5268 Renmin Street, C
 
 Lili Guan(School of Psychology, Northeast Normal University, 5268 Renmin Street, ChangChun, Jilin 130024, China)
 
+## Citation
+Xu, Y., Yuan, Y., Xie, X., Tan, H., & Guan, L. (2021). Romantic feedbacks influence self-relevant processing: the moderating effects of sex difference and facial attractiveness. Current Psychology, 1-13.
+
 ### Experiment 
 
 #### Participants
@@ -26,9 +29,9 @@ Participants were informed that the study aimed to explore first impressions and
 # Data files
 
 ```
-"Pn23_Exp1_raw.csv": raw data from experiment 1.
-"Pn23_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
-"CodeBook_Pn23_Exp1_Clean.xlsx": Codebook for "Pn23_Exp1_Clean.csv"
+"Yang Xu_2021_CP_Exp1_raw.csv": raw data from experiment 1.
+"Yang Xu_2021_CP_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
+"CodeBook_Yang Xu_2021_CP_Exp1_Clean.xlsx": Codebook for "Yang Xu_2021_CP_Exp1_Clean.csv"
 
 ```
 

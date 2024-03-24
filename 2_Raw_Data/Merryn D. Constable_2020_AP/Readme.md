@@ -6,6 +6,9 @@ Merryn D. Constable(Department of Psychology, Northumbria University, United Kin
 
 Günther Knoblich(Department of Cognitive Science, Central European University, Hungary)
 
+## Citation
+Constable, M. D., & Knoblich, G. (2020). Sticking together? Re-binding previous other-associated stimuli interferes with self-verification but not partner-verification. Acta Psychologica, 210, 103167.
+
 ## Participants
 
 Ninety-two adult participants (46 pairs, M = 21.93, SD = 2.78) volunteered for the study in exchange for supermarket vouchers (1500HUF). Among them, seventy-three were female and nineteen were male. All participants had normal or corrected-to-normal vision and were native Hungarian speakers. Written informed consent was obtained from all participants prior to testing. The procedures were approved by the local ethics committee (United Ethical Review Committee for Research in Psychology [EPKEB]) and complied with the ethical standards outlined in the Declaration of Helsinki (1964).
@@ -25,8 +28,8 @@ In the joint task, participants indicated whether a given shape and an identity 
 # Data files
 
 ```
-"P6_Exp1_raw.csv": raw data from experiment 
-"CodeBook_Data_for_p6_Exp1.xlsx": Codebook for "P6_Exp1_raw.csv"
+"MerrynD.Constable_2020_AP_Exp1_raw.csv": raw data from experiment 
+"CodeBook_MerrynD.Constable_2020_AP_Exp1.xlsx": Codebook for "MerrynD.Constable_2020_AP_Exp1_raw.csv"
 ```
 
 Feel free to explore the data and codebooks provided in this repository for more detailed information.

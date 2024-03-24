@@ -2,9 +2,12 @@
 
 ## Authors
 
-Mayan Navon()
+Mayan Navon(Department of Psychology, Ben-Gurion University of the Negev)
 
-Tal Makovski()
+Tal Makovski(The Open University of Israel)
+
+## Citation
+Navon, M., & Makovski, T. (2021). Are self-related items unique? the self-prioritization effect revisited.
 
 ### Experiment 1  ： Self, Friend, and Stranger
 
@@ -49,16 +52,16 @@ The procedure for Experiment 4 was similar to Experiment 1, with the main differ
 # Data files
 
 ```
-"Pn13_Exp1_raw.csv": raw data from experiment 1.
-"Pn13_Exp2_raw.csv": raw data from experiment 2.
-"Pn13_Exp3_raw.csv": raw data from experiment 3.
-"Pn13_Exp4_raw.csv": raw data from experiment 4.
-"Pn13_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
-"CodeBook_Pn13_Exp1_Clean.xlsx": Codebook for "Pn13_Exp1_Clean.csv"
-"Pn13_Exp3_Clean.csv": Clean data from experiment 3 for SPE analysis.
-"CodeBook_Pn13_Exp3_Clean.xlsx": Codebook for "Pn13_Exp3_Clean.csv"
-"Pn13_Exp4_Clean.csv": Clean data from experiment 4 for SPE analysis.
-"CodeBook_Pn13_Exp4_Clean.xlsx": Codebook for "Pn13_Exp4_Clean.csv"
+"Mayan Navon_2021_Exp1_raw.csv": raw data from experiment 1.
+"Mayan Navon_2021_Exp2_raw.csv": raw data from experiment 2.
+"Mayan Navon_2021_Exp3_raw.csv": raw data from experiment 3.
+"Mayan Navon_2021_Exp4_raw.csv": raw data from experiment 4.
+"Mayan Navon_2021_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
+"CodeBook_Mayan Navon_2021_Exp1_Clean.xlsx": Codebook for "Mayan Navon_2021_Exp1_Clean.csv"
+"Mayan Navon_2021_Exp3_Clean.csv": Clean data from experiment 3 for SPE analysis.
+"CodeBook_Mayan Navon_2021_Exp3_Clean.xlsx": Codebook for "Mayan Navon_2021_Exp3_Clean.csv"
+"Mayan Navon_2021_Exp4_Clean.csv": Clean data from experiment 4 for SPE analysis.
+"CodeBook_Mayan Navon_2021_Exp4_Clean.xlsx": Codebook for "Mayan Navon_2021_Exp4_Clean.csv"
 ```
 
 Feel free to explore the data and codebooks provided in this repository for more detailed information.

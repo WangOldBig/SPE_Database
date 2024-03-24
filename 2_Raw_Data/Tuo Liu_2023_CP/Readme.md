@@ -8,6 +8,9 @@ Jie Sui(School of Psychology, King’s College, University of Aberdeen, Aberdeen
 
 Andrea Hildebrandt(Division for Psychological Methods and Statistics, Department of Psychology, Carl von Ossietzky Universität Oldenburg, Oldenburg, Germany)
 
+## Citation
+Liu, T., Sui, J., & Hildebrandt, A. (2023). To see or not to see: the parallel processing of self-relevance and facial expressions. Cognitive research: principles and implications, 8(1), 70.
+
 ### Experiment 
 
 #### Participants
@@ -21,9 +24,9 @@ The experiment, conducted using the Gorilla Experiment Builder, comprised three 
 # Data files
 
 ```
-"Pns1_Exp1_raw.csv": raw data from experiment 1.
-"Pns1_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
-"CodeBook_Pns1_Exp1_Clean.xlsx": Codebook for "Pns1_Exp1_Clean.csv"
+"Tuo Liu_2023_CP_Exp1_raw.csv": raw data from experiment 1.
+"Tuo Liu_2023_CP_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
+"CodeBook_Tuo Liu_2023_CP_Exp1_Clean.xlsx": Codebook for "Tuo Liu_2023_CP_Exp1_Clean.csv"
 
 ```
 

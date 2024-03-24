@@ -8,6 +8,9 @@ Dimitrios Kourtis(Department of Cognitive Science,Central European University, B
 
 Günther Knoblich(Department of Cognitive Science,Central European University, Budapest, Hungary)
 
+## Citation
+Woźniak, M., Kourtis, D., & Knoblich, G. (2018). Prioritization of arbitrary faces associated to self: An EEG study. PloS one, 13(1), e0190679.
+
 ### Experiment 1
 
 #### Participants
@@ -32,12 +35,12 @@ The procedure was the same as in Experiment 1, with one exception: the order of 
 # Data files
 
 ```
-"P95_Exp1_raw.csv": raw data from experiment 1.
-"P95_Exp2_raw.csv": raw data from experiment 2.
-"P95_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
-"CodeBook_P95_Exp1_Clean.xlsx": Codebook for "P95_Exp1_Clean.csv"
-"P95_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
-"CodeBook_P95_Exp2_Clean.xlsx": Codebook for "P95_Exp2_Clean.csv"
+"Mateusz Woźniak_2018_PLOS_Exp1_raw.csv": raw data from experiment 1.
+"Mateusz Woźniak_2018_PLOS_Exp2_raw.csv": raw data from experiment 2.
+"Mateusz Woźniak_2018_PLOS_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
+"CodeBook_Mateusz Woźniak_2018_PLOS_Exp1_Clean.xlsx": Codebook for "Mateusz Woźniak_2018_PLOS_Exp1_Clean.csv"
+"Mateusz Woźniak_2018_PLOS_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
+"CodeBook_Mateusz Woźniak_2018_PLOS_Exp2_Clean.xlsx": Codebook for "Mateusz Woźniak_2018_PLOS_Exp2_Clean.csv"
 ```
 
 Feel free to explore the data and codebooks provided in this repository for more detailed information.

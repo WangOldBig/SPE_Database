@@ -6,6 +6,9 @@ Marius Golubickis(School of Psychology, University of Plymouth, Plymouth, Englan
 
 C.Neil Macrae(School of Psychology, University of Aberdeen, Aberdeen, Scotland, UK)
 
+## Citation
+Golubickis, M., & Macrae, C. N. (2021). Judging me and you: Task design modulates self-prioritization. Acta Psychologica, 218, 103350.
+
 ### Experiment 1  ：simultaneous shape-label matching task
 
 #### Participants
@@ -29,12 +32,12 @@ The experimental procedure was akin to Experiment 1, involving a shape-label mat
 # Data files
 
 ```
-"Pn4_Exp1_raw.csv": raw data from experiment 1.
-"Pn4_Exp2_raw.csv": raw data from experiment 2.
-"Pn4_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
-"CodeBook_P51_Exp1_Clean.xlsx": Codebook for "Pn4_Exp1_Clean.csv"
-"Pn4_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
-"CodeBook_Pn4_Exp2_Clean.xlsx": Codebook for "Pn4_Exp2_Clean.csv"
+"Marius Golubickis_2021_AP_Exp1_raw.csv": raw data from experiment 1.
+"Marius Golubickis_2021_AP_Exp2_raw.csv": raw data from experiment 2.
+"Marius Golubickis_2021_AP_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
+"CodeBook_P51_Exp1_Clean.xlsx": Codebook for "Marius Golubickis_2021_AP_Exp1_Clean.csv"
+"Marius Golubickis_2021_AP_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
+"CodeBook_Marius Golubickis_2021_AP_Exp2_Clean.xlsx": Codebook for "Marius Golubickis_2021_AP_Exp2_Clean.csv"
 ```
 
 Feel free to explore the data and codebooks provided in this repository for more detailed information.

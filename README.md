@@ -11,7 +11,7 @@
 ├─2_Raw_Data 
 │   <Author>_<Year>_<Journal>
 │       <Author>_<Year>_<Journal>_<Exp-id>_raw.csv
-│       Readme.md  #Including 'Authors'、'Participants'、'Procedure'、'Data Files'.
+│       Readme.md  #Including 'Authors'、'CItation'、'Participants'、'Procedure'、'Data Files'.
 ├─3_Code
 │   Clean_Data.Rproj
 │   Clean_Data.Rmd

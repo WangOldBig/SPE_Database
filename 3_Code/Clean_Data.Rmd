@@ -169,6 +169,7 @@ names(df)[1] <- "Merryn D. Constable_2020_AP Exp 1"
 summary(df[[1]])
 write.csv(x = df[[1]], file = "../1_Clean_Data/Merryn D. Constable_2020_AP/Merryn D. Constable_2020_AP_Exp1_Clean.csv")
 ```
+
 # Merryn Dale Constable_2020_CE
 ## Experiment 1 (Identtiy = 2)
 "Self", "Stranger"

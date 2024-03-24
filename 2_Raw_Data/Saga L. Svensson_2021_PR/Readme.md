@@ -20,6 +20,9 @@ Arash Sahraie(School of Psychology, King’s College, University of Aberdeen, Ab
 
 C. Neil Macrae(School of Psychology, King’s College, University of Aberdeen, Aberdeen AB24 3FX, Scotland, UK)
 
+## Citation
+Svensson, S. L., Golubickis, M., Maclean, H., Falbén, J. K., Persson, L. M., Tsamadi, D., ... & Macrae, C. N. (2022). More or less of me and you: Self-relevance augments the effects of item probability on stimulus prioritization. Psychological Research, 86(4), 1145-1164.
+
 ### Experiment 1  ： Equivalent context
 
 #### Participants
@@ -54,15 +57,15 @@ Participants underwent a matching task involving geometric shapes representing t
 # Data files
 
 ```
-"Pn16_Exp1_raw.csv": raw data from experiment 1.
-"Pn16_Exp2_raw.csv": raw data from experiment 2.
-"Pn16_Exp3_raw.csv": raw data from experiment 3.
-"Pn16_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
-"CodeBook_Pn16_Exp1_Clean.xlsx": Codebook for "Pn16_Exp1_Clean.csv"
-"Pn16_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
-"CodeBook_Pn16_Exp2_Clean.xlsx": Codebook for "Pn16_Exp2_Clean.csv"
-"Pn16_Exp3_Clean.csv": Clean data from experiment 3 for SPE analysis.
-"CodeBook_Pn16_Exp3_Clean.xlsx": Codebook for "Pn16_Exp3_Clean.csv"
+"Saga L. Svensson_2021_PR_Exp1_raw.csv": raw data from experiment 1.
+"Saga L. Svensson_2021_PR_Exp2_raw.csv": raw data from experiment 2.
+"Saga L. Svensson_2021_PR_Exp3_raw.csv": raw data from experiment 3.
+"Saga L. Svensson_2021_PR_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
+"CodeBook_Saga L. Svensson_2021_PR_Exp1_Clean.xlsx": Codebook for "Saga L. Svensson_2021_PR_Exp1_Clean.csv"
+"Saga L. Svensson_2021_PR_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
+"CodeBook_Saga L. Svensson_2021_PR_Exp2_Clean.xlsx": Codebook for "Saga L. Svensson_2021_PR_Exp2_Clean.csv"
+"Saga L. Svensson_2021_PR_Exp3_Clean.csv": Clean data from experiment 3 for SPE analysis.
+"CodeBook_Saga L. Svensson_2021_PR_Exp3_Clean.xlsx": Codebook for "Saga L. Svensson_2021_PR_Exp3_Clean.csv"
 ```
 
 Feel free to explore the data and codebooks provided in this repository for more detailed information.

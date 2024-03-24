@@ -10,6 +10,9 @@ Chao Li(Department of Psychology, Shanghai Normal University, Shanghai, China)
 
 Xiangping Gao(Department of Psychology, Shanghai Normal University, Shanghai, China)
 
+## Citation
+Qian, H., Wang, Z., Li, C., & Gao, X. (2020). Prioritised self-referential processing is modulated by emotional arousal. Quarterly Journal of Experimental Psychology, 73(5), 688-697.
+
 ### Experiment 1：
 
 #### Participants
@@ -38,13 +41,13 @@ The mood induction procedure and label-shape matching task mirrored those in Exp
 # Data files
 
 ```
-"P51_Exp1_raw.csv": raw data from experiment 1.
-"P51_Exp2_raw.csv": raw data from experiment 2.
-"P51_Exp2b_raw.csv": raw data from experiment 3.
-"P51_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
-"CodeBook_P51_Exp1_Clean.xlsx": Codebook for "P51_Exp1_Clean.csv"
-"P51_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
-"CodeBook_P51_Exp2_Clean.xlsx": Codebook for "P51_Exp2_Clean.csv"
+"Haoyue Qian_2019_QJEP_Exp1_raw.csv": raw data from experiment 1.
+"Haoyue Qian_2019_QJEP_Exp2_raw.csv": raw data from experiment 2.
+"Haoyue Qian_2019_QJEP_Exp2b_raw.csv": raw data from experiment 3.
+"Haoyue Qian_2019_QJEP_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
+"CodeBook_Haoyue Qian_2019_QJEP_Exp1_Clean.xlsx": Codebook for "Haoyue Qian_2019_QJEP_Exp1_Clean.csv"
+"Haoyue Qian_2019_QJEP_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
+"CodeBook_Haoyue Qian_2019_QJEP_Exp2_Clean.xlsx": Codebook for "Haoyue Qian_2019_QJEP_Exp2_Clean.csv"
 ```
 
 Feel free to explore the data and codebooks provided in this repository for more detailed information.
