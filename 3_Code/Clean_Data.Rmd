@@ -116,6 +116,8 @@ df[[1]] <- read.csv(
     Matching = Condition,
     Identity = Shape,
     ShapeLoc = ShapeLoc,
+    Shape = Shape,
+    Label = Label,
     RT_sec = rt,
     ACC = corr,
     Phase = Phase
@@ -151,7 +153,7 @@ df[[1]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, ShapeLoc, RT_ms, RT_sec, ACC, Phase
+    Subject, Shape, Label, Matching, Identity, ShapeLoc, RT_ms, RT_sec, ACC, Phase
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
