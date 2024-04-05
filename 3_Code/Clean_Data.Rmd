@@ -5,6 +5,20 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
+#变量名称查询工具
+
+```{r}
+# 设置工作目录，即文件所在的文件夹
+setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
+
+# 读取CSV文件
+data <- read.csv("../2_Raw_Data/Constable_2020_AP/Constable_2020_AP_Exp1_raw.csv")
+
+# 打印变量名称
+print(names(data))
+```
+
+
 ```{r Package, warning = FALSE,message = FALSE}
 # clean data
 library(tidyr)
@@ -106,31 +120,31 @@ df <- list()
 
 ```{r Paper MerrynD.Constable_2020_AP}
 df[[1]] <- read.csv(
-  "../2_Raw_Data/Merryn D. Constable_2020_AP/MerrynD.Constable_2020_AP_Exp1_raw.csv"
+  "../2_Raw_Data/Constable_2020_AP/Constable_2020_AP_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
     rt != "None"
   ) %>%
   dplyr::select(
     Subject = Pair.Number,
-    Matching = Condition,
-    Identity = Shape,
-    ShapeLoc = ShapeLoc,
+    Age_Participant1 = Participant.1.Age,
+    Age_Participant2 = Participant.2.Age,
     Shape = Shape,
     Label = Label,
+    ShapeLoc = ShapeLoc,
+    StrangerShape = StrangerShape,
+    P1Shape = P1Shape,
+    P2Shape = P2Shape,    
+    Matching = Condition,
     RT_sec = rt,
     ACC = corr,
-    Phase = Phase
+    Phase = Phase,
+    Response = resp
   ) %>%
   dplyr::mutate(
     Matching = case_when(
       Matching == "Match" ~ "Matching",
       Matching == "Mismatch" ~ "Nonmatching"
-    ),
-    Identity = case_when(
-      Identity == "P1" ~ "Self",
-      Identity == "P2" ~ "Partner",
-      Identity == "Stranger" ~ "Stranger",
     ),
     RT_sec = as.numeric(RT_sec),
     RT_ms = RT_sec * 1000,
@@ -140,36 +154,23 @@ df[[1]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Partner", "Stranger")
-    ),
-    ShapeLoc = case_when(
-      ShapeLoc == "Top" ~ 1,
-      ShapeLoc == "Bottom" ~ 2,
-    ),
     ShapeLoc = as.factor(ShapeLoc),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Shape, Label, Matching, Identity, ShapeLoc, RT_ms, RT_sec, ACC, Phase
-  ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-  ) %>%
-  dplyr::filter(
-    RT_sec >= 0.2 & RT_sec <= 1.5,
-    ACC == 1 | ACC == 0
+    Subject, Age_Participant1, Age_Participant2, StrangerShape, P1Shape,
+    P2Shape, Shape, Label, ShapeLoc, Response, Matching,RT_ms, RT_sec, ACC, 
+    Phase
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, ShapeLoc
+    Subject, Matching, ShapeLoc
   )
 
-names(df)[1] <- "Merryn D. Constable_2020_AP Exp 1"
+names(df)[1] <- "Constable_2020_AP Exp 1"
 summary(df[[1]])
-write.csv(x = df[[1]], file = "../1_Clean_Data/Merryn D. Constable_2020_AP/Merryn D. Constable_2020_AP_Exp1_Clean.csv")
+write.csv(x = df[[1]], file = "../1_Clean_Data/Constable_2020_AP/Constable_2020_AP_Exp1_Clean.csv")
 ```
 
 # Merryn Dale Constable_2020_CE
@@ -198,11 +199,6 @@ df[[2]] <- read.csv(
     Matching = case_when(
     Matching == "Match" ~ "Matching",
     Matching == "Mismatch" ~ "Nonmatching"),
-    
-    ShapeLoc = case_when(
-      ShapeLoc == "Top" ~ 1,
-      ShapeLoc == "Bottom" ~ 2,
-    ),
     RT_sec = as.numeric(RT_sec),
     RT_ms = RT_sec * 1000,
   ) %>%
