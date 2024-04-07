@@ -12,7 +12,7 @@ output: html_document
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Constable_2020_AP/Constable_2020_AP_Exp1_raw.csv")
+data <- read.csv("../2_Raw_Data/Constable_2020_CE/Exp2/Constable_2020_CE_Exp2_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -160,8 +160,10 @@ df[[1]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Age_Participant1, Age_Participant2, StrangerShape, P1Shape,
-    P2Shape, Shape, Label, ShapeLoc, Response, Matching,RT_ms, RT_sec, ACC, 
+    Subject, Age_Participant1, Age_Participant2, 
+    StrangerShape, P1Shape, P2Shape, 
+    Shape, Label, Matching, ShapeLoc, 
+    Response, RT_ms, RT_sec, ACC, 
     Phase
   ) %>%
   dplyr::arrange(
@@ -178,7 +180,7 @@ write.csv(x = df[[1]], file = "../1_Clean_Data/Constable_2020_AP/Constable_2020_
 "Self", "Stranger"
 ```{r Paper 46 Experiment 1}
 df[[2]] <- read.csv(
-  "../2_Raw_Data/Merryn Dale Constable_2020_CE/Exp1/Merryn Dale Constable_2020_CE_Exp1_raw.csv"
+  "../2_Raw_Data/Constable_2020_CE/Exp1/Constable_2020_CE_Exp1_raw.csv"
   ) %>%
   # 筛选可以分析的行
   dplyr::filter(
@@ -188,9 +190,19 @@ df[[2]] <- read.csv(
   # 选择可以分析的列
   dplyr::select(
     Subject = X1..Participant.Number,
+    Handedness = X4..Handedness,
+    Age = X3..Age,
+    Gender = X2..Gender..M.F.,
+    First_Lanugage = X5..First.Lanugage,
+    Shape = Shape,
+    Label = Label,
     Matching = Condition,
-    Identity = Label,
+    Response = resp,
+    Colour = Colour,
+    ShapeColour = ShapeColour,
+    textColour = textColour,
     ShapeLoc = ShapeLoc,
+    Stimuli_Type = X6..Stimuli.Type.Self...Positive.Self...Negative.,
     RT_sec = rt,
     ACC = corr,
   ) %>%
@@ -208,31 +220,25 @@ df[[2]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Stranger")
-    ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, ShapeLoc, RT_ms, RT_sec, ACC
+    Subject, Gender, Age, Handedness, First_Lanugage,
+    Shape, Label, Matching, Response, ShapeLoc, Colour, ShapeColour, textColour,
+    Stimuli_Type, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
-  dplyr::filter(
-    RT_sec >= 0.2 & RT_sec <= 1.5,
-    ACC == 1 | ACC == 0
-  ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, ShapeLoc
+    Subject, Matching, Shape
   )
-
-names(df)[2] <- "Merryn Dale Constable_2020_CE Exp 1"
+names(df)[2] <- "Constable_2020_CE Exp 1"
 summary(df[[2]])
-write.csv(x = df[[2]], file = "../1_Clean_Data/Merryn Dale Constable_2020_CE/Merryn Dale Constable_2020_CE_Exp1_Clean.csv")
+write.csv(x = df[[2]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp1_Clean.csv")
 ```
 
 # Merryn Dale Constable_2020_CE (Dark Light Box)
@@ -240,7 +246,7 @@ write.csv(x = df[[2]], file = "../1_Clean_Data/Merryn Dale Constable_2020_CE/Mer
 "Self", "Stranger"
 ```{r Paper 46 Experiment 2}
 df[[3]] <- read.csv(
-  "../2_Raw_Data/Merryn Dale Constable_2020_CE/Exp2/Merryn Dale Constable_2020_CE_Exp2_raw.csv"
+  "../2_Raw_Data/Constable_2020_CE/Exp2/Constable_2020_CE_Exp2_raw.csv"
   ) %>%
   # 筛选可以分析的行
   dplyr::filter(
@@ -250,21 +256,28 @@ df[[3]] <- read.csv(
   # 选择可以分析的列
   dplyr::select(
     Subject = Subject,
+    Handedness = X4..Handedness,
+    Age = X3..Age,
+    Gender = X2..Gender,
+    First_Lanugage = X5..First.Language,
+    Shape = Shape,
+    Label = Label,
     Matching = Condition,
-    Identity = Shape,
+    FaceIdentity = FaceIdentity,
+    Stimulus = Stimulus,
+    Strength = Strength,
+    Response = resp,
+    textColour = textColour,
     ShapeLoc = ShapeLoc,
+    Stimuli_Type = X6..Stimuli.Type..Self...Negative.Self...Positive.,
     RT_sec = rt,
-    ACC = corr,
+    ACC = corr
   ) %>%
   # 转化为标准化的名称
   dplyr::mutate(
     Matching = case_when(
     Matching == "Match" ~ "Matching",
     Matching == "Mismatch" ~ "Nonmatching"),
-    ShapeLoc = case_when(
-      ShapeLoc == "Top" ~ 1,
-      ShapeLoc == "Bottom" ~ 2,
-    ),
     RT_sec = as.numeric(RT_sec),
     RT_ms = RT_sec * 1000,
   ) %>%
@@ -274,31 +287,26 @@ df[[3]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Stranger")
-    ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, ShapeLoc, RT_ms, RT_sec, ACC
+    Subject, Gender, Age, Handedness, First_Lanugage,
+    Shape, Label, Matching, Response, ShapeLoc, FaceIdentity, Stimulus,
+    Strength, textColour, Stimuli_Type, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
-  dplyr::filter(
-    RT_sec >= 0.2 & RT_sec <= 1.5,
-    ACC == 1 | ACC == 0
-  ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, ShapeLoc
+    Subject, Matching, Shape
   )
 
-names(df)[3] <- "Merryn Dale Constable_2020_CE Exp 2"
+names(df)[3] <- "Constable_2020_CE Exp 2"
 summary(df[[3]])
-write.csv(x = df[[3]], file = "../1_Clean_Data/Merryn Dale Constable_2020_CE/Merryn Dale Constable_2020_CE_Exp2_Clean.csv")
+write.csv(x = df[[3]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp2_Clean.csv")
 ```
 
 # Haoyue Qian_2019_QJEP 
