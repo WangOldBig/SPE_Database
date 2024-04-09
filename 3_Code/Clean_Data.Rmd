@@ -12,7 +12,7 @@ output: html_document
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Constable_2020_CE/Exp2/Constable_2020_CE_Exp2_raw.csv")
+data <- read.csv("../2_Raw_Data/Schäfer_2019_CP/Schäfer_2019_CP_Exp1_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -314,7 +314,7 @@ write.csv(x = df[[3]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_
 "Self", "Celebrity", "Stranger"
 ```{r Paper 51 Experiment 1}
 df[[4]] <- read.csv(
-  "../2_Raw_Data/Haoyue Qian_2019_QJEP/Haoyue Qian_2019_QJEP_Exp1_raw.csv"
+  "../2_Raw_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp1_raw.csv"
   ) %>%
   tidyr::separate(
     condition,
@@ -324,38 +324,27 @@ df[[4]] <- read.csv(
   dplyr::mutate(
     Identity = case_when(
       Identity == "Self" ~ "Self",
-      Identity == "Familiar" ~ "Celebrity",
+      Identity == "Celebrity" ~ "Celebrity",
       Identity == "Stranger" ~ "Stranger"
     ),
     Matching = case_when(
       Match == "Matched" ~ "Matching",
       Match == "Mismatched" ~ "Nonmatching"
     ),
-    Session = case_when(
-      Session == "S1" ~ 1,
-      Session == "S2" ~ 2,
-      Session == "S3" ~ 3,
-      Session == "S4" ~ 4
-    ),
-    Mood = case_when(
-      mood == "anxious" ~ 1,
-      mood == "depression" ~ 2,
-      mood == "happy" ~ 3,
-      mood == "serenity" ~ 4
-    ),
-  RT_ms = as.numeric(respond3.RT),
-  RT_sec = RT_ms / 1000,
-  ACC = as.numeric(respond3.ACC),
-  Arouse = Arouse.RESP,
-  Valence = Valence.RESP,
+    Session = Session,
+    Mood = mood,
+    Age = Age,
+    Gender = Sex,
+    RT_ms = as.numeric(respond3.RT),
+    RT_sec = RT_ms / 1000,
+    ACC = as.numeric(respond3.ACC),
+    Arouse = Arouse.RESP,
+    Valence = Valence.RESP,
   ) %>%
   dplyr::mutate(
     Subjcet = as.numeric(Subject),
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
-    ),
-    Identity = factor(
-      Identity, levels = c("Self", "Celebrity", "Stranger")
     ),
     Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
@@ -363,31 +352,27 @@ df[[4]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, 
-    RT_sec, ACC, Mood, Arouse, Valence
+    Subject, Identity, Matching, Mood, Arouse, Valence, Session,  
+    RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
-  dplyr::filter(
-    RT_sec >= 0.2 & RT_sec <= 1.5,
-    ACC == 1 | ACC == 0
-  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity, Session
   )
 
-names(df)[4] <- "Haoyue Qian_2019_QJEP Exp 1"
+names(df)[4] <- "Qian_2019_QJEP Exp 1"
 summary(df[[4]])
-write.csv(x = df[[4]], file = "../1_Clean_Data/Haoyue Qian_2019_QJEP/Haoyue Qian_2019_QJEP_Exp1_Clean.csv")
+write.csv(x = df[[4]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp1_Clean.csv")
 ```
 
 ## Experiment 2 (Identtiy = 2)
 "Self", "Celebrity"
 ```{r Paper 51 Experiment 2}
 df[[5]] <- read.csv(
-  "../2_Raw_Data/Haoyue Qian_2019_QJEP/Haoyue Qian_2019_QJEP_Exp2_raw.csv"
+  "../2_Raw_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp2_raw.csv"
   ) %>%
   tidyr::separate(
     condition1correct,
@@ -398,16 +383,14 @@ df[[5]] <- read.csv(
     Subject = Subject,
     Identity = case_when(
       Identity == "Self" ~ "Self",
-      Identity == "Familiar" ~ "Celebrity"
+      Identity == "Celebrity" ~ "Celebrity"
     ),
     Matching = case_when(
       Matching == "Matched" ~ "Matching",
       Matching == "Mismatched" ~ "Nonmatching"
     ),
-    condition1level = case_when(
-      condition1level == "Alter cue" ~ 1,
-      condition1level == "No cue" ~ 2
-    ),
+    Cue =  condition1level,
+    Gender = Sex,
     RT_ms = as.numeric(respond3.RT),
     RT_sec = RT_ms / 1000,
     ACC = as.numeric(respond3.ACC)
@@ -425,23 +408,19 @@ df[[5]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, RT_ms, RT_sec, ACC, condition1level
+    Subject, Sex, Identity, Matching, Cue, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
-  dplyr::filter(
-    RT_sec >= 0.2 & RT_sec <= 1.5,
-    ACC == 1 | ACC == 0
-  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
   )
 
-names(df)[5] <- "Haoyue Qian_2019_QJEP Exp 2"
+names(df)[5] <- "Qian_2019_QJEP Exp 2"
 summary(df[[5]])
-write.csv(x = df[[5]], file = "../1_Clean_Data/Haoyue Qian_2019_QJEP/Haoyue Qian_2019_QJEP_Exp2_Clean.csv")
+write.csv(x = df[[5]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp2_Clean.csv")
 ```
 
 # Sarah Schäfer_2019_CP 
@@ -449,7 +428,7 @@ write.csv(x = df[[5]], file = "../1_Clean_Data/Haoyue Qian_2019_QJEP/Haoyue Qian
 "Self", "Mother","none", "Acquaintance"
 ```{r Paper 54 Experiment 1}
 df[[6]] <- read.csv(
-  "../2_Raw_Data/Sarah Schäfer_2019_CP/Sarah Schäfer_2019_CP_Exp1_raw.csv"
+  "../2_Raw_Data/Schäfer_2019_CP/Schäfer_2019_CP_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
     Procedure.Trial. == "FLproc"
@@ -460,12 +439,11 @@ df[[6]] <- read.csv(
       FLbed == "comp" ~ "Matching",
       FLbed == "incomp" ~ "Nonmatching"
     ),
-    Identity = case_when(
-      flanker == "Ich" ~ "Self",
-      flanker == "Mutter" ~ "Mother",
-      flanker == "none" ~ "none",
-      flanker == "Bekannter" ~ "Acquaintance"
-    ),
+    Identity = flanker,
+    Age = Age,
+    Handedness = hand,
+    Gender = Sex,
+    Shape = FLform,
     RT_ms = fl.RT,
     RT_sec = fl.RT / 1000,
     ACC = as.numeric(fl.ACC)
@@ -474,9 +452,6 @@ df[[6]] <- read.csv(
     Subjcet = as.numeric(Subject),
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
-    ),
-    Identity = factor(
-      Identity, levels = c("Self", "Mother", "none", "Acquaintance")
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
@@ -489,17 +464,13 @@ df[[6]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
-  dplyr::filter(
-    RT_sec >= 0.2 & RT_sec <= 1.5,
-    ACC == 1 | ACC == 0
-  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
   )
 
-names(df)[6] <- "Sarah Schäfer_2019_CP Exp 1"
+names(df)[6] <- "Schäfer_2019_CP Exp 1"
 summary(df[[6]])
-write.csv(x = df[[6]], file = "../1_Clean_Data/Sarah Schäfer_2019_CP/Sarah Schäfer_2019_CP_Exp1_Clean.csv")
+write.csv(x = df[[6]], file = "../1_Clean_Data/Schäfer_2019_CP/Schäfer_2019_CP_Exp1_Clean.csv")
 ```
 
 ## Experiment 3 (Identtiy = 3)
