@@ -163,8 +163,7 @@ df[[1]] <- read.csv(
     Subject, Age_Participant1, Age_Participant2, 
     StrangerShape, P1Shape, P2Shape, 
     Shape, Matching, Identity, ShapeLoc, 
-    Response, RT_ms, RT_sec, ACC, 
-    Phase
+    Response, RT_ms, RT_sec, ACC, Phase
   ) %>%
   dplyr::arrange(
     Subject, Matching, ShapeLoc
@@ -574,18 +573,19 @@ df[[9]] <- read.csv(
     Shape = Stimulus,
     Face_Gender = Face_Gender,
     RT_ms = Cue.RT,
-    ACC = Cue.ACC
+    ACC = Cue.ACC,
+    Response = Cue.RESP
   ) %>%
   dplyr::mutate(
     Shape = case_when(
-      Shape == "shape1.jpg" ~ "Self",
+      Shape == "shape1.jpg" ~ "You",
       Shape == "shape2.jpg" ~ "Friend",
       Shape == "shape3.jpg" ~ "Stranger",
       is.na(Shape) ~ NA_character_,
       TRUE ~ Shape
     ),
     Identity = case_when(
-      Identity == "You" ~ "You",
+      Identity == "You" ~ "Self",
       Identity == "Friend" ~ "Friend",
       Identity == "Stranger" ~ "Stranger",
       is.na(Identity) ~ NA_character_,
@@ -596,7 +596,6 @@ df[[9]] <- read.csv(
       Shape != Identity ~ "Nonmatching"
     ),
     Face_Gender = Face_Gender,
-    Response = Cue.RESP,
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000
   ) %>%
@@ -606,7 +605,7 @@ df[[9]] <- read.csv(
       Matching, levels = c("Matching", "Nonmatching")
     ),
     Identity = factor(
-      Identity, levels = c("You", "Friend", "Stranger")
+      Identity, levels = c("Self", "Friend", "Stranger")
     ),
     Face_Gender = as.factor(Face_Gender),
     RT_ms = as.numeric(RT_ms),
@@ -648,14 +647,14 @@ df[[10]] <- read.csv(
   ) %>%
   dplyr::mutate(
     Shape = case_when(
-      Shape == "shape1.jpg" ~ "Self",
+      Shape == "shape1.jpg" ~ "You",
       Shape == "shape2.jpg" ~ "Friend",
       Shape == "shape3.jpg" ~ "Stranger",
       is.na(Shape) ~ NA_character_,
       TRUE ~ Shape
     ),
     Identity = case_when(
-      Identity == "You" ~ "You",
+      Identity == "You" ~ "Self",
       Identity == "Friend" ~ "Friend",
       Identity == "Stranger" ~ "Stranger",
       is.na(Identity) ~ NA_character_,
@@ -676,7 +675,7 @@ df[[10]] <- read.csv(
       Matching, levels = c("Matching", "Nonmatching")
     ),
     Identity = factor(
-      Identity, levels = c("You", "Friend", "Stranger")
+      Identity, levels = c("Self", "Friend", "Stranger")
     ),
     Face_Gender = as.factor(Face_Gender),
     RT_ms = as.numeric(RT_ms),
@@ -799,14 +798,18 @@ write.csv(x = df[[12]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_20
 df[[13]] <- read.csv(
   "../2_Raw_Data/Navon_2021/Navon_2021_Exp1_raw.csv"
   ) %>%
+  dplyr::filter(
+    Procedure.SubTrial. == "MMProc"
+  ) %>%
   dplyr::select(
     Subject,
     Shape = Stimulus,
     Handedness = Handedness,
     First_Lanugage = MotherTongue,
+    Response = Target.RESP,
     Gender = Sex,
     Age = Age,
-    Label = Word,
+    Word = Word,
     CloseShape,
     MediumShape,
     FarShape,
@@ -822,8 +825,8 @@ df[[13]] <- read.csv(
       TRUE ~ Shape # 存在NA
     ),
     Matching = case_when(
-      Identity == Label ~ "Matching",
-      Identity != Label ~ "Nonmatching",
+      Identity == Word ~ "Matching",
+      Identity != Word ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT),
     RT_sec = RT_ms / 1000,
@@ -843,7 +846,7 @@ df[[13]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage,
-    Shape, Label, Matching, Identity, RT_ms, RT_sec, ACC
+    Shape, Word, Matching, Identity, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
@@ -856,82 +859,90 @@ write.csv(x = df[[13]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp1_Clean
 
 ## Experiment 2 (Identtiy = 3)
 "Father", "Close", "Stranger"
-```{r Paper n13 Experiment 1}
-# df[[14]] <- read.csv(
-#   "../4_Data_Extraction/4_2_Open_Data/Paper_n13/2_Raw_Data/Pn13_Exp2_raw.csv"
-#   ) %>%
-#   dplyr::select(
-#     Subject,
-#     Shape = Stimulus,
-#     Label = Word,
-#     CloseShape,
-#     MediumShape,
-#     FarShape,
-#     RT = Target.RT,
-#     ACC = Target.ACC
-#   ) %>%
-#   dplyr::mutate(
-#     # 需要先生成Identity(Shape)，然后在判断是否Shape == Label
-#     Identity = case_when(
-#       Shape == CloseShape ~ "Self",
-#       Shape == MediumShape ~ "Friend",
-#       Shape == FarShape ~ "Stranger",
-#       TRUE ~ Shape # 存在NA
-#     ),
-#     Matching = case_when(
-#       Identity == Label ~ "Matching",
-#       Identity != Label ~ "Nonmatching",
-#     ),
-#     RT_ms = as.numeric(RT),
-#     RT_sec = RT_ms / 1000,
-#     ACC = as.numeric(ACC),
-#   ) %>%
-#   dplyr::mutate(
-#     Subjcet = as.numeric(Subject),
-#     Matching = factor(
-#       Matching, levels = c("Matching", "Nonmatching")
-#     ),
-#     Identity = factor(
-#       Identity, levels = c("Self", "Friend", "Stranger")
-#     ),
-#     RT_ms = as.numeric(RT_ms),
-#     RT_sec = as.numeric(RT_sec),
-#     ACC = as.numeric(ACC),
-#   ) %>%
-#   dplyr::select(
-#     Subject, Matching, Identity, RT_ms, RT_sec, ACC
-#   ) %>%
-#   dplyr::mutate(
-#     RT_sec = round(RT_sec, 3),
-#     RT_ms = round(RT_ms, 0)) %>%
-#   dplyr::filter(
-#     RT_sec >= 0.2 & RT_sec <= 1.5,
-#     ACC == 1 | ACC == 0
-#   ) %>%
-#   dplyr::arrange(
-#     Subject, Matching, Identity
-#   )
-# 
-# names(df)[14] <- "Papaer n13 Exp 2"
-# summary(df[[14]])
-# write.csv(x = df[[14]], file = "../4_Data_Extraction/4_2_Open_Data/Paper_n13/1_Clean_Data/Pn13_Exp2_Clean.csv")
-```
-
-## Experiment 3 (Identtiy = 3)
-"Self", "Father", "Stranger"
-```{r Paper n13 Experiment 3}
-df[[13]] <- read.csv(
-  "../2_Raw_Data/Mayan Navon_2021/Mayan Navon_2021_Exp3_raw.csv"
+```{r Paper n13 Experiment 2}
+df[[14]] <- read.csv(
+  "../2_Raw_Data/Navon_2021/Navon_2021_Exp2_raw.csv"
+  ) %>%
+  dplyr::filter(
+    Procedure.SubTrial. == "MMProc"
   ) %>%
   dplyr::select(
     Subject,
+    Handedness = Handedness,
+    First_Lanugage = MotherTongue,
+    Gender = Sex,
+    Age = Age,
+    Shape = Stimulus,
+    Response = Target.RESP,
+    CloseShape,
+    MediumShape,
+    FarShape,
+    RT = Target.RT,
+    ACC = Target.ACC
+  ) %>%
+  dplyr::mutate(
+    # 需要先生成Identity(Shape)，然后在判断是否Shape == Label
+    Identity = case_when(
+      Shape == CloseShape ~ "Self",
+      Shape == MediumShape ~ "Friend",
+      Shape == FarShape ~ "Stranger",
+      TRUE ~ Shape # 存在NA
+    ),
+    Matching = case_when(
+      Identity == Shape ~ "Matching",
+      Identity != Shape ~ "Nonmatching",
+    ),
+    RT_ms = as.numeric(RT),
+    RT_sec = RT_ms / 1000,
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Gender, Age, Handedness, First_Lanugage, 
+    Shape, Identity, Matching, Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange( 
+    Subject, Identity, Matching
+  )
+
+names(df)[14] <- "Mayan Navon_2021 Exp 2"
+summary(df[[14]])
+write.csv(x = df[[14]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp2_Clean.csv")
+```
+
+## Experiment 3 (Identtiy = 3) 
+"Self", "Father", "Stranger"
+```{r Paper n13 Experiment 3}
+df[[15]] <- read.csv(
+  "../2_Raw_Data/Navon_2021/Navon_2021_Exp3_raw.csv"
+  ) %>%
+  dplyr::filter(
+  Procedure.SubTrial. == "MMProc"
+  ) %>%
+  dplyr::select(
+    Subject,
+    Handedness = Handedness,
+    First_Lanugage = MotherTongue,
+    Gender = Sex,
+    Age = Age,
     Shape = Stimulus,
     Label = Word,
     CloseShape,
     MediumShape,
     FarShape,
+    Response = Target.RESP,
     RT = Target.RT,
-    ACC = Target.ACC) %>%
+    ACC = Target.ACC
+  ) %>%
   dplyr::mutate(
     Identity = case_when(
       Shape == CloseShape ~ "Self",
@@ -959,40 +970,42 @@ df[[13]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, RT_ms, RT_sec, ACC
+    Subject, Gender, Age, Handedness, First_Lanugage, 
+    Matching, Identity, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
-  dplyr::filter(
-    RT_sec >= 0.2 & RT_sec <= 1.5,
-    ACC == 1 | ACC == 0
-  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
   )
 
-names(df)[13] <- "Mayan Navon_2021 Exp 3"
-summary(df[[13]])
-write.csv(x = df[[13]], file = "../1_Clean_Data/Mayan Navon_2021/Mayan Navon_2021_Exp3_Clean.csv")
+names(df)[15] <- "Mayan Navon_2021 Exp 3"
+summary(df[[15]])
+write.csv(x = df[[15]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp3_Clean.csv")
 ```
 
 ## Experiment 4 (Identtiy = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n13 Experiment 4}
-df[[14]] <- read.csv(
-  "../2_Raw_Data/Mayan Navon_2021/Mayan Navon_2021_Exp4_raw.csv"
+df[[16]] <- read.csv(
+  "../2_Raw_Data/Navon_2021/Navon_2021_Exp4_raw.csv"
   ) %>%
   dplyr::select(
     Subject,
+    Handedness = Handedness,
+    First_Lanugage = MotherTongue,
+    Gender = Sex,
+    Age = Age,
     Shape = Stimulus,
-    Label = Word,
+    Word = Word,
     CloseShape,
     MediumShape,
     FarShape,
     RT = Target.RT,
-    ACC = Target.ACC
+    ACC = Target.ACC,
+    Response = Target.RESP
     ) %>%
   dplyr::mutate(
     Identity = case_when(
@@ -1002,8 +1015,8 @@ df[[14]] <- read.csv(
       TRUE ~ Shape
       ),
     Matching = case_when(
-      Identity == Label ~ "Matching",
-      Identity != Label ~ "Nonmatching",
+      Identity == Word ~ "Matching",
+      Identity != Word ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT),
     RT_sec = RT_ms / 1000,
@@ -1022,30 +1035,28 @@ df[[14]] <- read.csv(
     ACC = as.numeric(ACC),
     ) %>%
   dplyr::select(
-    Subject, Matching, Identity, RT_ms, RT_sec, ACC
+    Subject, Gender, Age, Handedness, First_Lanugage, 
+    Shape, Word, Matching, Identity, Response, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)) %>%
-  dplyr::filter(
-    RT_sec >= 0.2 & RT_sec <= 1.5,
-    ACC == 1 | ACC == 0
+    RT_ms = round(RT_ms, 0)
     ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
     )
 
-names(df)[14] <- "Mayan Navon_2021 Exp 4"
-summary(df[[14]])
-write.csv(x = df[[14]], file = "../1_Clean_Data/Mayan Navon_2021/Mayan Navon_2021_Exp4_Clean.csv")
+names(df)[16] <- "Mayan Navon_2021 Exp 4"
+summary(df[[16]])
+write.csv(x = df[[16]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp4_Clean.csv")
 ```
 
 # Saga L. Svensson_2021_PR
 ## Experiment 1 (Identtiy = 2)
 "Self", "Friend"
 ```{r Paper n16 Experiment 1}
-df[[15]] <- read.csv(
-  "../2_Raw_Data/Saga L. Svensson_2021_PR/Saga L. Svensson_2021_PR_Exp1_raw.csv"
+df[[17]] <- read.csv(
+  "../2_Raw_Data/Svensson_2021_PR/Svensson_2021_PR_Exp1_raw.csv"
   ) %>%
   dplyr::select(
     Subject = Participant..,
