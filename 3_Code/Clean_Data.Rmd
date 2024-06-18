@@ -12,7 +12,7 @@ output: html_document
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Svensson_2021_PR/Svensson_2021_PR_Exp1_raw.csv")
+data <- read.csv("../2_Raw_Data/Constable_2019_EPHPP/Exp1/Constable_2019_EPHPP_Exp1_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -1247,12 +1247,12 @@ summary(df[[20]])
 write.csv(x = df[[20]], file = "../1_Clean_Data/Yang Xu_2021_CP/Yang Xu_2021_CP_Exp1_Clean.csv")
 ```
 
-# Paper s2
+# Hu_2023_PA  #to be continue
 ## Experiment 1 (Identtiy = 2)
 "Self", "Stranger"
 ```{r Paper s2 Experiment 1}
 df[[21]] <- read.csv(
-  "../2_Raw_Data/Paper_s2/Ps2_Exp1_raw.csv"
+  "../2_Raw_Data/Hu_2023_PA/Hu_2023_PA_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
     Session != 3,
@@ -1296,17 +1296,72 @@ df[[21]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[21] <- "Hu_2023_PA_Exp1"
+summary(df[[21]])
+write.csv(x = df[[21]], file = "../1_Clean_Data/Hu_2023_PA/Hu_2023_PA_Exp1_raw.csv")
+```
+
+# Constable_2019_EPHPP
+## Experiment 1 (Identtiy = 4)
+"Self", "We", "They","Alone"
+```{r Paper p5 Experiment 1}
+df[[22]] <- read.csv(
+  "../1_Clean_Data/Constable_2019_EPHPP/Constable_2019_EPHPP_Exp1_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Session = Session,
+    Group = Block,
+    Shape = SelfRelated,
+    Label = Question, 
+    RT_ms = RT,
+    ACC = ACC,
+  ) %>%
+  dplyr::mutate(
+    Label = case_when(
+      Label == "You" ~ "Self",
+      TRUE ~ Label),
+    Matching = case_when(
+      Shape == Label ~ "Matching",
+      Shape != Label ~ "Nonmatching"),
+    RT_sec = RT_ms / 1000,
+    Identity = Shape
+  ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend","Stranger")
+    ),
+    Session = as.factor(Session),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
   dplyr::filter(
     RT_sec >= 0.2 & RT_sec <= 1.5,
     ACC == 1 | ACC == 0
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Identity, Session
   )
 
-names(df)[21] <- "Paper s2 Exp 1"
-summary(df[[21]])
-write.csv(x = df[[21]], file = "../4_Data_Extraction/4_2_Open_Data/Not_Good/Paper_s2/Ps2_Exp1_Clean.csv")
+names(df)[22] <- "Paper s3 Exp 1"
+summary(df[[22]])
+write.csv(x = df[[22]], file = "../4_Data_Extraction/4_2_Open_Data/Paper_s3/Ps3_Exp1_Clean.csv")
 ```
 
 # Paper s3
