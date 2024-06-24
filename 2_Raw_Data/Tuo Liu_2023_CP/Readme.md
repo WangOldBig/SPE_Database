@@ -24,9 +24,9 @@ The experiment, conducted using the Gorilla Experiment Builder, comprised three 
 # Data files
 
 ```
-"Tuo Liu_2023_CP_Exp1_raw.csv": raw data from experiment 1.
-"Tuo Liu_2023_CP_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
-"CodeBook_Tuo Liu_2023_CP_Exp1_Clean.xlsx": Codebook for "Tuo Liu_2023_CP_Exp1_Clean.csv"
+"Tuo_2023_CP_Exp1_raw.csv": raw data from experiment 1.
+"Tuo_2023_CP_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
+"CodeBook_Tuo_2023_CP_Exp1_Clean.xlsx": Codebook for "Tuo_2023_CP_Exp1_Clean.csv"
 
 ```
 
