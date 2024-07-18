@@ -12,7 +12,7 @@ output: html_document
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Constable_2019_EPHPP/Exp1/Constable_2019_EPHPP_Exp1_raw.csv")
+data <- read.csv("../2_Raw_Data/Vicovaro_2022/Vicovaro_2022_Exp1_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -1326,7 +1326,7 @@ df[[22]] <- read.csv(
     TheyShape = TheyShape,
     AloneShape = AloneShape,
     ShapeLoc = ShapeLoc,
-    
+
     Shape = Shape,
     Label = Label, 
     Response = resp,
@@ -1352,6 +1352,346 @@ names(df)[22] <- "Constable_2019_EPHPP"
 summary(df[[22]])
 write.csv(x = df[[22]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp1/Constable_2019_EPHPP_Exp1_raw.csv")
 ```
+# Paper t6
+## Experiment 1 (Identtiy = 2)
+"Self", "Stranger"
+```{r Paper t6 Experiment 1}
+df[[23]] <- read.csv(
+  "../2_Raw_Data/Vicovaro_2022/Vicovaro_2022_Exp1_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = participant_id,
+    Age = age,
+    Handedness = handedness,
+    Gender = sex,
+    Response = responseKey,
+    Symmetry = block,
+    Matching = match,
+    Identity = shape,
+    RT_sec = respRt,
+    ACC = respCorr,
+  ) %>%
+  dplyr::mutate(
+    Symmetry = case_when(
+      Symmetry == "selfS" ~ "Symmetry",
+      Symmetry == "selfA" ~ "Asymmetry"
+    ),
+    Identity = case_when(
+      Identity == "self-related" ~ "Self",
+      Identity == "stranger-related" ~ "Stranger"
+    ),
+    Matching = case_when(
+      Matching == "yes" ~ "Matching",
+      Matching == "no" ~ "Nonmatching",
+    ),
+    ACC = case_when(
+      ACC == 1 ~ 1,
+      ACC == 0 ~ 0,
+      ACC == "missed" ~ NA
+    ),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Handedness, Gender, Response, Symmetry, Matching, Identity, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[23] <- "Vicovaro_2022_Exp1"
+summary(df[[23]])
+write.csv(x = df[[23]], file = "../1_Clean_Data/Vicovaro_2022/Vicovaro_2022_Exp1_Clean.csv")
+```
+# Paper t6
+## Experiment 2 (Identtiy = 2)
+"Self", "Stranger"
+```{r Paper t6 Experiment 2}
+temp <- read.csv(
+  "../2_Raw_Data/Vicovaro_2022/Vicovaro_2022_Exp2_raw.csv"
+  ) %>%
+  dplyr::filter(block == "selfS") %>%
+  dplyr::select(
+    Subject = participant_id,
+    Age = age,
+    Handedness = handedness,
+    Gender = sex,
+    Response = responseKey,
+    Symmetry = block,
+    Matching = match,
+    Identity = shape,
+    RT_sec = respRt,
+    ACC = respCorr,
+  ) %>%
+  dplyr::mutate(
+    Symmetry = dplyr::case_when(
+      Symmetry == "selfS" ~ "Symmetry",
+      Symmetry == "selfA" ~ "Asymmetry"
+    ),
+    Identity = case_when(
+      Identity == "self-related" ~ "Self",
+      Identity == "stranger-related" ~ "Stranger"
+    ),
+    Matching = case_when(
+      Matching == "yes" ~ "Matching",
+      Matching == "no" ~ "Nonmatching",
+    ),
+    ACC = case_when(
+      ACC == 1 ~ 1,
+      ACC == 0 ~ 0,
+      ACC == "missed" ~ NA
+    ),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000
+  ) 
+
+Subject_ID <- temp %>% # nolint
+  dplyr::group_by(
+    Subject
+  ) %>%
+  dplyr::summarise(
+    count = n()
+  ) %>%
+  dplyr::mutate(
+    Subject_ID = row_number()
+  ) %>%
+  dplyr::select(
+    Subject, Subject_ID
+  )
+
+
+df[[24]] <- temp %>%
+  dplyr::left_join(
+    Subject_ID,
+    by = "Subject"
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject_ID),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Handedness, Gender, Response, Symmetry, Matching, Identity, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+names(df)[24] <- "Vicovaro_2022_Exp2"
+summary(df[[24]])
+write.csv(x = df[[24]], file = "../1_Clean_Data/Vicovaro_2022/Vicovaro_2022_Exp2_Clean.csv")
+```
+# Perrykkad_2022_BMC
+## Experiment 1 (Identtiy = 3)
+"Self", "Friend", "Stranger"
+```{r Paper t7 Experiment 1}
+df[[25]] <- read.csv(
+  "../2_Raw_Data/Perrykkad_2022_BMC/Perrykkad_2022_BMC_Exp1_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Identity = shapeCategory,
+    Shape = shapeImage,
+    Label = text,
+    Phase = phase,
+    Response = response,
+    SelfShape = selfShape,
+    FriendShape = friendShape,
+    StrangerShape = strangerShape,
+    Matching = matchCondition,
+    RT_ms = latency,
+    ACC = correct,
+    ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "mismatch" ~ "Nonmatching"),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+      ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    ) %>%
+  dplyr::select(
+    Subject, Phase, Shape, Label, Response, SelfShape, FriendShape,
+    StrangerShape, Matching, Identity, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::arrange(
+    Subject, Phase, Matching, Identity
+    )
+
+names(df)[25] <- "Perrykkad_2022_BMC_Exp 1"
+summary(df[[25]])
+write.csv(x = df[[25]], file = "../1_Clean_Data/Perrykkad_2022_BMC/Perrykkad_2022_BMC_Exp1_Clean.csv")
+```
+
+
+```{r List for Data Frame}
+df <- list()
+df[[1]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_6/1_Clean_Data/P6_Exp1_Clean.csv")
+df[[2]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_46/1_Clean_Data/P46_Exp1_Clean.csv")
+df[[3]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_46/1_Clean_Data/P46_Exp2_Clean.csv")
+df[[4]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_51/1_Clean_Data/P51_Exp1_Clean.csv")
+df[[5]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_51/1_Clean_Data/P51_Exp2_Clean.csv")
+df[[6]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_54/1_Clean_Data/P54_Exp1_Clean.csv")
+df[[7]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_54/1_Clean_Data/P54_Exp3_Clean.csv")
+df[[8]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_95/1_Clean_Data/P95_Exp1_Clean.csv")
+df[[9]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_95/1_Clean_Data/P95_Exp2_Clean.csv")
+df[[10]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n4/1_Clean_Data/Pn4_Exp1_Clean.csv")
+df[[11]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n4/1_Clean_Data/Pn4_Exp2_Clean.csv")
+df[[12]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n13/1_Clean_Data/Pn13_Exp1_Clean.csv")
+df[[13]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n13/1_Clean_Data/Pn13_Exp3_Clean.csv")
+df[[14]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n13/1_Clean_Data/Pn13_Exp4_Clean.csv")
+df[[15]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n16/1_Clean_Data/Pn16_Exp1_Clean.csv")
+df[[16]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n16/1_Clean_Data/Pn16_Exp2_Clean.csv")
+df[[17]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n16/1_Clean_Data/Pn16_Exp3_Clean.csv")
+df[[18]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n23/1_Clean_Data/Pn23_Exp1_Clean.csv")
+df[[19]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_s1/1_Clean_Data/Ps1_Exp1_Clean.csv")
+df[[20]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Not_Good/Paper_s2/Ps2_Exp1_Clean.csv")
+```
+
+#整合数据
+```{r}
+combine_data <- function(data_list) {
+  # 创建一个空数据框
+  combined_df <- data.frame()
+  
+  # 循环遍历数据列表中的每个数据框
+  for (i in seq_along(data_list)) {
+    # 提取关键列
+    key_columns <- data_list[[i]][c("Subject", "Matching", "Identity", "RT_ms", "RT_sec", "ACC")]
+    
+    # 添加 Paper 列
+    key_columns$Paper <- paste0("df_", i)
+    
+    # 将数据框添加到组合数据框中
+    combined_df <- rbind(combined_df, key_columns)
+  }
+  
+  # 返回组合后的数据框
+  return(combined_df)
+}
+
+# 使用函数
+combined_data <- combine_data(df)
+
+rm(combine_data)
+```
+
+# Check ACC
+```{r}
+calculate_min_ACC <- function(data_list) {
+  min_ACC_list <- list()
+  
+  for (i in seq_along(data_list)) {
+    if (!is.null(data_list[[i]])) {
+      min_ACC <- data_list[[i]] %>%
+        group_by(Subject) %>%
+        summarise(mean_ACC = mean(ACC)) %>%
+        ungroup() %>%
+        filter(mean_ACC < 0.5) %>%
+        arrange(mean_ACC)
+      
+      min_ACC_list[[i]] <- min_ACC
+      
+      cat(
+        "For df[[", i, "]], the min ACC is:",
+        ifelse(nrow(min_ACC) > 0, min(min_ACC$mean_ACC), "No data"), # 检查 min_ACC 是否为空
+        "\n"
+      )
+    } else {
+      cat("df[[", i, "]] is empty.\n")
+    }
+  }
+  
+  rm(min_ACC, i)
+  
+  return(min_ACC_list)
+}
+
+# 使用函数
+min_ACC_list <- calculate_min_ACC(df)
+rm(calculate_min_ACC)
+```
+
+#Clean data by ACC
+```{r}
+for (i in seq_along(df)) {
+  if (!is.null(df[[i]])) {
+    filtered_df <- df[[i]] %>%
+      anti_join(min_ACC_list[[i]], by = "Subject") 
+    
+    file_path <- paste0("../4_Data_Extraction/4_3_1_Clean_Data/df_", i, "_filtered.csv")
+    
+    if (!file.exists(file_path)) {
+      # 如果文件不存在，则创建一个空的文件
+      write.csv(
+        x = data.frame(),  # 创建一个空的数据框
+        file = file_path,
+        row.names = FALSE
+      )
+    }
+    
+    
+    # 追加数据到文件末尾
+    write.csv(
+      x = filtered_df,
+      file = file_path,
+      row.names = FALSE,
+    )
+    
+    cat("Filtered data for df[[", i, "]] has been appended to ", file_path, "\n")
+  } else {
+    cat("df[[", i, "]] is empty.\n")
+  }
+}
+
+rm(filtered_df, i, file_path)
+
+```
+
+
+
+
+'''
+Unpublished
+
 
 # Paper s3
 ## Experiment 1 (Identtiy = 3)
@@ -1555,129 +1895,4 @@ summary(df[[24]])
 write.csv(x = df[[24]], file = "../4_Data_Extraction/4_2_Open_Data/Paper_s4/Ps4_Exp2_Clean.csv")
 ```
 
-
-
-```{r List for Data Frame}
-df <- list()
-df[[1]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_6/1_Clean_Data/P6_Exp1_Clean.csv")
-df[[2]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_46/1_Clean_Data/P46_Exp1_Clean.csv")
-df[[3]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_46/1_Clean_Data/P46_Exp2_Clean.csv")
-df[[4]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_51/1_Clean_Data/P51_Exp1_Clean.csv")
-df[[5]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_51/1_Clean_Data/P51_Exp2_Clean.csv")
-df[[6]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_54/1_Clean_Data/P54_Exp1_Clean.csv")
-df[[7]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_54/1_Clean_Data/P54_Exp3_Clean.csv")
-df[[8]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_95/1_Clean_Data/P95_Exp1_Clean.csv")
-df[[9]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_95/1_Clean_Data/P95_Exp2_Clean.csv")
-df[[10]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n4/1_Clean_Data/Pn4_Exp1_Clean.csv")
-df[[11]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n4/1_Clean_Data/Pn4_Exp2_Clean.csv")
-df[[12]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n13/1_Clean_Data/Pn13_Exp1_Clean.csv")
-df[[13]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n13/1_Clean_Data/Pn13_Exp3_Clean.csv")
-df[[14]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n13/1_Clean_Data/Pn13_Exp4_Clean.csv")
-df[[15]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n16/1_Clean_Data/Pn16_Exp1_Clean.csv")
-df[[16]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n16/1_Clean_Data/Pn16_Exp2_Clean.csv")
-df[[17]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n16/1_Clean_Data/Pn16_Exp3_Clean.csv")
-df[[18]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n23/1_Clean_Data/Pn23_Exp1_Clean.csv")
-df[[19]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_s1/1_Clean_Data/Ps1_Exp1_Clean.csv")
-df[[20]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Not_Good/Paper_s2/Ps2_Exp1_Clean.csv")
-```
-
-#整合数据
-```{r}
-combine_data <- function(data_list) {
-  # 创建一个空数据框
-  combined_df <- data.frame()
-  
-  # 循环遍历数据列表中的每个数据框
-  for (i in seq_along(data_list)) {
-    # 提取关键列
-    key_columns <- data_list[[i]][c("Subject", "Matching", "Identity", "RT_ms", "RT_sec", "ACC")]
-    
-    # 添加 Paper 列
-    key_columns$Paper <- paste0("df_", i)
-    
-    # 将数据框添加到组合数据框中
-    combined_df <- rbind(combined_df, key_columns)
-  }
-  
-  # 返回组合后的数据框
-  return(combined_df)
-}
-
-# 使用函数
-combined_data <- combine_data(df)
-
-rm(combine_data)
-```
-
-# Check ACC
-```{r}
-calculate_min_ACC <- function(data_list) {
-  min_ACC_list <- list()
-  
-  for (i in seq_along(data_list)) {
-    if (!is.null(data_list[[i]])) {
-      min_ACC <- data_list[[i]] %>%
-        group_by(Subject) %>%
-        summarise(mean_ACC = mean(ACC)) %>%
-        ungroup() %>%
-        filter(mean_ACC < 0.5) %>%
-        arrange(mean_ACC)
-      
-      min_ACC_list[[i]] <- min_ACC
-      
-      cat(
-        "For df[[", i, "]], the min ACC is:",
-        ifelse(nrow(min_ACC) > 0, min(min_ACC$mean_ACC), "No data"), # 检查 min_ACC 是否为空
-        "\n"
-      )
-    } else {
-      cat("df[[", i, "]] is empty.\n")
-    }
-  }
-  
-  rm(min_ACC, i)
-  
-  return(min_ACC_list)
-}
-
-# 使用函数
-min_ACC_list <- calculate_min_ACC(df)
-rm(calculate_min_ACC)
-```
-
-#Clean data by ACC
-```{r}
-for (i in seq_along(df)) {
-  if (!is.null(df[[i]])) {
-    filtered_df <- df[[i]] %>%
-      anti_join(min_ACC_list[[i]], by = "Subject") 
-    
-    file_path <- paste0("../4_Data_Extraction/4_3_1_Clean_Data/df_", i, "_filtered.csv")
-    
-    if (!file.exists(file_path)) {
-      # 如果文件不存在，则创建一个空的文件
-      write.csv(
-        x = data.frame(),  # 创建一个空的数据框
-        file = file_path,
-        row.names = FALSE
-      )
-    }
-    
-    
-    # 追加数据到文件末尾
-    write.csv(
-      x = filtered_df,
-      file = file_path,
-      row.names = FALSE,
-    )
-    
-    cat("Filtered data for df[[", i, "]] has been appended to ", file_path, "\n")
-  } else {
-    cat("df[[", i, "]] is empty.\n")
-  }
-}
-
-rm(filtered_df, i, file_path)
-
-```
 
