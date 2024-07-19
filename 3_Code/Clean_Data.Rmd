@@ -12,7 +12,7 @@ output: html_document
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Vicovaro_2022/Vicovaro_2022_Exp1_raw.csv")
+data <- read.csv("../2_Raw_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -1243,7 +1243,7 @@ summary(df[[20]])
 write.csv(x = df[[20]], file = "../1_Clean_Data/Yang_2021_CP/Yang_2021_CP_Exp1_Clean.csv")
 ```
 
-# Hu_2023_PA  #to be continue
+# Hu_2023_PA-  
 ## Experiment 1 (Identtiy = 2)
 "Self", "Stranger"
 ```{r Paper s2 Experiment 1}
@@ -1298,8 +1298,9 @@ df[[21]] <- read.csv(
 
 names(df)[21] <- "Hu_2023_PA_Exp1"
 summary(df[[21]])
-write.csv(x = df[[21]], file = "../1_Clean_Data/Hu_2023_PA/Hu_2023_PA_Exp1_raw.csv")
+write.csv(x = df[[21]], file = "../1_Clean_Data/Hu_2023_PA/Hu_2023_PA_Exp1_Clean.csv")
 ```
+
 
 # Constable_2019_EPHPP
 ## Experiment 1 (Identtiy = 4)
@@ -1310,7 +1311,6 @@ df[[22]] <- read.csv(
   ) %>%
   dplyr::filter(
     Outlier == 0,
-    Block != 0,
     rt != "None"
   ) %>%
   dplyr::select(
@@ -1321,37 +1321,184 @@ df[[22]] <- read.csv(
     First_Language = First.Language,
     Matching = Condition,
     Identity = Shape,
+    Phase = Training.Experiment,
+    Shape = Shape,
+    Label = Label, 
     WeShape = WeShape,
     SelfShape = SelfShape,
     TheyShape = TheyShape,
     AloneShape = AloneShape,
     ShapeLoc = ShapeLoc,
-
-    Shape = Shape,
-    Label = Label, 
     Response = resp,
     RT_sec = rt,
     ACC = corr,
   ) %>%
   dplyr::mutate(
-    Subjcet = as.numeric(Subject),
-    RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
-    # RT_ms = rt * 1000,
-    # RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+    RT_ms = as.numeric(RT_ms),
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
-    # RT_ms = round(RT_ms, 0)
+    RT_ms = round(RT_ms, 0)
     ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
     )
 
-names(df)[22] <- "Constable_2019_EPHPP"
+names(df)[22] <- "Constable_2019_EPHPP_Exp1"
 summary(df[[22]])
-write.csv(x = df[[22]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp1/Constable_2019_EPHPP_Exp1_raw.csv")
+write.csv(x = df[[22]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp1/Constable_2019_EPHPP_Exp1_Clean.csv")
 ```
+# Constable_2019_EPHPP
+## Experiment 2 (Identtiy = 4)
+"Self", "We", "They","Alone"
+```{r Paper p5 Experiment 2}
+df[[23]] <- read.csv(
+  "../2_Raw_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_raw.csv"
+  ) %>%
+  dplyr::filter(
+    Outlier == 0,
+    rt != "None"
+  ) %>%
+  dplyr::select(
+    Subject = Participant.Number,
+    Gender = Gender,
+    Age = Age,
+    Handedness = Handedness,
+    First_Language = First.Language,
+    Matching = Condition,
+    Identity = Shape,
+    Phase = Training.Experiment,
+    Shape = Shape,
+    Label = Label, 
+    WeShape = WeShape,
+    SelfShape = SelfShape,
+    TheyShape = TheyShape,
+    AloneShape = AloneShape,
+    ShapeLoc = ShapeLoc,
+    Response = resp,
+    RT_sec = rt,
+    ACC = corr,
+  ) %>%
+  dplyr::mutate(
+    ACC = as.numeric(ACC),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+    RT_ms = as.numeric(RT_ms),
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[23] <- "Constable_2019_EPHPP_Exp2"
+summary(df[[23]])
+write.csv(x = df[[23]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_Clean.csv")
+```
+# Constable_2019_EPHPP
+## Experiment 3 (Identtiy = 4)
+"Self", "We", "They","Alone"
+```{r Paper p5 Experiment 3}
+df[[24]] <- read.csv(
+  "../2_Raw_Data/Constable_2019_EPHPP/Exp3/Constable_2019_EPHPP_Exp3_raw.csv"
+  ) %>%
+  dplyr::filter(
+    Outlier == 0,
+    rt != "None"
+  ) %>%
+  dplyr::select(
+    Subject = Participant.Number,
+    Gender = Gender,
+    Age = Age,
+    Handedness = Handedness,
+    First_Language = First.Language,
+    Matching = Condition,
+    Identity = Shape,
+    Phase = Training.Experiment,
+    Shape = Shape,
+    Label = Label, 
+    WeShape = WeShape,
+    SelfShape = SelfShape,
+    TheyShape = TheyShape,
+    AloneShape = AloneShape,
+    ShapeLoc = ShapeLoc,
+    Response = resp,
+    RT_sec = rt,
+    ACC = corr,
+  ) %>%
+  dplyr::mutate(
+    ACC = as.numeric(ACC),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+    RT_ms = as.numeric(RT_ms),
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[24] <- "Constable_2019_EPHPP_Exp3"
+summary(df[[24]])
+write.csv(x = df[[24]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp3/Constable_2019_EPHPP_Exp3_Clean.csv")
+```
+# Constable_2019_EPHPP
+## Experiment 4 (Identtiy = 5)
+"Self", "We", "They","Alone"
+```{r Paper p5 Experiment 4}
+df[[25]] <- read.csv(
+  "../2_Raw_Data/Constable_2019_EPHPP/Exp4/Constable_2019_EPHPP_Exp4_raw.csv"
+  ) %>%
+  dplyr::filter(
+    Outlier == 0,
+    rt != "None"
+  ) %>%
+  dplyr::select(
+    Subject = Participant.Number,
+    Gender = Gender,
+    Age = Age,
+    Handedness = Handedness,
+    First_Language = First.Language,
+    Matching = Condition,
+    Identity = Shape,
+    Phase = Training.Experiment,
+    Shape = Shape,
+    Label = Label, 
+    WeShape = WeShape,
+    SelfShape = SelfShape,
+    TheyShape = TheyShape,
+    AloneShape = AloneShape,
+    ShapeLoc = ShapeLoc,
+    Response = resp,
+    RT_sec = rt,
+    ACC = corr,
+  ) %>%
+  dplyr::mutate(
+    ACC = as.numeric(ACC),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+    RT_ms = as.numeric(RT_ms),
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[25] <- "Constable_2019_EPHPP_Exp4"
+summary(df[[25]])
+write.csv(x = df[[25]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp4/Constable_2019_EPHPP_Exp4_Clean.csv")
+```
+
 # Paper t6
 ## Experiment 1 (Identtiy = 2)
 "Self", "Stranger"
@@ -1895,4 +2042,49 @@ summary(df[[24]])
 write.csv(x = df[[24]], file = "../4_Data_Extraction/4_2_Open_Data/Paper_s4/Ps4_Exp2_Clean.csv")
 ```
 
+# Constable_2019_EPHPP
+## Experiment 2 (Identtiy = 4)
+"Self", "We", "They","Alone"
+```{r Paper s5 Experiment 2}
+df[[23]] <- read.csv(
+  "../2_Raw_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_Training_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Participant.Number,
+    Gender = Gender,
+    Age = Age,
+    Handedness = Handedness,
+    First_Language = First.Language,
+    Identity = Shape,
+    Shape = Shape,
+    WeShape = WeShape,
+    Wekey = wekey,
+    SelfShape = SelfShape,
+    Selfkey = selfkey,
+    TheyShape = TheyShape,
+    Theykey = theykey,
+    AloneShape = AloneShape,
+    Alonekey = alonekey,
+    Response = resp,
+    RT_sec = rt,
+    ACC = corr,
+  ) %>%
+  dplyr::mutate(
+    ACC = as.numeric(ACC),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+    RT_ms = as.numeric(RT_ms),
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::arrange(
+    Subject, Identity
+    )
+
+names(df)[23] <- "Constable_2019_EPHPP"
+summary(df[[23]])
+write.csv(x = df[[23]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_Training_raw.csv")
+```
 
