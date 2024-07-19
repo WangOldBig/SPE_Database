@@ -12,7 +12,7 @@ output: html_document
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_raw.csv")
+data <- read.csv("../2_Raw_Data/Constable_2019_EPHPP/Exp4/Constable_2019_EPHPP_Exp4_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -1346,7 +1346,6 @@ df[[22]] <- read.csv(
   dplyr::arrange(
     Subject, Matching, Identity
     )
-
 names(df)[22] <- "Constable_2019_EPHPP_Exp1"
 summary(df[[22]])
 write.csv(x = df[[22]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp1/Constable_2019_EPHPP_Exp1_Clean.csv")
@@ -1457,24 +1456,16 @@ df[[25]] <- read.csv(
   "../2_Raw_Data/Constable_2019_EPHPP/Exp4/Constable_2019_EPHPP_Exp4_raw.csv"
   ) %>%
   dplyr::filter(
-    Outlier == 0,
     rt != "None"
   ) %>%
   dplyr::select(
-    Subject = Participant.Number,
-    Gender = Gender,
-    Age = Age,
-    Handedness = Handedness,
-    First_Language = First.Language,
+    Subject = Pair.Number,
+    P1Age = P1Age,
+    P2Age = P2Age,
     Matching = Condition,
     Identity = Shape,
-    Phase = Training.Experiment,
     Shape = Shape,
     Label = Label, 
-    WeShape = WeShape,
-    SelfShape = SelfShape,
-    TheyShape = TheyShape,
-    AloneShape = AloneShape,
     ShapeLoc = ShapeLoc,
     Response = resp,
     RT_sec = rt,
@@ -1503,7 +1494,7 @@ write.csv(x = df[[25]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp4/Consta
 ## Experiment 1 (Identtiy = 2)
 "Self", "Stranger"
 ```{r Paper t6 Experiment 1}
-df[[23]] <- read.csv(
+df[[26]] <- read.csv(
   "../2_Raw_Data/Vicovaro_2022/Vicovaro_2022_Exp1_raw.csv"
   ) %>%
   dplyr::select(
@@ -1562,9 +1553,9 @@ df[[23]] <- read.csv(
     Subject, Matching, Identity
   )
 
-names(df)[23] <- "Vicovaro_2022_Exp1"
-summary(df[[23]])
-write.csv(x = df[[23]], file = "../1_Clean_Data/Vicovaro_2022/Vicovaro_2022_Exp1_Clean.csv")
+names(df)[26] <- "Vicovaro_2022_Exp1"
+summary(df[[26]])
+write.csv(x = df[[26]], file = "../1_Clean_Data/Vicovaro_2022/Vicovaro_2022_Exp1_Clean.csv")
 ```
 # Paper t6
 ## Experiment 2 (Identtiy = 2)
@@ -1623,7 +1614,7 @@ Subject_ID <- temp %>% # nolint
   )
 
 
-df[[24]] <- temp %>%
+df[[27]] <- temp %>%
   dplyr::left_join(
     Subject_ID,
     by = "Subject"
@@ -1650,15 +1641,15 @@ df[[24]] <- temp %>%
   dplyr::arrange(
     Subject, Matching, Identity
   )
-names(df)[24] <- "Vicovaro_2022_Exp2"
-summary(df[[24]])
-write.csv(x = df[[24]], file = "../1_Clean_Data/Vicovaro_2022/Vicovaro_2022_Exp2_Clean.csv")
+names(df)[27] <- "Vicovaro_2022_Exp2"
+summary(df[[27]])
+write.csv(x = df[[27]], file = "../1_Clean_Data/Vicovaro_2022/Vicovaro_2022_Exp2_Clean.csv")
 ```
 # Perrykkad_2022_BMC
 ## Experiment 1 (Identtiy = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper t7 Experiment 1}
-df[[25]] <- read.csv(
+df[[28]] <- read.csv(
   "../2_Raw_Data/Perrykkad_2022_BMC/Perrykkad_2022_BMC_Exp1_raw.csv"
   ) %>%
   dplyr::select(
@@ -1703,9 +1694,9 @@ df[[25]] <- read.csv(
     Subject, Phase, Matching, Identity
     )
 
-names(df)[25] <- "Perrykkad_2022_BMC_Exp 1"
-summary(df[[25]])
-write.csv(x = df[[25]], file = "../1_Clean_Data/Perrykkad_2022_BMC/Perrykkad_2022_BMC_Exp1_Clean.csv")
+names(df)[28] <- "Perrykkad_2022_BMC_Exp 1"
+summary(df[[28]])
+write.csv(x = df[[28]], file = "../1_Clean_Data/Perrykkad_2022_BMC/Perrykkad_2022_BMC_Exp1_Clean.csv")
 ```
 
 
