@@ -241,7 +241,6 @@ write.csv(x = df[[2]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_
 ```
 
 # Merryn Dale Constable_2020_CE (Dark Light Box)
-
 ## Experiment 2 (Identtiy = 2)
 "Self", "Stranger"
 ```{r Paper 46 Experiment 2}
@@ -311,7 +310,7 @@ write.csv(x = df[[3]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_
 
 # Haoyue Qian_2019_QJEP 
 ## Experiment 1 (Identtiy = 3)
-"Self", "Celebrity", "Stranger"
+"Self", "Familiar", "Stranger"
 ```{r Paper 51 Experiment 1}
 df[[4]] <- read.csv(
   "../2_Raw_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp1_raw.csv"
@@ -324,7 +323,7 @@ df[[4]] <- read.csv(
   dplyr::mutate(
     Identity = case_when(
       Identity == "Self" ~ "Self",
-      Identity == "Celebrity" ~ "Celebrity",
+      Identity == "Familiar" ~ "Familiar",
       Identity == "Stranger" ~ "Stranger"
     ),
     Matching = case_when(
@@ -369,7 +368,7 @@ summary(df[[4]])
 write.csv(x = df[[4]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp1_Clean.csv")
 ```
 ## Experiment 2 (Identtiy = 2)
-"Self", "Celebrity"
+"Self", "Familiar"
 ```{r Paper 51 Experiment 2}
 df[[5]] <- read.csv(
   "../2_Raw_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp2_raw.csv"
@@ -383,7 +382,7 @@ df[[5]] <- read.csv(
     Subject = Subject,
     Identity = case_when(
       Identity == "Self" ~ "Self",
-      Identity == "Celebrity" ~ "Celebrity"
+      Identity == "Familiar" ~ "Familiar"
     ),
     Matching = case_when(
       Matching == "Matched" ~ "Matching",
@@ -401,7 +400,7 @@ df[[5]] <- read.csv(
       Matching, levels = c("Matching", "Nonmatching")
     ),
     Identity = factor(
-      Identity, levels = c("Self", "Celebrity")
+      Identity, levels = c("Self", "Familiar")
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
