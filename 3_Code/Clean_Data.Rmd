@@ -12,7 +12,7 @@ output: html_document
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Constable_2019_EPHPP/Exp4/Constable_2019_EPHPP_Exp4_raw.csv")
+data <- read.csv("../2_Raw_Data/Hu_2023/Hu_2023_Exp1_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -1753,7 +1753,58 @@ summary(df[[29]])
 write.csv(x = df[[29]], file = "../1_Clean_Data/Hu_2020_CP/Hu_2020_CP_Clean.csv")
 ```
 
+# Hu_2023
+## Experiment 1 (Identtiy = 2)
+"Self", "Other"
+```{r Paper s2 Experiment 1}
+df[[30]] <- read.csv(
+  "../2_Raw_Data/Hu_2023/Hu_2023_Exp1_raw.csv"
+  ) %>%
+  # dplyr::filter(PracList.Sample != 1) %>%
+  dplyr::select(
+    Subject = Subject,
+    Age = Age,
+    Gender = Sex,
+    Handedness = Handedness,
+    Identity = identity,
+    Morality = morality,
+    Shape = Shape,
+    Label = Label,
+    Target = Target,
+    Response = Target.RESP,
+    RT_ms = Target.RT,
+    ACC = Target.ACC,
+    ) %>%
+  dplyr::mutate(
+    Label_cleaned = tolower(Label),  # 将Label列的值转换为小写
+    Shape_cleaned = tolower(Shape),  # 将Shape列的值转换为小写
+    Matching = case_when(
+      gsub("\\.bmp$", "", Label_cleaned) == Shape_cleaned ~ "Matching",
+      TRUE ~ "Nomatching"
+    ),
+    ) %>%
+  dplyr::mutate(
+    RT_ms = ifelse(is.na(RT_ms) | RT_ms == "", NA,
+    as.numeric(as.character(RT_ms))),
+    RT_sec = RT_ms / 1000
+    ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness,
+    Shape, Label,  Matching, Identity, Morality,
+    Response, Target, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity, Morality
+    )
 
+names(df)[30] <- "Hu_2023"
+summary(df[[30]])
+write.csv(x = df[[30]], file = "../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
+```
 
 ```{r List for Data Frame}
 df <- list()
