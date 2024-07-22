@@ -1806,6 +1806,269 @@ summary(df[[30]])
 write.csv(x = df[[30]], file = "../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
 ```
 
+# Woźniak_2022_PR
+## Experiment 1 (Identtiy = 3)
+"Self", "Friend", "None"
+```{r Paper t9 Experiment 1}
+###############################Save Raw Data####################################
+# 获取文件列表
+file_list <- list.files(
+  path = "../2_Raw_Data/Woźniak_2022_PR/Data - Experiment 1/",
+  pattern = "^SelfPriorExp_3.*\\.dat$",
+  full.names = TRUE
+)
+
+# 读取dat文件并存入list中
+data_list <- lapply(file_list, read.table, header = FALSE, sep = " ")
+
+combined_data <- do.call(rbind, data_list)
+
+write.csv(
+  x = combined_data, 
+  file = "../2_Raw_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp1_raw.csv",
+  row.names = FALSE
+)
+
+rm(file_list, data_list, combined_data)
+```
+
+```{r Paper t9 Experiment 1}
+##################################Clean Data####################################
+df[[31]] <- read.csv("../2_Raw_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp1_raw.csv") %>%
+  dplyr::select(
+    Subject = V1,
+    Gender = V2,
+    Shape = V7,
+    Label1 = V10,
+    Label2 = V11,
+    Label3 = V12,
+    Matching = V14,
+    Response = V5,
+    ACC = V15,
+    RT_ms = V16,
+  ) %>%
+  dplyr::mutate(
+    Shape = case_when(
+      Shape == "shape1.jpg" ~ "shape1.jpg",
+      Shape == "shape2.jpg" ~ "shape2.jpg",
+      Shape == "shape3.jpg" ~ "shape3.jpg",
+    ),
+    Identity = case_when(
+      Shape == "You" ~ "Self",
+      Shape == "none" ~ "None",
+      TRUE ~ "Friend"
+    ),
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 2 ~ "Nonmatching"),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "None")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Gender, 
+    Shape, Label1, Label2, Label3, Identity,  
+    Matching, Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[31] <- "Woźniak_2022_PR_Exp 1"
+summary(df[[31]])
+write.csv(x = df[[31]], file = "../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp1_Clean.csv")
+```
+# Woźniak_2022_PR
+## Experiment 2 (Identtiy = 3)
+"Self", "Friend", "None"
+```{r Paper t9 Experiment 2}
+###############################Save Raw Data####################################
+# 获取文件列表
+file_list <- list.files(
+  path = "../2_Raw_Data/Woźniak_2022_PR/Data - Experiment 2/",
+  pattern = "^SelfPriorExp_1.*\\.dat$",
+  full.names = TRUE
+)
+
+# 读取dat文件并存入list中
+data_list <- lapply(file_list, read.table, header = FALSE, sep = " ")
+
+combined_data <- do.call(rbind, data_list)
+
+write.csv(
+  x = combined_data, 
+  file = "../2_Raw_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp2_raw.csv",
+  row.names = FALSE
+)
+
+rm(file_list, data_list, combined_data)
+```
+
+```{r Paper t9 Experiment 2}
+##################################Clean Data####################################
+df[[32]] <- read.csv("../2_Raw_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp2_raw.csv") %>%
+  dplyr::select(
+    Subject = V1,
+    Gender = V2,
+    Shape = V7,
+    Label1 = V10,
+    Label2 = V11,
+    Label3 = V12,
+    Matching = V14,
+    Response = V5,
+    ACC = V15,
+    RT_ms = V16,
+  ) %>%
+  dplyr::mutate(
+    Shape = case_when(
+      Shape == "shape1.jpg" ~ "shape1.jpg",
+      Shape == "shape2.jpg" ~ "shape2.jpg",
+      Shape == "shape3.jpg" ~ "shape3.jpg",
+    ),
+    Identity = case_when(
+      Shape == "You" ~ "Self",
+      Shape == "none" ~ "None",
+      TRUE ~ "Friend"
+    ),
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 2 ~ "Nonmatching"),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "None")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Gender, 
+    Shape, Label1, Label2, Label3, Identity,  
+    Matching, Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[32] <- "Woźniak_2022_PR_Exp 2"
+summary(df[[32]])
+write.csv(x = df[[32]], file = "../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp2_Clean.csv")
+```
+
+# Woźniak_2022_PR
+## Experiment 3 (Identtiy = 3)
+"Self", "Friend", "None"
+```{r Paper t9 Experiment 3}
+###############################Save Raw Data####################################
+# 获取文件列表
+file_list <- list.files(
+  path = "../2_Raw_Data/Woźniak_2022_PR/Data - Experiment 3/",
+  pattern = "^SelfPriorExp_2.*\\.dat$",
+  full.names = TRUE
+)
+
+# 读取dat文件并存入list中
+data_list <- lapply(file_list, read.table, header = FALSE, sep = " ")
+
+combined_data <- do.call(rbind, data_list)
+
+write.csv(
+  x = combined_data, 
+  file = "../2_Raw_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp3_raw.csv",
+  row.names = FALSE
+)
+
+rm(file_list, data_list, combined_data)
+```
+
+```{r Paper t9 Experiment 3}
+##################################Clean Data####################################
+df[[33]] <- read.csv("../2_Raw_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp3_raw.csv") %>%
+  dplyr::select(
+    Subject = V1,
+    Gender = V2,
+    Shape = V7,
+    Label1 = V10,
+    Label2 = V11,
+    Label3 = V12,
+    Matching = V14,
+    Response = V5,
+    ACC = V15,
+    RT_ms = V16,
+  ) %>%
+  dplyr::mutate(
+    Shape = case_when(
+      Shape == "shape1.jpg" ~ "shape1.jpg",
+      Shape == "shape2.jpg" ~ "shape2.jpg",
+      Shape == "shape3.jpg" ~ "shape3.jpg",
+    ),
+    Identity = case_when(
+      Shape == "You" ~ "Self",
+      Shape == "none" ~ "None",
+      TRUE ~ "Friend"
+    ),
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 2 ~ "Nonmatching"),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "None")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Gender, 
+    Shape, Label1, Label2, Label3, Identity,  
+    Matching, Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[33] <- "Woźniak_2022_PR_Exp 3"
+summary(df[[33]])
+write.csv(x = df[[33]], file = "../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp3_Clean.csv")
+```
+
 ```{r List for Data Frame}
 df <- list()
 df[[1]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_6/1_Clean_Data/P6_Exp1_Clean.csv")
