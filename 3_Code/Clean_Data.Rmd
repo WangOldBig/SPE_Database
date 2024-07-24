@@ -2075,7 +2075,7 @@ write.csv(x = df[[33]], file = "../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_P
 df[[34]] <- read.csv(
   "../2_Raw_Data/Haciahmet_2023_Psy/Haciahmet_2023_Psy_Exp1_raw.csv"
   ) %>%
-  dplyr::filter(Running.SubTrial == ExpList
+  dplyr::filter(Procedure.SubTrial. == TrialProc
   ) %>%
   dplyr::select(
     Subject = Subject,
@@ -2086,28 +2086,34 @@ df[[34]] <- read.csv(
     Shape = TargetImage,
     Label = LabelText,
     Matching = Condition,
-    Phase = Running.SubTrial,
+    Phase = Running.SubTrial.,
     Response = WaitResponse.RESP,
     RT_ms = WaitResponse.RT,
     ACC = WaitResponse.ACC,
     ) %>%
   dplyr::mutate(
-    Label_cleaned = tolower(Label),  # 将Label列的值转换为小写
-    Shape_cleaned = tolower(Shape),  # 将Shape列的值转换为小写
-    Matching = case_when(
-      gsub("\\.bmp$", "", Label_cleaned) == Shape_cleaned ~ "Matching",
-      TRUE ~ "Nomatching"
+    Shape = case_when(
+      Shape == ".\\Stimuli\\circle.png" ~ "circle.png",
+      Shape == ".\\Stimuli\\triangle.png" ~ "triangle.png"
     ),
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 2 ~ "Nonmatching"
+    ),
+    Identity = case_when(
+      Identity == 1 ~ "self",
+      Identity == 2 ~ "stranger"
+    ),
+    
     ) %>%
   dplyr::mutate(
-    RT_ms = ifelse(is.na(RT_ms) | RT_ms == "", NA,
-    as.numeric(as.character(RT_ms))),
+    as.numeric(as.character(RT_ms)),
     RT_sec = RT_ms / 1000
     ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label,  Matching, Identity, Morality,
-    Response, Target, RT_ms, RT_sec, ACC
+    Shape, Label,  Matching, Identity,
+    Response, Phase, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
