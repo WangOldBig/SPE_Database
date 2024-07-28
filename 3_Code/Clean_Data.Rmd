@@ -2075,8 +2075,9 @@ write.csv(x = df[[33]], file = "../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_P
 df[[34]] <- read.csv(
   "../2_Raw_Data/Haciahmet_2023_Psy/Haciahmet_2023_Psy_Exp1_raw.csv"
   ) %>%
-  dplyr::filter(Procedure.SubTrial. == TrialProc
-  ) %>%
+  # df[[34]]$Procedure.SubTrial. <- as.character(df$Procedure.SubTrial.)
+  # dplyr::filter(Procedure.SubTrial. == TrialProc
+  # ) %>%
   dplyr::select(
     Subject = Subject,
     Age = Alter,
@@ -2104,7 +2105,6 @@ df[[34]] <- read.csv(
       Identity == 1 ~ "self",
       Identity == 2 ~ "stranger"
     ),
-    
     ) %>%
   dplyr::mutate(
     as.numeric(as.character(RT_ms)),
@@ -2125,9 +2125,142 @@ df[[34]] <- read.csv(
 
 names(df)[34] <- "Haciahmet_2023_Psy"
 summary(df[[34]])
-write.csv(x = df[[34]], file = "../1_Clean_Data/Haciahmet_2023_Psy/HHaciahmet_2023_Psy_Exp1_Clean.csv")
+write.csv(x = df[[34]], file = "../1_Clean_Data/Haciahmet_2023_Psy/Haciahmet_2023_Psy_Exp1_Clean.csv")
 ```
 
+# Sui_2023_CC
+## Experiment 1 (Identtiy = 2)
+"Self", "Other"
+```{r Paper t18 Experiment 1}
+df[[35]] <- read.csv(
+  "../2_Raw_Data/Sui_2023_CC/Sui_2023_CC_Exp1_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subj_idx,
+    Identity = person,
+    Stim = stim,
+    Response = response,
+    Matching = match,
+    RT_sec = rt,
+    ACC = accuracy,
+    ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "mismatch" ~ "Nonmatching"),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+      ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    ) %>%
+  dplyr::select(
+    Subject,
+    Stim,  Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[35] <- "Sui_2023_CC"
+summary(df[[35]])
+write.csv(x = df[[35]], file = "../1_Clean_Data/Sui_2023_CC/Sui_2023_CC_Exp1_Clean.csv")
+```
+
+# Hobbs_2023_PM 
+## Experiment 1 (Identtiy = 3)
+"Self", "Friend", "Stranger"
+```{r Paper t2 Experiment 1}
+temp <- read.csv(
+  "../2_Raw_Data/Hobbs_2023_PM/Hobbs_2023_PM_Exp1_raw.csv"
+  ) %>%
+  dplyr::filter(
+    Task == "Self",
+  ) %>%
+  dplyr::select(
+    Subject = subject,
+    Matching = Matching,
+    Identity = Shape,
+    RT_ms = mean_rt_mult,
+    RT_sec = trial_resp.rt,
+    ACC = acc,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 0 ~ "Nonmatching"
+    ),
+    Session = 1,
+  ) 
+
+Subject_ID <- temp %>% # nolint
+  dplyr::group_by(
+    Subject
+  ) %>%
+  dplyr::summarise(
+    count = n()
+  ) %>%
+  dplyr::mutate(
+    Subject_ID = row_number()
+  ) %>%
+  dplyr::select(
+    Subject, Subject_ID
+  )
+
+
+df[[36]] <- temp %>%
+  dplyr::left_join(
+    Subject_ID,
+    by = "Subject"
+  ) %>%
+  dplyr::mutate(
+    Subject = Subject_ID
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "Stranger")
+    ),
+    Session = as.factor(Session),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::filter(
+    RT_sec >= 0.2 & RT_sec <= 1.5,
+    ACC == 1 | ACC == 0
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity, Session
+  )
+
+rm(temp, Subject_ID)
+
+names(df)[36] <- "Hobbs_2023_PM"
+summary(df[[36]])
+write.csv(x = df[[36]], file = "../1_Clean_Data/Hobbs_2023_PM/Hobbs_2023_PM_Exp1_Clean.csv")
+```
 
 ```{r List for Data Frame}
 df <- list()
