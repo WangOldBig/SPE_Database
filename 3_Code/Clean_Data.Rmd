@@ -12,7 +12,7 @@ output: html_document
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Haciahmet_2023_Psy/Haciahmet_2023_Psy_Exp1_raw.csv")
+data <- read.csv("../2_Raw_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_Exp1_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -2068,7 +2068,7 @@ names(df)[33] <- "Woźniak_2022_PR_Exp 3"
 summary(df[[33]])
 write.csv(x = df[[33]], file = "../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp3_Clean.csv")
 ```
-# Haciahmet_2023_Psychophysiology
+# Haciahmet_2023_Psychophysiology -
 ## Experiment 1 (Identtiy = 2)
 "Self", "Stranger"
 ```{r Paper t1 Experiment 1}
@@ -2190,8 +2190,16 @@ temp <- read.csv(
   ) %>%
   dplyr::select(
     Subject = subject,
+    Age = age,
+    Gender = gender,
+    Ethnicity = ethnicity,
+    Employment_Status = employment_status,
+    Education = education,
+    Depression = depression,
+    Treatment = treatment,
+    Shape = Shape,
     Matching = Matching,
-    Identity = Shape,
+    Identity = stimuli,
     RT_ms = mean_rt_mult,
     RT_sec = trial_resp.rt,
     ACC = acc,
@@ -2200,9 +2208,7 @@ temp <- read.csv(
     Matching = case_when(
       Matching == 1 ~ "Matching",
       Matching == 0 ~ "Nonmatching"
-    ),
-    Session = 1,
-  ) 
+    ))
 
 Subject_ID <- temp %>% # nolint
   dplyr::group_by(
@@ -2235,24 +2241,21 @@ df[[36]] <- temp %>%
     Identity = factor(
       Identity, levels = c("Self", "Friend", "Stranger")
     ),
-    Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Age, Gender, Ethnicity, Employment_Status, Education,Depression,
+    Treatment,
+    Shape, Matching, Identity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
-  dplyr::filter(
-    RT_sec >= 0.2 & RT_sec <= 1.5,
-    ACC == 1 | ACC == 0
-  ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Identity
   )
 
 rm(temp, Subject_ID)
@@ -2261,6 +2264,78 @@ names(df)[36] <- "Hobbs_2023_PM"
 summary(df[[36]])
 write.csv(x = df[[36]], file = "../1_Clean_Data/Hobbs_2023_PM/Hobbs_2023_PM_Exp1_Clean.csv")
 ```
+
+# Mcivor_2020_EJN -
+## Experiment 1 (Identtiy = 2)
+"Self", "Other"
+```{r Paper p45 Experiment 1}
+df[[37]] <- read.csv(
+  "../2_Raw_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_Exp1_raw.csv"
+  ) %>%
+  mutate(Running.SubTrial. = str_to_lower(Running.SubTrial.)) %>%
+  filter(Running.SubTrial. == "testphase"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Age = Age,
+    Handedness = Handedness,
+    Gender = Sex,
+    
+    Happyshapeother = Happyshapeother,
+    Happyshapeself = Happyshapeself,
+    Neutralshapeother = Neutralshapeother,
+    Neutralshapeself = Neutralshapeself,
+    Sadshapeother = Sadshapeother,
+    Sadshapeself = Sadshapeself,
+    Othershape = Othershape,
+    Selfshape = Selfshape,
+    Label = CellLabel,
+    
+    Identity = Label2,
+    Response = ITI2.RESP,
+    Matching = CellLabel,
+    RT_ms = ITI2.RT,
+    ACC = ITI2.ACC,
+    ) %>%
+  dplyr::mutate(
+    MatchingExtra = str_extract(Label, "(?<=self|other)(match|nonmatch)"),
+    # 将提取的匹配类型转换为"Matching"或"Nomatching"
+    Matching = case_when(
+      MatchingExtra == "match" ~ "Matching",
+      MatchingExtra == "nonmatch" ~ "Nomatching",
+      TRUE ~ "Nomatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness,
+    Happyshapeother, Happyshapeself, Neutralshapeother, Neutralshapeself,
+    Sadshapeother, Sadshapeself, Othershape, Selfshape, Label, Identity,
+    Matching, Response, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[37] <- "Mcivor_2020_EJN"
+summary(df[[37]])
+write.csv(x = df[[37]], file = "../1_Clean_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_Exp1_Clean.csv")
+```
+
+
+
+
 
 ```{r List for Data Frame}
 df <- list()
