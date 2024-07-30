@@ -2075,9 +2075,8 @@ write.csv(x = df[[33]], file = "../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_P
 df[[34]] <- read.csv(
   "../2_Raw_Data/Haciahmet_2023_Psy/Haciahmet_2023_Psy_Exp1_raw.csv"
   ) %>%
-  # df[[34]]$Procedure.SubTrial. <- as.character(df$Procedure.SubTrial.)
-  # dplyr::filter(Procedure.SubTrial. == TrialProc
-  # ) %>%
+  dplyr::filter(Phase == 1
+  ) %>%
   dplyr::select(
     Subject = Subject,
     Age = Alter,
@@ -2087,7 +2086,6 @@ df[[34]] <- read.csv(
     Shape = TargetImage,
     Label = LabelText,
     Matching = Condition,
-    Phase = Running.SubTrial.,
     Response = WaitResponse.RESP,
     RT_ms = WaitResponse.RT,
     ACC = WaitResponse.ACC,
@@ -2113,7 +2111,7 @@ df[[34]] <- read.csv(
   dplyr::select(
     Subject, Age, Gender, Handedness,
     Shape, Label,  Matching, Identity,
-    Response, Phase, RT_ms, RT_sec, ACC
+    Response, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
