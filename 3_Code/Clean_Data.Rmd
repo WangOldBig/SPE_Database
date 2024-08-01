@@ -2454,6 +2454,88 @@ summary(df[[39]])
 write.csv(x = df[[39]], file = "../1_Clean_Data/Kolvoort_2020_HBM/Kolvoort_2020_HBM_Exp1_Clean.csv")
 ```
 
+# Liu_2023_CP
+## Experiment 1 (Identtiy = 2)
+"Self", "Stranger"
+```{r Paper s1 Experiment 1}
+df_Ps1_E1 <- read.csv(
+  "../2_Raw_Data/Liu_2023_CP/Liu_2023_CP_Exp1_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Participant.Public.ID,
+    Match = P_Orginal,
+    Label = Label,
+    Identity = P_Group,
+    Response = Response,
+    RT_ms = Reaction.Time,
+    ACC = Correct,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Match == "JA" ~ "Matching",
+      Match == "NEIN" ~ "Nonmatching"
+    ),
+    Identity = case_when(
+      Identity == "User" ~ "Self",
+      Identity == "Other" ~ "Stranger"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    ACC = as.numeric(ACC)
+    )
+
+df_Subject_ID <- df_Ps1_E1 %>% # nolint
+  dplyr::group_by(
+    Subject
+  ) %>%
+  dplyr::summarise(
+    count = n()
+  ) %>%
+  dplyr::mutate(
+    Subject_ID = row_number()
+  ) %>%
+  dplyr::select(
+    Subject, Subject_ID
+  )
+
+df[[40]] <- df_Ps1_E1 %>%
+  dplyr::left_join(
+    df_Subject_ID,
+    by = "Subject"
+  ) %>%
+  dplyr::mutate(
+    Subject = Subject_ID
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Matching, Label, Response, Identity, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+rm(df_Subject_ID, df_Ps1_E1)
+
+names(df)[40] <- "Liu_2023_CP"
+summary(df[[40]])
+write.csv(x = df[[40]], file = "../1_Clean_Data/Liu_2023_CP/Liu_2023_CP_Exp1_Clean.csv")
+```
+
 ```{r List for Data Frame}
 df <- list()
 df[[1]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_6/1_Clean_Data/P6_Exp1_Clean.csv")
