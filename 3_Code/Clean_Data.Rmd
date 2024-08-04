@@ -2391,55 +2391,62 @@ summary(df[[38]])
 write.csv(x = df[[38]], file = "../1_Clean_Data/Liang_2021_HBM/Liang_2021_HBM_Exp1_Clean.csv")
 ```
 
-# Kolvoort_2020_HBM 
-## Experiment 1 (Identtiy = 3)
+# Kolvoort_2020_HBM -
+## Experiment 1 (Identtiy = 2)
 "Self", "Friend", "Stranger"
 ```{r Paper p34 Experiment 1}
 df[[39]] <- read.csv(
   "../2_Raw_Data/Kolvoort_2020_HBM/Kolvoort_2020_HBM_Exp1_correctRT_raw.csv"
   ) %>%
+  dplyr::filter(
+    session == "pre",
+  ) %>%
   dplyr::select(
-    Subject = subid,
+    Subject = subj_idx,
     Age = age,
-    Handedness = handedness,
-    Education = completededucation,
-    Firstlanguage = firstlanguage,
-    Countryself = countryself,
-    Countryparents = countryparents,
+    Gender = gender,
     Shape = shape,
-    Label = label,
-    Matching = matching,
-    Response = respkeymap,
-    RT_ms = reac_time,
-    ACC = accuracy,
+    Matching = match,
+    Identity = shape,
+    Response = response,
+    RT_sec = rt,
+    ACC = acc,
   ) %>%
   dplyr::mutate(
+    Identity = case_when(
+      Identity == "self" ~ "Self",
+      Identity == "friend" ~ "Friend",
+      Identity == "stranger" ~ "Stranger",
+    ),
     Matching = case_when(
       Matching == 1 ~ "Matching",
       Matching == 0 ~ "Nonmatching"
     ),
-    RT_ms = as.numeric(RT_ms),
-    RT_sec = RT_ms / 1000
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000
   ) %>%
   dplyr::mutate(
     Subject = as.numeric(Subject),
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "Stranger")
+    ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Age, Handedness, Education, Firstlanguage, Countryparents, Countryparents, 
-    Shape, Matching, Response, RT_ms, RT_sec, ACC
+    Subject, Age, Gender, 
+    Shape, Matching, Identity, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching
+    Subject, Matching, Identity
   )
 
 names(df)[39] <- "Kolvoort_2020_HBM"
@@ -2528,8 +2535,6 @@ names(df)[40] <- "Liu_2023_CP"
 summary(df[[40]])
 write.csv(x = df[[40]], file = "../1_Clean_Data/Liu_2023_CP/Liu_2023_CP_Exp1_Clean.csv")
 ```
-
-
 
 ```{r List for Data Frame}
 df <- list()
