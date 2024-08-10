@@ -16,7 +16,6 @@ Constable, M. D., Elekes, F., Sebanz, N., & Knoblich, G. (2019). Relevant for us
 ### Experiment 1  
 
 #### Participants
-
 The participants were 28 native Hungarian speakers aged 19 to 37 (M = 24.82, SD = 4.75, 12 male). They participated in the experiment in exchange for 1,500 Hungarian Forints (HUF) worth of supermarket vouchers. All participants had normal or corrected-to-normal vision. Based upon the critical comparison of interest (RTs toward self vs. stranger stimuli), 28 participants will provide an implied power of 96% for the large effect sizes (dz = .8) reported in previous studies.
 
 #### Procedure
@@ -51,13 +50,13 @@ Participants were told they were in a team together and would perform the task t
 "Constable_2019_EPHPP_Exp3_raw.csv": raw data from experiment 3.
 "Constable_2019_EPHPP_Exp4_raw.csv": raw data from experiment 4.
 "Constable_2019_EPHPP_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
-"CodeBook_Constable_2019_EPHPP_Exp1_Clean.xlsx": Codebook for "Constable_2019_EPHPP_Exp1_Clean.csv"
+"CodeBook_Constable_2019_EPHPP_Exp1_Clean.xlsx": Codebook for "Constable_2019_EPHPP_Exp1_Clean.csv".
 "Constable_2019_EPHPP_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
-"CodeBook_Constable_2019_EPHPP_Exp3_Clean.xlsx": Codebook for "Constable_2019_EPHPP_Exp2_Clean.csv"
+"CodeBook_Constable_2019_EPHPP_Exp3_Clean.xlsx": Codebook for "Constable_2019_EPHPP_Exp2_Clean.csv".
 "Constable_2019_EPHPP_Exp3_Clean.csv": Clean data from experiment 3 for SPE analysis.
-"CodeBook_Constable_2019_EPHPP_Exp3_Clean.xlsx": Codebook for "Constable_2019_EPHPP_Exp3_Clean.csv"
+"CodeBook_Constable_2019_EPHPP_Exp3_Clean.xlsx": Codebook for "Constable_2019_EPHPP_Exp3_Clean.csv".
 "Constable_2019_EPHPP_Exp4_Clean.csv": Clean data from experiment 4 for SPE analysis.
-"CodeBook_Constable_2019_EPHPP_Exp4_Clean.xlsx": Codebook for "Constable_2019_EPHPP_Exp4_Clean.csv"
+"CodeBook_Constable_2019_EPHPP_Exp4_Clean.xlsx": Codebook for "Constable_2019_EPHPP_Exp4_Clean.csv".
 ```
 
 Feel free to explore the data and codebooks provided in this repository for more detailed information.

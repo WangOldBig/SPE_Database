@@ -16,7 +16,6 @@ Haoyue Qian, H., Wang, Z., Li, C., & Gao, X. (2020). Prioritised self-referentia
 ### Experiment 1：
 
 #### Participants
-
 Twenty-six participants (10 males) with ages ranging from 18 to 22 years were recruited. All were right-handed and had normal or corrected-to-normal visual acuity. Participants completed pre-screening measures for depression and anxiety disorders using the SDS and SAS scales.
 
 #### Procedure
@@ -45,9 +44,9 @@ The mood induction procedure and label-shape matching task mirrored those in Exp
 "Qian_2019_QJEP_Exp2_raw.csv": raw data from experiment 2.
 "Qian_2019_QJEP_Exp2b_raw.csv": raw data from experiment 3.
 "Qian_2019_QJEP_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
-"CodeBook_Qian_2019_QJEP_Exp1_Clean.xlsx": Codebook for "Qian_2019_QJEP_Exp1_Clean.csv"
+"CodeBook_Qian_2019_QJEP_Exp1_Clean.xlsx": Codebook for "Qian_2019_QJEP_Exp1_Clean.csv".
 "Qian_2019_QJEP_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
-"CodeBook_Qian_2019_QJEP_Exp2_Clean.xlsx": Codebook for "Qian_2019_QJEP_Exp2_Clean.csv"
+"CodeBook_Qian_2019_QJEP_Exp2_Clean.xlsx": Codebook for "Qian_2019_QJEP_Exp2_Clean.csv".
 ```
 
 Feel free to explore the data and codebooks provided in this repository for more detailed information.

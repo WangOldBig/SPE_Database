@@ -11,18 +11,17 @@ Ye-In Oh(Department of Cognitive Science, Central European University, Budapest,
 Günther Knoblich(Department of Cognitive Science, Central European University, Budapest, Hungary)
 
 ## Citation
-Merryn D. Constable, M. D., Becker, M. L., Oh, Y. I., & Knoblich, G. (2021). Affective compatibility with the self modulates the self-prioritisation effect. Cognition and Emotion, 35(2), 291-304.
+Constable, M. D., Becker, M. L., Oh, Y. I., & Knoblich, G. (2021). Affective compatibility with the self modulates the self-prioritisation effect.  *Cognition & emotion* ,  *35* (2), 291–304. https://doi.org/10.1080/02699931.2020.1839383
 
 ### Experiment 1: Emotional valence
 
 #### Participants
-
-Fifty adults, with an average age of 25.1 years and a standard deviation of 3.6, participated in the study. The gender distribution was equal, with an equal number of males and females. All participants had normal or corrected-to-normal vision and were proficient in English.
+No a priori power estimate was used to justify sample size given the exploratory nature of this initial experiment. A target of fifty-six participants was selected to double the sample size of conventional within-subject investigations of the self-prioritisation effect. This number also allowed for the appropriate ounterbalancing of response keys. See the Methods of Experiment 2 for the results of a power simulation based on the observed data of this experiment. Fifty-six adults (M = 24.36, SD = 4.25) volunteered to participate in the study in exchange for supermarket vouchers (1500 HUF). Twenty-eight were male and twenty-eight were female. All had normal or corrected to normal vision and could speak English.
 
 #### Procedure
 Participants in Experiment 1 were presented with stimuli consisting of faces displaying various emotional expressions, ranging from very happy to very sad. During the memory encoding phase, participants categorized these stimuli based on their emotional valence. After a retention interval, participants engaged in a memory retrieval phase, where they matched the encoded stimuli to labels indicating their emotional valence. The procedure included informed consent, recruitment, memory encoding, retention interval, memory retrieval, and debriefing sessions.
 
-### Experiment 2: 
+### Experiment 2:
 
 #### Participants
 Fifty-six adults, with an average age of 24.34 years and a standard deviation of 4.37, participated in the study. Among them, 25 were male, and 31 were female. All participants had normal or corrected-to-normal vision and were fluent in English.
@@ -36,9 +35,9 @@ In Experiment 2, participants were assigned to represent themselves with either 
 "Constable_2020_CE_Exp1_raw.csv": raw data from experiment 1.
 "Constable_2020_CE_Exp2_raw.csv": raw data from experiment 2.
 "Constable_2020_CE_Exp1_Clean.csv": Clean data from experiment 1 for SPE analysis.
-"Constable_2020_CE_Exp1_Clean.xlsx": Codebook for "P6_Exp1_Clean.csv"
+"Constable_2020_CE_Exp1_Clean.xlsx": Codebook for "P6_Exp1_Clean.csv".
 "Constable_2020_CE_Exp2_Clean.csv": Clean data from experiment 2 for SPE analysis.
-"CodeBook_Constable_2020_CE_Exp2_Clean.xlsx": Codebook for "P6_Exp2_Clean.csv"
+"CodeBook_Constable_2020_CE_Exp2_Clean.xlsx": Codebook for "P6_Exp2_Clean.csv".
 ```
 
 Feel free to explore the data and codebooks provided in this repository for more detailed information.
