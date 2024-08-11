@@ -2657,7 +2657,7 @@ write.csv(x = df[[42]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orella
 ## Experiment 3 (Identtiy = 2)
 "Self", "Stranger"
 ```{r Paper n14 Experiment 3}
-df[[42]] <- read.csv(
+df[[43]] <- read.csv(
 "../2_Raw_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp3_raw.csv"
   ) %>%
   dplyr::filter(
@@ -2710,9 +2710,64 @@ df[[42]] <- read.csv(
     Subject, Matching,
   )
 
-names(df)[42] <- "Orellana-Corrales_2021_EP"
-summary(df[[42]])
-write.csv(x = df[[42]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp3_Clean.csv")
+names(df)[43] <- "Orellana-Corrales_2021_EP"
+summary(df[[43]])
+write.csv(x = df[[43]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp3_Clean.csv")
+```
+
+# Amodeo_2024_CABN
+## Experiment 1 (Identtiy = 3)
+"Self","Friend","Stranger"
+```{r Paper t28 Experiment 1}
+df[[44]] <- read.csv(
+"../2_Raw_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_raw.csv"
+  ) %>%
+  dplyr::filter(
+    Running == "manipCheck",
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Matching = match,
+    Shape = Target,
+    Label = Label,
+    Identity1 = Shape,
+    Response = Target.RESP,
+    RT_ms = Target.RT,
+    ACC = Target.ACC,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "nonmatch" ~ "Nonmatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness, 
+    Shape, Label, Matching, Shape1, Shape2, Identity1, Identity2, 
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[44] <- "Amodeo_2024_CABN"
+summary(df[[44]])
+write.csv(x = df[[44]], file = "../1_Clean_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_Clean.csv")
 ```
 
 ```{r List for Data Frame}
