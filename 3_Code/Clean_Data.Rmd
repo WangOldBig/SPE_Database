@@ -2722,24 +2722,25 @@ write.csv(x = df[[43]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orella
 df[[44]] <- read.csv(
 "../2_Raw_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_raw.csv"
   ) %>%
-  dplyr::filter(
-    Running == "manipCheck",
-  ) %>%
   dplyr::select(
     Subject = Subject,
-    Matching = match,
+    Matching = Label,
     Shape = Target,
     Label = Label,
-    Identity1 = Shape,
+    Identity = Shape,
     Response = Target.RESP,
     RT_ms = Target.RT,
     ACC = Target.ACC,
   ) %>%
   dplyr::mutate(
     Matching = case_when(
-      Matching == "match" ~ "Matching",
-      Matching == "nonmatch" ~ "Nonmatching"
+      Matching == "Ikzelf" ~ "Self",
+      Matching == "Bekende" ~ "Friend",
+      Matching == "Vreemde" ~ "Stranger"
     ),
+    Matching = case_when(
+      Matching == Shape ~ "Matching",
+      Matching != Shape ~ "Nonmatching"),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000
   ) %>%
@@ -2753,8 +2754,8 @@ df[[44]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Age, Gender, Handedness, 
-    Shape, Label, Matching, Shape1, Shape2, Identity1, Identity2, 
+    Subject,  
+    Shape, Label, Matching, Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
