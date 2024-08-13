@@ -2739,8 +2739,64 @@ df[[44]] <- read.csv(
       Matching == "Vreemde" ~ "Stranger"
     ),
     Matching = case_when(
-      Matching == Shape ~ "Matching",
-      Matching != Shape ~ "Nonmatching"),
+      Matching == Identity ~ "Matching",
+      Matching != Identity ~ "Nonmatching"),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject,  
+    Shape, Label, Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[44] <- "Amodeo_2024_CABN"
+summary(df[[44]])
+write.csv(x = df[[44]], file = "../1_Clean_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_Clean.csv")
+```
+
+# Amodeo_2024_CABN
+## Experiment 1 (Identtiy = 3)
+"Self","Friend","Stranger"
+```{r Paper t28 Experiment 1}
+df[[45]] <- read.csv(
+"../2_Raw_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Matching = Label,
+    Shape = Target,
+    Label = Label,
+    Identity = Shape,
+    Response = Target.RESP,
+    RT_ms = Target.RT,
+    ACC = Target.ACC,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "Ikzelf" ~ "Self",
+      Matching == "Bekende" ~ "Friend",
+      Matching == "Vreemde" ~ "Stranger"
+    ),
+    Matching = case_when(
+      Matching == Identity ~ "Matching",
+      Matching != Identity ~ "Nonmatching"),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000
   ) %>%
