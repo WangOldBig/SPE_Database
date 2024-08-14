@@ -117,7 +117,6 @@ df <- list()
 # MerrynD.Constable_2020_AP
 ## Experiment 1 (Identtiy = 3)
 "Self", "Partner", "Stranger"
-
 ```{r Paper MerrynD.Constable_2020_AP}
 df[[1]] <- read.csv(
   "../2_Raw_Data/Constable_2020_AP/Constable_2020_AP_Exp1_raw.csv"
@@ -148,8 +147,6 @@ df[[1]] <- read.csv(
     ),
     RT_sec = as.numeric(RT_sec),
     RT_ms = RT_sec * 1000,
-  ) %>%
-  dplyr::mutate(
     Subject = as.numeric(Subject),
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
@@ -2774,7 +2771,7 @@ write.csv(x = df[[44]], file = "../1_Clean_Data/Amodeo_2024_CABN/Amodeo_2024_CAB
 # Amodeo_2024_CABN
 ## Experiment 1 (Identtiy = 3)
 "Self","Friend","Stranger"
-```{r Paper t28 Experiment 1}
+```{r Paper t10 Experiment 1}
 df[[45]] <- read.csv(
 "../2_Raw_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_raw.csv"
   ) %>%
