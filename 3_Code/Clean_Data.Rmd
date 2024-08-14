@@ -2768,12 +2768,12 @@ summary(df[[44]])
 write.csv(x = df[[44]], file = "../1_Clean_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_Clean.csv")
 ```
 
-# Amodeo_2024_CABN
+# Zhang_2022_NI
 ## Experiment 1 (Identtiy = 3)
 "Self","Friend","Stranger"
 ```{r Paper t10 Experiment 1}
 df[[45]] <- read.csv(
-"../2_Raw_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_raw.csv"
+"../2_Raw_Data/Zhang_2022_NI/Zhang_2022_NI_Exp1_raw.csv"
   ) %>%
   dplyr::select(
     Subject = Subject,
@@ -2822,6 +2822,62 @@ df[[45]] <- read.csv(
 names(df)[44] <- "Amodeo_2024_CABN"
 summary(df[[44]])
 write.csv(x = df[[44]], file = "../1_Clean_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_Clean.csv")
+```
+
+# Feldborg_2021_ERPH-
+## Experiment 1 (Identtiy = 3)
+"Self","Friend","Stranger"
+```{r Paper t13 Experiment 1}
+df[[45]] <- read.csv(
+"../2_Raw_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Matching = Label,
+    Shape = Target,
+    Label = Label,
+    Identity = Shape,
+    Response = Target.RESP,
+    RT_ms = Target.RT,
+    ACC = Target.ACC,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "Ikzelf" ~ "Self",
+      Matching == "Bekende" ~ "Friend",
+      Matching == "Vreemde" ~ "Stranger"
+    ),
+    Matching = case_when(
+      Matching == Identity ~ "Matching",
+      Matching != Identity ~ "Nonmatching"),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject,  
+    Shape, Label, Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[44] <- "Feldborg_2021_ERPH"
+summary(df[[44]])
+write.csv(x = df[[44]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1_Clean.csv")
 ```
 
 ```{r List for Data Frame}
