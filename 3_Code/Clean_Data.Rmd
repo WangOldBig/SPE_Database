@@ -2946,7 +2946,7 @@ summary(df[[47]])
 write.csv(x = df[[47]], file = "../1_Clean_Data/Zhang_2022_NI/Zhang_2022_NI_Exp3_Clean.csv")
 ```
 
-# Feldborg_2021_ERPH-
+# Feldborg_2021_ERPH
 ## Experiment 1 (Identtiy = 3)
 "Self","Friend","Stranger"
 ```{r Paper t13 Experiment 1}
@@ -2959,6 +2959,7 @@ df[[48]] <- read.csv(
     Gender = SubGender,
     Ethnicity = SubEthnicity,
     Handedness = SubHand,
+    Group = group,
     Matching = Con_match,
     Shape = fill,
     Label = Con_label,
@@ -2985,7 +2986,7 @@ df[[48]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Age, Gender, Ethnicity, Handedness,
+    Subject, Age, Gender, Ethnicity, Handedness, Group,
     Shape, Label, Matching, Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
@@ -3001,6 +3002,10 @@ names(df)[48] <- "Feldborg_2021_ERPH"
 summary(df[[48]])
 write.csv(x = df[[48]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1_Clean.csv")
 ```
+
+
+
+
 
 ```{r List for Data Frame}
 df <- list()
@@ -3381,3 +3386,114 @@ summary(df[[23]])
 write.csv(x = df[[23]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_Training_raw.csv")
 ```
 
+# Feldborg_2021_ERPH
+## Experiment 2 (Identtiy = 3)
+"Self","Friend","Stranger"
+```{r Paper t13 Experiment 1a}
+df[[49]] <- read.csv(
+"../2_Raw_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1a_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subject,
+    Age = SubAge,
+    Gender = SubGender,
+    Ethnicity = SubEthnicity,
+    Handedness = SubHand,
+    Matching = Con_match,
+    Shape = fill,
+    Label = Con_label,
+    Identity = Con_shape,
+    Response = response,
+    RT_ms = latency,
+    ACC = correct,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "unmatch" ~ "Nonmatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Ethnicity, Handedness,
+    Shape, Label, Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[49] <- "Feldborg_2021_ERPH"
+summary(df[[49]])
+write.csv(x = df[[49]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1a_Clean.csv")
+```
+
+# Feldborg_2021_ERPH
+## Experiment 3 (Identtiy = 3)
+"Self","Friend","Stranger"
+```{r Paper t13 Experiment 1b}
+df[[50]] <- read.csv(
+"../2_Raw_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1b_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subject,
+    Age = SubAge,
+    Gender = SubGender,
+    Ethnicity = SubEthnicity,
+    Handedness = SubHand,
+    Matching = Con_match,
+    Shape = fill,
+    Label = Con_label,
+    Identity = Con_shape,
+    Response = response,
+    RT_ms = latency,
+    ACC = correct,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "unmatch" ~ "Nonmatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Ethnicity, Handedness,
+    Shape, Label, Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[50] <- "Feldborg_2021_ERPH"
+summary(df[[50]])
+write.csv(x = df[[50]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1b_Clean.csv")
+```
