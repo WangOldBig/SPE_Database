@@ -12,7 +12,7 @@ output: html_document
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp1_raw.csv")
+data <- read.csv("../2_Raw_Data/Martínez-Pérez_2024_CC/Martinez-Pérez_2024_CC_Exp2_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -3003,7 +3003,51 @@ summary(df[[48]])
 write.csv(x = df[[48]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1_Clean.csv")
 ```
 
+# Martínez-Pérez_2024_CC
+## Experiment 2 (Identity = 3)
+"self", "best friend","stranger"
+```{r Paper t27 Experiment 2}
+df[[49]] <- read.csv(
+  "../2_Raw_Data/Martínez-Pérez_2024_CC/Martinez-Pérez_2024_CC_Exp2_raw.csv"
+  ) %>%
+  dplyr::filter(
+    Running.Trial. == "bloqueExperimental",
+  ) %>%  
+  dplyr::select(
+    Subject = Subject,
+    Age = Edad,
+    Gender = Sexo,
+    Handedness = Mano,
+    
+    Shape = Figura,
+    Identity = Etiqueta,
+    Matching = TipoEnsayo,
+    Response = Blanco1.RESP,
+    RT_ms = Blanco1.RT,
+    ACC = Blanco1.ACC,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "Matched" ~ "Matching",
+      Matching == "NonMatching" ~ "Nonmatching"
+    ),    
+    ACC = as.numeric(ACC),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    RT_sec = as.numeric(RT_sec),
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::arrange(
+    Subject, Identity
+    )
 
+names(df)[49] <- "Martínez-Pérez_2024_CC"
+summary(df[[49]])
+write.csv(x = df[[49]], file = "../1_Clean_Data/Martínez-Pérez_2024_CC/Martínez-Pérez_2024_CC_Exp2_Clean.csv")
+```
 
 
 
