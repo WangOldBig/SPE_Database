@@ -117,7 +117,7 @@ df <- list()
 # MerrynD.Constable_2020_AP
 ## Experiment 1 (Identtiy = 3)
 "Self", "Partner", "Stranger"
-```{r Paper MerrynD.Constable_2020_AP}
+```{r Paper6 MerrynD.Constable_2020_AP}
 df[[1]] <- read.csv(
   "../2_Raw_Data/Constable_2020_AP/Constable_2020_AP_Exp1_raw.csv"
   ) %>%
@@ -1485,7 +1485,7 @@ summary(df[[25]])
 write.csv(x = df[[25]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp4/Constable_2019_EPHPP_Exp4_Clean.csv")
 ```
 
-# Paper t6
+# Vicovaro_2022_EPHPP
 ## Experiment 1 (Identtiy = 2)
 "Self", "Stranger"
 ```{r Paper t6 Experiment 1}
@@ -1552,7 +1552,7 @@ names(df)[26] <- "Vicovaro_2022_Exp1"
 summary(df[[26]])
 write.csv(x = df[[26]], file = "../1_Clean_Data/Vicovaro_2022/Vicovaro_2022_Exp1_Clean.csv")
 ```
-# Paper t6
+# Vicovaro_2022_EPHPP
 ## Experiment 2 (Identtiy = 2)
 "Self", "Stranger"
 ```{r Paper t6 Experiment 2}
@@ -1749,7 +1749,7 @@ summary(df[[29]])
 write.csv(x = df[[29]], file = "../1_Clean_Data/Hu_2020_CP/Hu_2020_CP_Clean.csv")
 ```
 
-# Hu_2023
+# Hu_2023_PA
 ## Experiment 1 (Identtiy = 2)
 "Self", "Other"
 ```{r Paper s2 Experiment 1}
@@ -1797,7 +1797,7 @@ df[[30]] <- read.csv(
     Subject, Matching, Identity, Morality
     )
 
-names(df)[30] <- "Hu_2023"
+names(df)[30] <- "Hu_2023_PA"
 summary(df[[30]])
 write.csv(x = df[[30]], file = "../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
 ```
@@ -3018,7 +3018,6 @@ df[[49]] <- read.csv(
     Age = Edad,
     Gender = Sexo,
     Handedness = Mano,
-    
     Shape = Figura,
     Identity = Etiqueta,
     Matching = TipoEnsayo,
