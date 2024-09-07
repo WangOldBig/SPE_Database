@@ -5,8 +5,8 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-#变量名称查询工具
-
+# Tools in coding
+## Variation 变量名称查询工具
 ```{r}
 # 设置工作目录，即文件所在的文件夹
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
@@ -17,15 +17,7 @@ data <- read.csv("../2_Raw_Data/Martínez-Pérez_2024_CC/Martinez-Pérez_2024_
 # 打印变量名称
 print(names(data))
 ```
-
-
-```{r Package, warning = FALSE,message = FALSE}
-# clean data
-library(tidyr)
-library(dplyr)
-library(stringr)
-```
-
+## Matlab tools
 ```{r Matlab小工具}
 # Read MATLAB .mat
 
@@ -109,7 +101,16 @@ read.mat <- function(list) {
 }
 ```
 
-# Data.Frame List
+# Clean Coding
+# Loading package
+```{r Package, warning = FALSE,message = FALSE}
+# clean data
+library(tidyr)
+library(dplyr)
+library(stringr)
+```
+
+# Initial Data.Frame List
 ```{r Data.Frame List}
 df <- list()
 ```
