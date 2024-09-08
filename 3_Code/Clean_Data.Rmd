@@ -116,7 +116,7 @@ df <- list()
 ```
 
 # MerrynD.Constable_2020_AP
-## Experiment 1 (Identtiy = 3)
+## Experiment 1 (Identity = 3)
 "Self", "Partner", "Stranger"
 ```{r Paper6 MerrynD.Constable_2020_AP}
 df[[1]] <- read.csv(
@@ -157,11 +157,22 @@ df[[1]] <- read.csv(
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
+# 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = NA, # 屏幕分辨率未提及
+    RefreshRate = NA, # 刷新率未提及
+    Luminance = NA, # 亮度未提及
+    VisualAngle = NA, # 视觉角度未提及
+    Color = NA, # 颜色未提及
+    Contrast = NA, # 对比度未提及
+    ScreenGamma = NA # 屏幕γ值未提及
+  ) %>%
   dplyr::select(
     Subject, Age_Participant1, Age_Participant2, 
     StrangerShape, P1Shape, P2Shape, 
     Shape, Matching, Identity, ShapeLoc, 
-    Response, RT_ms, RT_sec, ACC, Phase
+    Response, RT_ms, RT_sec, ACC, Phase,
+    ScreenResolution, RefreshRate, Luminance, VisualAngle, Color, Contrast, ScreenGamma
   ) %>%
   dplyr::arrange(
     Subject, Matching, ShapeLoc
@@ -173,7 +184,7 @@ write.csv(x = df[[1]], file = "../1_Clean_Data/Constable_2020_AP/Constable_2020_
 ```
 
 # Merryn Dale Constable_2020_CE
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self", "Stranger"
 ```{r Paper 46 Experiment 1}
 df[[2]] <- read.csv(
@@ -221,10 +232,28 @@ df[[2]] <- read.csv(
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
+# 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = "1920x1080", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = "169 cd/m²", # 背景亮度，直接使用文本输出
+    LuminanceStrongDark = "2 cd/m²", # 强暗亮度，直接使用文本输出
+    LuminanceWeakDark = "86 cd/m²", # 弱暗亮度，直接使用文本输出
+    LuminanceWeakLight = "255 cd/m²", # 弱光亮度，直接使用文本输出
+    LuminanceStrongLight = "340 cd/m²",  # 强光亮度，直接使用文本输出
+    TextColor = "Black", # 文本颜色，假设文本颜色为黑色
+    VisualAngle = "57/1000", # 视觉角度，假设57厘米为视距，具体数值需要根据实验设置调整
+    Color = NA, # 文档中没有提及具体颜色
+    Contrast = NA, # 文档中没有提及对比度
+    ScreenGamma = NA, # 屏幕γ值未提及
+  ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage,
     Shape, Matching, Identity, Response, ShapeLoc, Colour,
-    ShapeColour, textColour,Stimuli_Type, RT_ms, RT_sec, ACC
+    ShapeColour, textColour,Stimuli_Type, RT_ms, RT_sec, ACC,
+    ScreenResolution, RefreshRate, LuminanceBackground, LuminanceStrongDark,
+    LuminanceWeakDark, LuminanceWeakLight, LuminanceStrongLight, TextColor,
+    VisualAngle, Color, Contrast, ScreenGamma
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -239,7 +268,7 @@ write.csv(x = df[[2]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_
 ```
 
 # Merryn Dale Constable_2020_CE (Dark Light Box)
-## Experiment 2 (Identtiy = 2)
+## Experiment 2 (Identity = 2)
 "Self", "Stranger"
 ```{r Paper 46 Experiment 2}
 df[[3]] <- read.csv(
@@ -288,10 +317,28 @@ df[[3]] <- read.csv(
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
+  # 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = "1920x1080", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = "169 cd/m²", # 背景亮度，直接使用文本输出
+    LuminanceStrongDark = "2 cd/m²", # 强暗亮度，直接使用文本输出
+    LuminanceWeakDark = "86 cd/m²", # 弱暗亮度，直接使用文本输出
+    LuminanceWeakLight = "255 cd/m²", # 弱光亮度，直接使用文本输出
+    LuminanceStrongLight = "340 cd/m²",  # 强光亮度，直接使用文本输出
+    TextColor = "Black", # 文本颜色，假设文本颜色为黑色
+    VisualAngle = "57/1000", # 视觉角度，假设57厘米为视距，具体数值需要根据实验设置调整
+    Color = NA, # 文档中没有提及具体颜色
+    Contrast = NA, # 文档中没有提及对比度
+    ScreenGamma = NA, # 屏幕γ值未提及
+  ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage,
     Shape, Matching, Identity, Response, ShapeLoc, FaceIdentity, Stimulus,
-    Strength, textColour, Stimuli_Type, RT_ms, RT_sec, ACC
+    Strength, textColour, Stimuli_Type, RT_ms, RT_sec, ACC,
+    ScreenResolution, RefreshRate, LuminanceBackground, LuminanceStrongDark,
+    LuminanceWeakDark, LuminanceWeakLight, LuminanceStrongLight, TextColor,
+    VisualAngle, Color, Contrast, ScreenGamma    
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -307,7 +354,7 @@ write.csv(x = df[[3]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_
 ```
 
 # Haoyue Qian_2019_QJEP 
-## Experiment 1 (Identtiy = 3)
+## Experiment 1 (Identity = 3)
 "Self", "Familiar", "Stranger"
 ```{r Paper 51 Experiment 1}
 df[[4]] <- read.csv(
@@ -357,6 +404,20 @@ df[[4]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
+# 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = NA, # 文档中没有提及屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = "169 cd/m²", # 背景亮度，直接使用文本输出
+    LuminanceStrongDark = "2 cd/m²", # 强暗亮度，直接使用文本输出
+    LuminanceWeakDark = "86 cd/m²", # 弱暗亮度，直接使用文本输出
+    LuminanceWeakLight = "255 cd/m²", # 弱光亮度，直接使用文本输出
+    LuminanceStrongLight = "340 cd/m²",  # 强光亮度，直接使用文本输出
+    TextColor = NA, # 文档中没有提及具体颜色
+    VisualAngle = "57/1000", # 视觉角度，假设57厘米为视距，具体数值需要根据实验设置调整
+    Color = NA, # 文档中没有提及具体颜色
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity, Session
   )
@@ -365,7 +426,7 @@ names(df)[4] <- "Qian_2019_QJEP Exp 1"
 summary(df[[4]])
 write.csv(x = df[[4]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp1_Clean.csv")
 ```
-## Experiment 2 (Identtiy = 2)
+## Experiment 2 (Identity = 2)
 "Self", "Familiar"
 ```{r Paper 51 Experiment 2}
 df[[5]] <- read.csv(
@@ -404,6 +465,20 @@ df[[5]] <- read.csv(
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
+  # 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = NA, # 文档中没有提及屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = "169 cd/m²", # 背景亮度，直接使用文本输出
+    LuminanceStrongDark = "2 cd/m²", # 强暗亮度，直接使用文本输出
+    LuminanceWeakDark = "86 cd/m²", # 弱暗亮度，直接使用文本输出
+    LuminanceWeakLight = "255 cd/m²", # 弱光亮度，直接使用文本输出
+    LuminanceStrongLight = "340 cd/m²",  # 强光亮度，直接使用文本输出
+    TextColor = NA, # 文档中没有提及具体颜色
+    VisualAngle = "57/1000", # 视觉角度，假设57厘米为视距，具体数值需要根据实验设置调整
+    Color = NA, # 文档中没有提及具体颜色
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::select(
     Subject, Gender, Matching, Identity, Cue, RT_ms, RT_sec, ACC
   ) %>%
@@ -421,7 +496,7 @@ write.csv(x = df[[5]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp
 ```
 
 # Sarah Schäfer_2019_CP 
-## Experiment 1 (Identtiy = 4)
+## Experiment 1 (Identity = 4)
 "Self", "Mother","none", "Acquaintance"
 ```{r Paper 54 Experiment 1}
 df[[6]] <- read.csv(
@@ -454,6 +529,20 @@ df[[6]] <- read.csv(
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
+  # 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = "1680x1050", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及具体颜色
+    VisualAngle = "0.48°", # 视觉角度，根据文档中提供的信息
+    Color = NA, # 文档中没有提及具体颜色
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness,
     Matching, Identity, RT_ms, RT_sec, ACC
@@ -470,7 +559,7 @@ names(df)[6] <- "Schäfer_2019_CP Exp 1"
 summary(df[[6]])
 write.csv(x = df[[6]], file = "../1_Clean_Data/Schäfer_2019_CP/Schäfer_2019_CP_Exp1_Clean.csv")
 ```
-## Experiment 2 (Identtiy = 4)
+## Experiment 2 (Identity = 4)
 "Self", "Mother","none", "Acquaintance"
 ```{r Paper 54 Experiment 2}
 df[[7]] <- read.csv(
@@ -499,6 +588,20 @@ df[[7]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
+  # 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = "1680x1050", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及具体颜色
+    VisualAngle = "0.48°", # 视觉角度，根据文档中提供的信息
+    Color = NA, # 文档中没有提及具体颜色
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Condition
   )
@@ -507,7 +610,7 @@ names(df)[7] <- "Schäfer_2019_CP Exp 2"
 summary(df[[7]])
 write.csv(x = df[[7]], file = "../1_Clean_Data/Schäfer_2019_CP/Schäfer_2019_CP_Exp2_Clean.csv")
 ```
-## Experiment 3 (Identtiy = 3)
+## Experiment 3 (Identity = 3)
 "Self", "Mother", "Acquaintance"
 ```{r Paper 54 Experiment 3}
 df[[8]] <- read.csv(
@@ -542,6 +645,20 @@ df[[8]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
+  # 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = "1680x1050", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及具体颜色
+    VisualAngle = "0.48°", # 视觉角度，根据文档中提供的信息
+    Color = NA, # 文档中没有提及具体颜色
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity,
   )
@@ -551,7 +668,7 @@ write.csv(x = df[[8]], file = "../1_Clean_Data/Schäfer_2019_CP/Schäfer_2019_CP
 ```
 
 # Mateusz Woźniak_2018_PLOS (Face)
-## Experiment 1 (Identtiy = 3)
+## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper 95 Experiment 1}
 df[[9]] <- read.csv(
@@ -621,7 +738,7 @@ summary(df[[9]])
 write.csv(x = df[[9]], file = "../1_Clean_Data/Woźniak_2018_PLOS/Woźniak_2018_PLOS_Exp1_Clean.csv")
 ```
 
-## Experiment 2 (Identtiy = 3)
+## Experiment 2 (Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper 95 Experiment 2}
 df[[10]] <- read.csv(
@@ -692,7 +809,7 @@ write.csv(x = df[[10]], file = "../1_Clean_Data/Woźniak_2018_PLOS/Woźniak_2018
 ```
 
 # Marius Golubickis_2021_AP
-## Experiment 1 (Identtiy = 3)
+## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n4 Experiment 1}
 df[[11]] <- read.csv(
@@ -738,7 +855,7 @@ summary(df[[11]])
 write.csv(x = df[[11]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp1_Clean.csv")
 ```
 
-## Experiment 2 (Identtiy = 3)
+## Experiment 2 (Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n4 Experiment 1}
 df[[12]] <- read.csv(
@@ -785,7 +902,7 @@ write.csv(x = df[[12]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_20
 ```
 
 # Mayan Navon_2021
-## Experiment 1 (Identtiy = 3)
+## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n13 Experiment 1}
 df[[13]] <- read.csv(
@@ -850,7 +967,7 @@ summary(df[[13]])
 write.csv(x = df[[13]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp1_Clean.csv")
 ```
 
-## Experiment 2 (Identtiy = 3)
+## Experiment 2 (Identity = 3)
 "Father", "Close", "Stranger"
 ```{r Paper n13 Experiment 2}
 df[[14]] <- read.csv(
@@ -912,7 +1029,7 @@ summary(df[[14]])
 write.csv(x = df[[14]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp2_Clean.csv")
 ```
 
-## Experiment 3 (Identtiy = 3) 
+## Experiment 3 (Identity = 3) 
 "Self", "Father", "Stranger"
 ```{r Paper n13 Experiment 3}
 df[[15]] <- read.csv(
@@ -979,7 +1096,7 @@ summary(df[[15]])
 write.csv(x = df[[15]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp3_Clean.csv")
 ```
 
-## Experiment 4 (Identtiy = 3)
+## Experiment 4 (Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n13 Experiment 4}
 df[[16]] <- read.csv(
@@ -1045,7 +1162,7 @@ write.csv(x = df[[16]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp4_Clean
 ```
 
 # Saga L. Svensson_2021_PR
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self", "Friend"
 ```{r Paper n16 Experiment 1}
 df[[17]] <- read.csv(
@@ -1092,7 +1209,7 @@ summary(df[[17]])
 write.csv(x = df[[17]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_PR_Exp1_Clean.csv")
 ```
 
-## Experiment 2 (Identtiy = 2)
+## Experiment 2 (Identity = 2)
 "Self", "Friend"
 ```{r Paper n16 Experiment 2}
 df[[18]] <- read.csv(
@@ -1139,7 +1256,7 @@ summary(df[[18]])
 write.csv(x = df[[18]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_PR_Exp2_Clean.csv")
 ```
 
-## Experiment 3 (Identtiy = 2)
+## Experiment 3 (Identity = 2)
 "Self", "Friend"
 ```{r Paper n16 Experiment 3}
 df[[19]] <- read.csv(
@@ -1187,7 +1304,7 @@ write.csv(x = df[[19]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_P
 ```
 
 # Yang Xu_2021_CP
-## Experiment 1 (Identtiy = 3)
+## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n23 Experiment 1}
 df[[20]] <- read.csv(
@@ -1241,7 +1358,7 @@ write.csv(x = df[[20]], file = "../1_Clean_Data/Yang_2021_CP/Yang_2021_CP_Exp1_C
 ```
 
 # Hu_2023_PA-  
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self", "Stranger"
 ```{r Paper s2 Experiment 1}
 df[[21]] <- read.csv(
@@ -1299,7 +1416,7 @@ write.csv(x = df[[21]], file = "../1_Clean_Data/Hu_2023_PA/Hu_2023_PA_Exp1_Clean
 ```
 
 # Constable_2019_EPHPP
-## Experiment 1 (Identtiy = 4)
+## Experiment 1 (Identity = 4)
 "Self", "We", "They","Alone"
 ```{r Paper p5 Experiment 1}
 df[[22]] <- read.csv(
@@ -1347,7 +1464,7 @@ summary(df[[22]])
 write.csv(x = df[[22]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp1/Constable_2019_EPHPP_Exp1_Clean.csv")
 ```
 # Constable_2019_EPHPP
-## Experiment 2 (Identtiy = 4)
+## Experiment 2 (Identity = 4)
 "Self", "We", "They","Alone"
 ```{r Paper p5 Experiment 2}
 df[[23]] <- read.csv(
@@ -1396,7 +1513,7 @@ summary(df[[23]])
 write.csv(x = df[[23]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_Clean.csv")
 ```
 # Constable_2019_EPHPP
-## Experiment 3 (Identtiy = 4)
+## Experiment 3 (Identity = 4)
 "Self", "We", "They","Alone"
 ```{r Paper p5 Experiment 3}
 df[[24]] <- read.csv(
@@ -1445,7 +1562,7 @@ summary(df[[24]])
 write.csv(x = df[[24]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp3/Constable_2019_EPHPP_Exp3_Clean.csv")
 ```
 # Constable_2019_EPHPP
-## Experiment 4 (Identtiy = 5)
+## Experiment 4 (Identity = 5)
 "Self", "We", "They","Alone"
 ```{r Paper p5 Experiment 4}
 df[[25]] <- read.csv(
@@ -1487,7 +1604,7 @@ write.csv(x = df[[25]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp4/Consta
 ```
 
 # Vicovaro_2022_EPHPP
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self", "Stranger"
 ```{r Paper t6 Experiment 1}
 df[[26]] <- read.csv(
@@ -1554,7 +1671,7 @@ summary(df[[26]])
 write.csv(x = df[[26]], file = "../1_Clean_Data/Vicovaro_2022/Vicovaro_2022_Exp1_Clean.csv")
 ```
 # Vicovaro_2022_EPHPP
-## Experiment 2 (Identtiy = 2)
+## Experiment 2 (Identity = 2)
 "Self", "Stranger"
 ```{r Paper t6 Experiment 2}
 temp <- read.csv(
@@ -1642,7 +1759,7 @@ summary(df[[27]])
 write.csv(x = df[[27]], file = "../1_Clean_Data/Vicovaro_2022/Vicovaro_2022_Exp2_Clean.csv")
 ```
 # Perrykkad_2022_BMC
-## Experiment 1 (Identtiy = 3)
+## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper t7 Experiment 1}
 df[[28]] <- read.csv(
@@ -1695,7 +1812,7 @@ summary(df[[28]])
 write.csv(x = df[[28]], file = "../1_Clean_Data/Perrykkad_2022_BMC/Perrykkad_2022_BMC_Exp1_Clean.csv")
 ```
 # Hu_2020_CP
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self", "Other"
 ```{r Paper p20 Experiment 1}
 df[[29]] <- read.csv(
@@ -1751,7 +1868,7 @@ write.csv(x = df[[29]], file = "../1_Clean_Data/Hu_2020_CP/Hu_2020_CP_Clean.csv"
 ```
 
 # Hu_2023_PA
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self", "Other"
 ```{r Paper s2 Experiment 1}
 df[[30]] <- read.csv(
@@ -1804,7 +1921,7 @@ write.csv(x = df[[30]], file = "../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
 ```
 
 # Woźniak_2022_PR
-## Experiment 1 (Identtiy = 3)
+## Experiment 1 (Identity = 3)
 "Self", "Friend", "None"
 ```{r Paper t9 Experiment 1}
 ###############################Save Raw Data####################################
@@ -1891,7 +2008,7 @@ summary(df[[31]])
 write.csv(x = df[[31]], file = "../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp1_Clean.csv")
 ```
 # Woźniak_2022_PR
-## Experiment 2 (Identtiy = 3)
+## Experiment 2 (Identity = 3)
 "Self", "Friend", "None"
 ```{r Paper t9 Experiment 2}
 ###############################Save Raw Data####################################
@@ -1979,7 +2096,7 @@ write.csv(x = df[[32]], file = "../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_P
 ```
 
 # Woźniak_2022_PR
-## Experiment 3 (Identtiy = 3)
+## Experiment 3 (Identity = 3)
 "Self", "Friend", "None"
 ```{r Paper t9 Experiment 3}
 ###############################Save Raw Data####################################
@@ -2066,7 +2183,7 @@ summary(df[[33]])
 write.csv(x = df[[33]], file = "../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp3_Clean.csv")
 ```
 # Haciahmet_2023_Psychophysiology -
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self", "Stranger"
 ```{r Paper t1 Experiment 1}
 df[[34]] <- read.csv(
@@ -2124,7 +2241,7 @@ write.csv(x = df[[34]], file = "../1_Clean_Data/Haciahmet_2023_Psy/Haciahmet_202
 ```
 
 # Sui_2023_CC
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self", "Other"
 ```{r Paper t18 Experiment 1}
 df[[35]] <- read.csv(
@@ -2174,7 +2291,7 @@ write.csv(x = df[[35]], file = "../1_Clean_Data/Sui_2023_CC/Sui_2023_CC_Exp1_Cle
 ```
 
 # Hobbs_2023_PM 
-## Experiment 1 (Identtiy = 3)
+## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper t2 Experiment 1}
 temp <- read.csv(
@@ -2261,7 +2378,7 @@ write.csv(x = df[[36]], file = "../1_Clean_Data/Hobbs_2023_PM/Hobbs_2023_PM_Exp1
 ```
 
 # Mcivor_2020_EJN 
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self", "Other"
 ```{r Paper p45 Experiment 1}
 df[[37]] <- read.csv(
@@ -2329,7 +2446,7 @@ write.csv(x = df[[37]], file = "../1_Clean_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_
 ```
 
 # Liang_2021_HBM
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self", "Friend", "Stranger"
 ```{r Paper t3 Experiment 1}
 df[[38]] <- read.csv(
@@ -2390,7 +2507,7 @@ write.csv(x = df[[38]], file = "../1_Clean_Data/Liang_2021_HBM/Liang_2021_HBM_Ex
 ```
 
 # Kolvoort_2020_HBM 
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self", "Friend", "Stranger"
 ```{r Paper p34 Experiment 1}
 df[[39]] <- read.csv(
@@ -2446,7 +2563,7 @@ write.csv(x = df[[39]], file = "../1_Clean_Data/Kolvoort_2020_HBM/Kolvoort_2020_
 ```
 
 # Liu_2023_CP
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self", "Stranger"
 ```{r Paper s1 Experiment 1}
 df_Ps1_E1 <- read.csv(
@@ -2528,7 +2645,7 @@ write.csv(x = df[[40]], file = "../1_Clean_Data/Liu_2023_CP/Liu_2023_CP_Exp1_Cle
 ```
 
 # Orellana-Corrales_2021_EP
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self", "Stranger"
 ```{r Paper n14 Experiment 1}
 df[[41]] <- read.csv(
@@ -2590,7 +2707,7 @@ write.csv(x = df[[41]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orella
 ```
 
 # Orellana-Corrales_2021_EP
-## Experiment 2 (Identtiy = 2)
+## Experiment 2 (Identity = 2)
 "Self", "Stranger"
 ```{r Paper n14 Experiment 2}
 df[[42]] <- read.csv(
@@ -2652,7 +2769,7 @@ write.csv(x = df[[42]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orella
 ```
 
 # Orellana-Corrales_2021_EP
-## Experiment 3 (Identtiy = 2)
+## Experiment 3 (Identity = 2)
 "Self", "Stranger"
 ```{r Paper n14 Experiment 3}
 df[[43]] <- read.csv(
@@ -2714,7 +2831,7 @@ write.csv(x = df[[43]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orella
 ```
 
 # Amodeo_2024_CABN
-## Experiment 1 (Identtiy = 3)
+## Experiment 1 (Identity = 3)
 "Self","Friend","Stranger"
 ```{r Paper t28 Experiment 1}
 df[[44]] <- read.csv(
@@ -2770,7 +2887,7 @@ write.csv(x = df[[44]], file = "../1_Clean_Data/Amodeo_2024_CABN/Amodeo_2024_CAB
 ```
 
 # Zhang_2022_NI
-## Experiment 1 (Identtiy = 2)
+## Experiment 1 (Identity = 2)
 "Self","Stranger"
 ```{r Paper t10 Experiment 1}
 df[[45]] <- read.csv(
@@ -2832,7 +2949,7 @@ write.csv(x = df[[45]], file = "../1_Clean_Data/Zhang_2022_NI/Zhang_2022_NI_Exp1
 ```
 
 # Zhang_2022_NI
-## Experiment 2 (Identtiy = 2)
+## Experiment 2 (Identity = 2)
 "高兴","中性"
 ```{r Paper t10 Experiment 2}
 df[[46]] <- read.csv(
@@ -2890,7 +3007,7 @@ write.csv(x = df[[46]], file = "../1_Clean_Data/Zhang_2022_NI/Zhang_2022_NI_Exp2
 ```
 
 # Zhang_2022_NI
-## Experiment 3 (Identtiy = 2)
+## Experiment 3 (Identity = 2)
 "￥16","￥1"
 ```{r Paper t10 Experiment 3}
 df[[47]] <- read.csv(
@@ -2948,7 +3065,7 @@ write.csv(x = df[[47]], file = "../1_Clean_Data/Zhang_2022_NI/Zhang_2022_NI_Exp3
 ```
 
 # Feldborg_2021_ERPH
-## Experiment 1 (Identtiy = 3)
+## Experiment 1 (Identity = 3)
 "Self","Friend","Stranger"
 ```{r Paper t13 Experiment 1}
 df[[48]] <- read.csv(
@@ -3183,7 +3300,7 @@ Unpublished
 
 
 # Paper s3
-## Experiment 1 (Identtiy = 3)
+## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper s3 Experiment 1}
 df[[22]] <- read.csv(
@@ -3242,7 +3359,7 @@ write.csv(x = df[[22]], file = "../4_Data_Extraction/4_2_Open_Data/Paper_s3/Ps3_
 ```
 
 # Paper s4
-## Experiment 1 (Identtiy = 3)
+## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper s4 Experiment 1}
 # 获取文件夹内所有满足条件的文件名
@@ -3314,7 +3431,7 @@ write.csv(x = df[[23]], file = "../4_Data_Extraction/4_2_Open_Data/Paper_s4/Ps4_
 ```
 
 # Paper s4
-## Experiment 2 (Identtiy = 3)
+## Experiment 2 (Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper s4 Experiment 2}
 # 获取文件夹内所有满足条件的文件名
@@ -3385,7 +3502,7 @@ write.csv(x = df[[24]], file = "../4_Data_Extraction/4_2_Open_Data/Paper_s4/Ps4_
 ```
 
 # Constable_2019_EPHPP
-## Experiment 2 (Identtiy = 4)
+## Experiment 2 (Identity = 4)
 "Self", "We", "They","Alone"
 ```{r Paper s5 Experiment 2}
 df[[23]] <- read.csv(
@@ -3431,7 +3548,7 @@ write.csv(x = df[[23]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp2/Consta
 ```
 
 # Feldborg_2021_ERPH
-## Experiment 2 (Identtiy = 3)
+## Experiment 2 (Identity = 3)
 "Self","Friend","Stranger"
 ```{r Paper t13 Experiment 1a}
 df[[49]] <- read.csv(
@@ -3487,7 +3604,7 @@ write.csv(x = df[[49]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021
 ```
 
 # Feldborg_2021_ERPH
-## Experiment 3 (Identtiy = 3)
+## Experiment 3 (Identity = 3)
 "Self","Friend","Stranger"
 ```{r Paper t13 Experiment 1b}
 df[[50]] <- read.csv(
