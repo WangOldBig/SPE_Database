@@ -101,6 +101,7 @@ read.mat <- function(list) {
 }
 ```
 
+
 # Clean Coding
 # Loading package
 ```{r Package, warning = FALSE,message = FALSE}
@@ -1749,6 +1750,7 @@ df[[27]] <- temp %>%
 names(df)[27] <- "Vicovaro_2022_Exp2"
 summary(df[[27]])
 write.csv(x = df[[27]], file = "../1_Clean_Data/Vicovaro_2022/Vicovaro_2022_Exp2_Clean.csv")
+rm(Subject_ID,temp)
 ```
 # Perrykkad_2022_BMC
 ## Experiment 1 (Identity = 3)
@@ -2174,7 +2176,7 @@ names(df)[33] <- "Woźniak_2022_PR_Exp 3"
 summary(df[[33]])
 write.csv(x = df[[33]], file = "../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp3_Clean.csv")
 ```
-# Haciahmet_2023_Psychophysiology -
+# Haciahmet_2023_Psychophysiology 
 ## Experiment 1 (Identity = 2)
 "Self", "Stranger"
 ```{r Paper t1 Experiment 1}
@@ -2384,7 +2386,6 @@ df[[37]] <- read.csv(
     Age = Age,
     Handedness = Handedness,
     Gender = Sex,
-    
     Happyshapeother = Happyshapeother,
     Happyshapeself = Happyshapeself,
     Neutralshapeother = Neutralshapeother,
@@ -2394,7 +2395,6 @@ df[[37]] <- read.csv(
     Othershape = Othershape,
     Selfshape = Selfshape,
     Label = CellLabel,
-    
     Identity = Label2,
     Response = ITI2.RESP,
     Matching = CellLabel,
@@ -3650,3 +3650,33 @@ names(df)[50] <- "Feldborg_2021_ERPH"
 summary(df[[50]])
 write.csv(x = df[[50]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1b_Clean.csv")
 ```
+
+```{r}
+# 加载ggplot2包
+library(ggplot2)
+
+# 创建数据框
+data <- data.frame(
+  Category = c("Cognitive", "Memory", "Motor", "Multiple", "Exception"),
+  n = c(16, 27, 3, 10, 89)
+)
+
+# 为渐变创建一个连续变量
+data$value <- seq_along(data$n)
+
+# 定义颜色向量
+colors <- c("Cognitive" = "#FF0000", "Memory" = "#FF7F00", "Motor" = "#FFFF00",
+            "Multiple" = "#FFFF00", "Exception" = "#FFFF00")
+
+# 创建饼图
+ggplot(data, aes(x = "", y = n, fill = Category)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start = 0) +
+  scale_fill_manual(values = colors) + # 使用自定义颜色
+  theme_void() + # 使用主题void来隐藏轴和背景
+  labs(fill = "Category", title = "Proportion of Categories") +
+  theme(legend.position = "right") # 调整图例位置
+```
+
+
+
