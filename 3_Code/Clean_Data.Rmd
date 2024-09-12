@@ -850,7 +850,7 @@ write.csv(x = df[[11]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_20
 
 ## Experiment 2 (Identity = 3)
 "Self", "Friend", "Stranger"
-```{r Paper n4 Experiment 1}
+```{r Paper n4 Experiment 2}
 df[[12]] <- read.csv(
   "../2_Raw_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp2_raw.csv"
   ) %>%
