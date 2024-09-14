@@ -722,6 +722,19 @@ df[[9]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
+   dplyr::mutate(
+    ScreenResolution = "24’’ widescreen LED monito", # 屏幕分辨率
+    RefreshRate = NA, # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    BackgroundColor = "black", # 背景颜色
+    StimuliColor = "white", # 刺激颜色
+    VisualAngle = NA, # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
   )
@@ -792,6 +805,19 @@ df[[10]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
+   dplyr::mutate(
+    ScreenResolution = "24’’ widescreen LED monito", # 屏幕分辨率
+    RefreshRate = NA, # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    BackgroundColor = "black", # 背景颜色
+    StimuliColor = "white", # 刺激颜色
+    VisualAngle = NA, # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
   )
@@ -839,6 +865,19 @@ df[[11]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
+   dplyr::mutate(
+    ScreenResolution = NA, # 屏幕分辨率
+    RefreshRate = NA, # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及文本颜色
+    Color = NA, # 文档中没有提及颜色
+    VisualAngle = NA, # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
   )
@@ -884,6 +923,19 @@ df[[12]] <- read.csv(
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = NA, # 屏幕分辨率
+    RefreshRate = NA, # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及文本颜色
+    Color = NA, # 文档中没有提及颜色
+    VisualAngle = NA, # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
   ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
@@ -951,6 +1003,19 @@ df[[13]] <- read.csv(
     Subject, Gender, Age, Handedness, First_Lanugage,
     Shape, Word, Matching, Identity, Response, RT_ms, RT_sec, ACC
   ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920 × 1080", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及文本颜色
+    Color = NA, # 文档中没有提及颜色
+    VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
   )
@@ -1012,6 +1077,19 @@ df[[14]] <- read.csv(
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920 × 1080", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及文本颜色
+    Color = NA, # 文档中没有提及颜色
+    VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
   ) %>%
   dplyr::arrange( 
     Subject, Identity, Matching
@@ -1080,6 +1158,19 @@ df[[15]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920 × 1080", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及文本颜色
+    Color = NA, # 文档中没有提及颜色
+    VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
   )
@@ -1145,6 +1236,19 @@ df[[16]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920 × 1080", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及文本颜色
+    Color = NA, # 文档中没有提及颜色
+    VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
     )
@@ -1193,6 +1297,19 @@ df[[17]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
+  dplyr::mutate(
+    ScreenResolution = NA, # 屏幕分辨率
+    RefreshRate = NA, # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及文本颜色
+    Color = NA, # 文档中没有提及颜色
+    VisualAngle = NA, # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
     )
@@ -1240,6 +1357,19 @@ df[[18]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
+   dplyr::mutate(
+    ScreenResolution = NA, # 屏幕分辨率
+    RefreshRate = NA, # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及文本颜色
+    Color = NA, # 文档中没有提及颜色
+    VisualAngle = NA, # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
     )
@@ -1287,6 +1417,19 @@ df[[19]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
+   dplyr::mutate(
+    ScreenResolution = NA, # 屏幕分辨率
+    RefreshRate = NA, # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及文本颜色
+    Color = NA, # 文档中没有提及颜色
+    VisualAngle = NA, # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
     )
@@ -1341,6 +1484,19 @@ df[[20]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
+   dplyr::mutate(
+    ScreenResolution = " 1024 × 768", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及文本颜色
+    BackgroundColor = "white", # 背景颜色
+    VisualAngle = NA, # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity, Group
     )
@@ -1399,6 +1555,19 @@ df[[21]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
+   dplyr::mutate(
+    ScreenResolution = " 22-inch CRT monitors", # 屏幕分辨率
+    RefreshRate = NA, # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, # 文档中没有提及文本颜色
+    BackgroundColor = "white", # 背景颜色
+    VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
   )
@@ -1449,6 +1618,19 @@ df[[22]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920✖️1080", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = "white、red、yellow", #  文本颜色
+    BackgroundColor = "black", # 背景颜色
+    VisualAngle = "57cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
     )
@@ -1497,6 +1679,19 @@ df[[23]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920✖️1080", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = "white、red、yellow", #  文本颜色
+    BackgroundColor = "black", # 背景颜色
+    VisualAngle = "57cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
     )
@@ -1546,6 +1741,19 @@ df[[24]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920✖️1080", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = "white、red、yellow", #  文本颜色
+    BackgroundColor = "black", # 背景颜色
+    VisualAngle = "57cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
     )
@@ -1587,6 +1795,19 @@ df[[25]] <- read.csv(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920✖️1080", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = "white、red、yellow", #  文本颜色
+    BackgroundColor = "black", # 背景颜色
+    VisualAngle = "57cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
+  ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
     )
@@ -1654,6 +1875,19 @@ df[[26]] <- read.csv(
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "15.5’’ computer screen0", # 屏幕分辨率
+    RefreshRate = NA, # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, #  文档中没有提及文本颜色
+    BackgroundColor = "grey", # 背景颜色
+    VisualAngle = "57cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
   ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
@@ -1743,6 +1977,19 @@ df[[27]] <- temp %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
+  ) %>%
+ dplyr::mutate(
+    ScreenResolution = "15.5’’ computer screen0", # 屏幕分辨率
+    RefreshRate = NA, # 刷新率，直接使用文本输出
+    LuminanceBackground = NA, # 文档中没有提及背景亮度
+    LuminanceStrongDark = NA, # 文档中没有提及强暗亮度
+    LuminanceWeakDark = NA, # 文档中没有提及弱暗亮度
+    LuminanceWeakLight = NA, # 文档中没有提及弱光亮度
+    LuminanceStrongLight = NA,  # 文档中没有提及强光亮度
+    TextColor = NA, #  文档中没有提及文本颜色
+    BackgroundColor = "grey", # 背景颜色
+    VisualAngle = "57cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中没有提及对比度
   ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
