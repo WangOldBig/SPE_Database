@@ -1,0 +1,67 @@
+---
+title: "Self-Prioritization Effects Database"
+author: "Author First M. Last"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+  pdf_document:
+    toc: true
+    number_sections: true
+---
+
+# Abstract
+
+Self-Prioritization Effects play an important role in helping us understand how self-relevance influences human actions and thoughts. To better understand this process, we created a large database of Self-Prioritization Effects studies based on Sui's paradigm. The data from each study are structured in a common, easy-to-use format that can be imported and analyzed using multiple software packages. Each dataset is accompanied by an explanation regarding the nature of the collected data. As of publication, the Self-Prioritization Effects Database (available at [GitHub Repository](https://github.com/Chuan-Peng-Lab/SPE_Database)) contains 145 datasets with data from more than 8,700 participants. We demonstrate the usefulness of this collection in four analyses that provide precise estimations of several foundational self-related effects.
+
+**Keywords**: Self-Prioritization Effects; Database
+
+## Introduction
+
+Recently, more and more researchers have become interested in how self-relevance influences human actions and thoughts. An elegant experimental paradigm (Sui et al., 2012) shows that when stimuli are related to ourselves, we tend to respond with greater accuracy and speed. For example, when the concept of "me" is associated with a triangle, recognition is faster and more accurate than when the shape is associated with "others". This suggests that the self-concept has priority in early perceptual processing, known as the Self-Prioritization Effect (SPE) in shape-label matching tasks.
+
+## Details of the Database
+
+The Self-Prioritization Effects Database is hosted on the [Open Science Framework (OSF)](https://osf.io/s46pr/) website. Each dataset is represented by two folders: **Raw_Data** and **Clean_Data**.
+
+-   The **Raw_Data** folder contains the original data from the study.
+-   The **Clean_Data** folder includes processed data files in `.csv` format and a corresponding codebook in `.xlsx` format.
+
+Each study includes a README file, which outlines the authors, citation, participants, procedure, and data files.
+
+## Example Uses of the Database
+
+The Self-Prioritization Effects Database can be used for a variety of purposes, such as: 1. Developing and testing new models of Self-Prioritization Effects. 2. Comparing the effects of different demographic variables on SPE (e.g., gender, nationality, area). 3. Replicating studies to validate findings. 4. Conducting meta-analyses to estimate the size of SPE across different tasks and populations.
+
+Below are some example analyses demonstrating the utility of the database.
+
+## Analysis Example 1: Reaction Time and Accuracy
+
+```{r example-analysis-1}
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+
+# Example data
+set.seed(123)
+data <- data.frame(
+  condition = rep(c("self", "other"), each = 100),
+  reaction_time = c(rnorm(100, mean = 500, sd = 50), rnorm(100, mean = 600, sd = 60))
+)
+
+# Plot reaction times
+ggplot(data, aes(x = condition, y = reaction_time)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Reaction Time by Condition", y = "Reaction Time (ms)", x = "Condition")
+```
+
+## Conclusion
+
+The Self-Prioritization Effects Database provides researchers with a wealth of data to explore the cognitive mechanisms underlying self-relevance. By making these datasets publicly available, we hope to facilitate further research and collaboration in this field.
+
+## References
+
+-   Sui, J., He, X., & Humphreys, G. W. (2012). **Perceptual effects of self-relevance: Evidence from perceptual matching**. *Journal of Experimental Psychology: Human Perception and Performance*, 38(5), 1105-1117. DOI: <https://doi.org/10.1037/a0029792>
