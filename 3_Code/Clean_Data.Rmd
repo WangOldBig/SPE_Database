@@ -4313,6 +4313,7 @@ if ("RT_ms" %in% colnames(all_data)) {
 ```
 
 
+## v3
 ```{r}
 # 加载必要的库
 library(dplyr)
@@ -4330,37 +4331,44 @@ age_data <- c()  # 存储所有年龄信息
 for (i in 1:length(df)) {
   article_data <- df[[i]]  # 获取每篇文章的数据
   
-  # 确定存在的列
-  columns_to_select <- c("Gender", "Age", "RT_ms")[c("Gender", "Age", "RT_ms") %in% names(article_data)]
-  
-  # 选择存在的列
+  # 只选择我们关心的列，如 Subject、Gender、Age 和 RT_ms，其他的列忽略
   article_data_filtered <- article_data %>%
-    select(all_of(columns_to_select)) %>%
-    mutate(
-      Gender = ifelse(is.na(Gender) | !Gender %in% c("Male", "Female"), NA, Gender),
-      Age = as.numeric(as.character(Age)),
-      RT_ms = as.numeric(as.character(RT_ms))
-    ) %>%
-    filter(!is.na(Gender) & !is.na(Age) & !is.na(RT_ms))
+    select(any_of(c("Subject", "Gender", "Age", "RT_ms")))  # 只选择这些列，如果不存在则忽略
+  
+  # 确保 Subject 列为字符类型，Gender 列为字符类型，Age 列统一为数值类型
+  if ("Subject" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Subject <- as.character(article_data_filtered$Subject)
+  }
+  
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Gender <- as.character(article_data_filtered$Gender)
+  }
+  
+  if ("Age" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Age <- as.numeric(as.character(article_data_filtered$Age))
+  }
+  
+  # 为每篇文章中的被试编号添加文章索引前缀，使每个被试编号在全局范围内唯一
+  article_data_filtered <- article_data_filtered %>%
+    mutate(Subject = paste0("Article", i, "_", Subject))
   
   # 统计性别
-  if ("Gender" %in% columns_to_select) {
+  if ("Gender" %in% colnames(article_data_filtered)) {
     current_gender_count <- table(article_data_filtered$Gender)
     gender_count_list[[i]] <- current_gender_count
   }
   
   # 收集年龄数据
-  if ("Age" %in% columns_to_select) {
+  if ("Age" %in% colnames(article_data_filtered)) {
     age_data <- c(age_data, article_data_filtered$Age)
   }
   
   # 将每篇文章的数据合并，只合并过滤后的数据
-  all_data <- rbind(all_data, article_data_filtered, use.names = TRUE)
+  all_data <- bind_rows(all_data, article_data_filtered)
 }
 
 # 合并所有文章的性别统计
 gender_count <- Reduce(`+`, gender_count_list, init = table(factor(levels = unique(unlist(lapply(gender_count_list, names))))))
-# ...（剩余代码不变）
 
 # 人口统计学描述
 total_subjects <- nrow(all_data)  # 被试总人数
@@ -4399,10 +4407,230 @@ if ("RT_ms" %in% colnames(all_data)) {
   cat("RT_ms 描述统计: \n")
   print(rt_summary)
 }
+rm(subject_df,age_data,avg_age,current_gender_count,female_count,gender_count,i,male_count,rt_summary,subject_bins,subject_distribution,total_subjects,all_data,article_data,article_data_filtered,gender_count_list)
+```
+
+
+
+## v4
+```{r}
+# 加载必要的库
+library(dplyr)
+library(ggplot2)
+
+# 假设 df 是一个包含文章数据的列表，其中每个元素都是一个数据框
+# df 是一个列表，df[[n]] 是第 n 篇文章，里面包含数据
+
+# 定义一些变量来存储统计信息
+all_data <- data.frame()  # 用于存储所有文章的人口统计学和 RT 数据
+gender_count_list <- list()  # 存储每篇文章的性别统计信息
+age_data <- c()  # 存储所有年龄信息
+
+# 遍历每篇文章的数据
+for (i in 1:length(df)) {
+  article_data <- df[[i]]  # 获取每篇文章的数据
+  
+  # 只选择我们关心的列，如 Subject、Gender、Age 和 RT_ms，其他的列忽略
+  article_data_filtered <- article_data %>%
+    select(any_of(c("Subject", "Gender", "Age", "RT_ms")))  # 只选择这些列，如果不存在则忽略
+  
+  # 确保 Subject 列为字符类型，Gender 列为字符类型，Age 列统一为数值类型
+  if ("Subject" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Subject <- as.character(article_data_filtered$Subject)
+  }
+  
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Gender <- as.character(article_data_filtered$Gender)
+  }
+  
+  if ("Age" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Age <- as.numeric(as.character(article_data_filtered$Age))
+  }
+  
+  # 为每篇文章中的被试编号添加文章索引前缀，使每个被试编号在全局范围内唯一
+  article_data_filtered <- article_data_filtered %>%
+    mutate(Subject = paste0("Article", i, "_", Subject))
+  
+  # 统计性别
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    current_gender_count <- table(article_data_filtered$Gender)
+    gender_count_list[[i]] <- current_gender_count
+  }
+  
+  # 收集年龄数据
+  if ("Age" %in% colnames(article_data_filtered)) {
+    age_data <- c(age_data, article_data_filtered$Age)
+  }
+  
+  # 将每篇文章的数据合并，只合并过滤后的数据
+  all_data <- bind_rows(all_data, article_data_filtered)
+}
+
+# 合并所有文章的性别统计
+gender_count <- Reduce(`+`, gender_count_list, init = table(factor(levels = unique(unlist(lapply(gender_count_list, names))))))
+
+# 人口统计学描述
+total_subjects <- nrow(all_data)  # 被试总人数
+male_count <- sum(all_data$Gender == "Male", na.rm = TRUE)  # 男性数量
+female_count <- sum(all_data$Gender == "Female", na.rm = TRUE)  # 女性数量
+avg_age <- mean(age_data, na.rm = TRUE)  # 平均年龄
+
+# 输出人口统计学信息
+cat("总被试量: ", total_subjects, "\n")
+cat("男性数量: ", male_count, "\n")
+cat("女性数量: ", female_count, "\n")
+cat("平均年龄: ", avg_age, "\n")
+
+# 分别绘制 Age 和 RT_ms 的散点图
+
+# 绘制 Age 的散点图，X 轴为 Subject，Y 轴为 Age
+ggplot(all_data, aes(x = Subject, y = Age, color = Gender)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Scatter Plot of Age by Subject",
+       x = "Subject",
+       y = "Age",
+       color = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank())  # 隐藏 X 轴的文本
+
+# 绘制 RT_ms 的散点图，X 轴为 Subject，Y 轴为 RT_ms
+ggplot(all_data, aes(x = Subject, y = RT_ms, color = Gender)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Scatter Plot of RT_ms by Subject",
+       x = "Subject",
+       y = "RT_ms",
+       color = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank())  # 隐藏 X 轴的文本
+
+# 如果有 RT_ms 数据，对其进行统计
+if ("RT_ms" %in% colnames(all_data)) {
+  rt_summary <- summary(all_data$RT_ms)
+  cat("RT_ms 描述统计: \n")
+  print(rt_summary)
+}
+
+# 清理环境变量
+rm(subject_df, age_data, avg_age, current_gender_count, female_count, gender_count, i, male_count, rt_summary, subject_bins, subject_distribution, total_subjects, all_data, article_data, article_data_filtered, gender_count_list)
 
 ```
 
 
+## v5
+```{r}
+# 加载必要的库
+library(dplyr)
+library(ggplot2)
+
+# 假设 df 是一个包含文章数据的列表，其中每个元素都是一个数据框
+# df 是一个列表，df[[n]] 是第 n 篇文章，里面包含数据
+
+# 定义一些变量来存储统计信息
+all_data <- data.frame()  # 用于存储所有文章的人口统计学和 RT 数据
+gender_count_list <- list()  # 存储每篇文章的性别统计信息
+age_data <- c()  # 存储所有年龄信息
+
+# 性别统一化函数
+standardize_gender <- function(gender) {
+  gender <- tolower(gender)  # 转换为小写
+  if (gender %in% c("1", "m", "mann", "hombre")) {
+    return("Male")
+  } else if (gender %in% c("2", "f", "frau", "mujer")) {
+    return("Female")
+  } else {
+    return("Others")
+  }
+}
+
+# 遍历每篇文章的数据
+for (i in 1:length(df)) {
+  article_data <- df[[i]]  # 获取每篇文章的数据
+  
+  # 只选择我们关心的列，如 Subject、Gender、Age 和 RT_ms，其他的列忽略
+  article_data_filtered <- article_data %>%
+    select(any_of(c("Subject", "Gender", "Age", "RT_ms")))  # 只选择这些列，如果不存在则忽略
+  
+  # 确保 Subject 列为字符类型，Gender 列为字符类型，Age 列统一为数值类型
+  if ("Subject" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Subject <- as.character(article_data_filtered$Subject)
+  }
+  
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Gender <- as.character(article_data_filtered$Gender)
+    article_data_filtered$Gender <- sapply(article_data_filtered$Gender, standardize_gender)  # 统一化性别变量
+  }
+  
+  if ("Age" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Age <- as.numeric(as.character(article_data_filtered$Age))
+  }
+  
+  # 为每篇文章中的被试编号添加文章索引前缀，使每个被试编号在全局范围内唯一
+  article_data_filtered <- article_data_filtered %>%
+    mutate(Subject = paste0("Article", i, "_", Subject))
+  
+  # 统计性别
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    current_gender_count <- table(article_data_filtered$Gender)
+    gender_count_list[[i]] <- current_gender_count
+  }
+  
+  # 收集年龄数据
+  if ("Age" %in% colnames(article_data_filtered)) {
+    age_data <- c(age_data, article_data_filtered$Age)
+  }
+  
+  # 将每篇文章的数据合并，只合并过滤后的数据
+  all_data <- bind_rows(all_data, article_data_filtered)
+}
+
+# 合并所有文章的性别统计
+gender_count <- Reduce(`+`, gender_count_list, init = table(factor(levels = unique(unlist(lapply(gender_count_list, names))))))
+
+# 人口统计学描述
+total_subjects <- nrow(all_data)  # 被试总人数
+male_count <- sum(all_data$Gender == "Male", na.rm = TRUE)  # 男性数量
+female_count <- sum(all_data$Gender == "Female", na.rm = TRUE)  # 女性数量
+avg_age <- mean(age_data, na.rm = TRUE)  # 平均年龄
+
+# 输出人口统计学信息
+cat("总被试量: ", total_subjects, "\n")
+cat("男性数量: ", male_count, "\n")
+cat("女性数量: ", female_count, "\n")
+cat("平均年龄: ", avg_age, "\n")
+
+# 分别绘制 Age 和 RT_ms 的散点图
+
+# 绘制 Age 的散点图，X 轴为 Subject，Y 轴为 Age
+ggplot(all_data, aes(x = Subject, y = Age, color = Gender)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Scatter Plot of Age by Subject",
+       x = "Subject",
+       y = "Age",
+       color = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank())  # 隐藏 X 轴的文本
+
+# 绘制 RT_ms 的散点图，X 轴为 Subject，Y 轴为 RT_ms
+ggplot(all_data, aes(x = Subject, y = RT_ms, color = Gender)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Scatter Plot of RT_ms by Subject",
+       x = "Subject",
+       y = "RT_ms",
+       color = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank())  # 隐藏 X 轴的文本
+
+# 如果有 RT_ms 数据，对其进行统计
+if ("RT_ms" %in% colnames(all_data)) {
+  rt_summary <- summary(all_data$RT_ms)
+  cat("RT_ms 描述统计: \n")
+  print(rt_summary)
+}
+
+# 清理环境变量
+rm(subject_df, age_data, avg_age, current_gender_count, female_count, gender_count, i, male_count, rt_summary, subject_bins, subject_distribution, total_subjects, all_data, article_data, article_data_filtered, gender_count_list)
+
+```
 
 
 
