@@ -4533,9 +4533,9 @@ age_data <- c()  # 存储所有年龄信息
 # 性别统一化函数
 standardize_gender <- function(gender) {
   gender <- tolower(gender)  # 转换为小写
-  if (gender %in% c("1", "m", "mann", "hombre")) {
+  if (gender %in% c("1", "m", "M", "Mann", "Hombre", "male", "Male")) {
     return("Male")
-  } else if (gender %in% c("2", "f", "frau", "mujer")) {
+  } else if (gender %in% c("2", "f", "F", "Frau", "Mujer", "female", "Female")) {
     return("Female")
   } else {
     return("Others")
