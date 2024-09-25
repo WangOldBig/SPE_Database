@@ -7,7 +7,7 @@ output: html_document
 
 
 # Process Coding
-# Loading package
+## Loading package
 ```{r Package, warning = FALSE,message = FALSE}
 # clean data
 library(tidyr)
@@ -37,6 +37,7 @@ df[[1]] <- read.csv(
     Contrast = NA, # 文档中未提及对比度
     ScreenGamma = NA # 文档中未提及屏幕γ值
   ) %>%
+  
   dplyr::arrange(
     Subject, Matching, ShapeLoc
   )
