@@ -541,7 +541,7 @@ write.csv(x = df[[8]], file = "../1_Clean_Data/Schäfer_2019_CP/Schäfer_2019_CP
 # Mateusz Woźniak_2018_PLOS (Face)
 ## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"
-```{r Paper 95 Experiment 1}
+```{r Paper p95 Experiment 1}
 df[[9]] <- read.csv(
   "../2_Raw_Data/Woźniak_2018_PLOS/Woźniak_2018_PLOS_Exp1_raw.csv"
   ) %>%
@@ -559,7 +559,7 @@ df[[9]] <- read.csv(
   ) %>%
   dplyr::mutate(
     Shape = case_when(
-      Shape == "shape1.jpg" ~ "You",
+      Shape == "shape1.jpg" ~ "Self",
       Shape == "shape2.jpg" ~ "Friend",
       Shape == "shape3.jpg" ~ "Stranger",
       is.na(Shape) ~ NA_character_,
@@ -611,7 +611,7 @@ write.csv(x = df[[9]], file = "../1_Clean_Data/Woźniak_2018_PLOS/Woźniak_2018_
 
 ## Experiment 2 (Identity = 3)
 "Self", "Friend", "Stranger"
-```{r Paper 95 Experiment 2}
+```{r Paper p95 Experiment 2}
 df[[10]] <- read.csv(
   "../2_Raw_Data/Woźniak_2018_PLOS/Woźniak_2018_PLOS_Exp2_raw.csv"
   ) %>%
@@ -628,7 +628,7 @@ df[[10]] <- read.csv(
   ) %>%
   dplyr::mutate(
     Shape = case_when(
-      Shape == "shape1.jpg" ~ "You",
+      Shape == "shape1.jpg" ~ "Self",
       Shape == "shape2.jpg" ~ "Friend",
       Shape == "shape3.jpg" ~ "Stranger",
       is.na(Shape) ~ NA_character_,
@@ -748,9 +748,6 @@ df[[12]] <- read.csv(
     Subjcet = as.numeric(Subject),
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
-    ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "Stranger")
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
