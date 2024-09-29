@@ -39,23 +39,369 @@ Below are some example analyses demonstrating the utility of the database.
 
 ## Analysis Example 1: Reaction Time and Accuracy
 
-```{r example-analysis-1}
-# Load necessary libraries
+```{r}
+# 加载必要的库
+library(dplyr)
+library(ggplot2)
+
+# 假设 df 是一个包含文章数据的列表，其中每个元素都是一个数据框
+# df 是一个列表，df[[n]] 是第 n 篇文章，里面包含数据
+
+# 定义一些变量来存储统计信息
+all_data <- data.frame()  # 用于存储所有文章的人口统计学和 RT 数据
+gender_count_list <- list()  # 存储每篇文章的性别统计信息
+age_data <- c()  # 存储所有年龄信息
+
+# 性别统一化函数
+standardize_gender <- function(gender) {
+  gender <- tolower(gender)  # 转换为小写
+  if (gender %in% c("1", "m", "M", "Mann", "Hombre", "male", "Male")) {
+    return("Male")
+  } else if (gender %in% c("2", "f", "F", "Frau", "Mujer", "female", "Female")) {
+    return("Female")
+  } else {
+    return("Others")
+  }
+}
+
+# 遍历每篇文章的数据
+for (i in 1:length(df)) {
+  article_data <- df[[i]]  # 获取每篇文章的数据
+  
+  # 只选择我们关心的列，如 Subject、Gender、Age 和 RT_ms，其他的列忽略
+  article_data_filtered <- article_data %>%
+    select(any_of(c("Subject", "Gender", "Age", "RT_ms")))  # 只选择这些列，如果不存在则忽略
+  
+  # 确保 Subject 列为字符类型，Gender 列为字符类型，Age 列统一为数值类型
+  if ("Subject" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Subject <- as.character(article_data_filtered$Subject)
+  }
+  
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Gender <- as.character(article_data_filtered$Gender)
+    article_data_filtered$Gender <- sapply(article_data_filtered$Gender, standardize_gender)  # 统一化性别变量
+  }
+  
+  if ("Age" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Age <- as.numeric(as.character(article_data_filtered$Age))
+  }
+  
+  # 为每篇文章中的被试编号添加文章索引前缀，使每个被试编号在全局范围内唯一
+  article_data_filtered <- article_data_filtered %>%
+    mutate(Subject = paste0("Article", i, "_", Subject))
+  
+  # 统计性别
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    current_gender_count <- table(article_data_filtered$Gender)
+    gender_count_list[[i]] <- current_gender_count
+  }
+  
+  # 收集年龄数据
+  if ("Age" %in% colnames(article_data_filtered)) {
+    age_data <- c(age_data, article_data_filtered$Age)
+  }
+  
+  # 将每篇文章的数据合并，只合并过滤后的数据
+  all_data <- bind_rows(all_data, article_data_filtered)
+}
+
+# 合并所有文章的性别统计
+gender_count <- Reduce(`+`, gender_count_list, init = table(factor(levels = unique(unlist(lapply(gender_count_list, names))))))
+
+# 人口统计学描述
+total_subjects <- nrow(all_data)  # 被试总人数
+male_count <- sum(all_data$Gender == "Male", na.rm = TRUE)  # 男性数量
+female_count <- sum(all_data$Gender == "Female", na.rm = TRUE)  # 女性数量
+avg_age <- mean(age_data, na.rm = TRUE)  # 平均年龄
+
+# 输出人口统计学信息
+cat("总被试量: ", total_subjects, "\n")
+cat("男性数量: ", male_count, "\n")
+cat("女性数量: ", female_count, "\n")
+cat("平均年龄: ", avg_age, "\n")
+
+# 分别绘制 Age 和 RT_ms 的散点图
+
+# 绘制 Age 的散点图，X 轴为 Subject，Y 轴为 Age
+ggplot(all_data, aes(x = Subject, y = Age, color = Gender)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Scatter Plot of Age by Subject",
+       x = "Subject",
+       y = "Age",
+       color = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank())  # 隐藏 X 轴的文本
+
+# 绘制 RT_ms 的散点图，X 轴为 Subject，Y 轴为 RT_ms
+ggplot(all_data, aes(x = Subject, y = RT_ms, color = Gender)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Scatter Plot of RT_ms by Subject",
+       x = "Subject",
+       y = "RT_ms",
+       color = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank())  # 隐藏 X 轴的文本
+
+# 如果有 RT_ms 数据，对其进行统计
+if ("RT_ms" %in% colnames(all_data)) {
+  rt_summary <- summary(all_data$RT_ms)
+  cat("RT_ms 描述统计: \n")
+  print(rt_summary)
+}
+
+# 清理环境变量
+rm(subject_df, age_data, avg_age, current_gender_count, female_count, gender_count, i, male_count, rt_summary, subject_bins, subject_distribution, total_subjects, all_data, article_data, article_data_filtered, gender_count_list)
+
+
+```
+
+```{r}
+# 加载必要的库
+library(dplyr)
+library(ggplot2)
+library(plyr)
+
+# 假设df是你的原始数据框列表
+for (i in seq_along(df)) {
+  df[[i]] <- df[[i]][df[[i]]$ACC >= 0.3 & df[[i]]$RT_ms <= 10000, ]
+}
+#
+
+# 使用rbind.fill合并数据框
+combined_df <- rbind.fill(df)
+
+ggplot(combined_df, aes(x = RT_ms, y = ACC)) +
+  geom_point() +
+  labs(x = "RT_ms", y = "ACC'")
+
+
+rm(i)
+```
+
+```{r}
 library(ggplot2)
 library(dplyr)
+library(tidyr)
 
-# Example data
-set.seed(123)
-data <- data.frame(
-  condition = rep(c("self", "other"), each = 100),
-  reaction_time = c(rnorm(100, mean = 500, sd = 50), rnorm(100, mean = 600, sd = 60))
-)
+# 假设df是一个包含多篇论文数据的列表
+# 检查每个数据框的列名
+lapply(df, names)
 
-# Plot reaction times
-ggplot(data, aes(x = condition, y = reaction_time)) +
-  geom_boxplot() +
+# 1. 计算每个被试的平均ACC和RT_ms
+plot_data <- lapply(df, function(data) {
+  # 确保使用正确的列名
+  if ("Identity" %in% names(data) && "Matching" %in% names(data)) {
+    data %>%
+      group_by(Identity, Matching) %>%
+      summarise(mean_ACC = mean(ACC, na.rm = TRUE), mean_RT_ms = mean(RT_ms, na.rm = TRUE)) %>%
+      pivot_wider(names_from = Matching, values_from = c(mean_ACC, mean_RT_ms), names_sep = "_")
+  } else {
+    warning("Missing columns in data")
+    return(NULL)
+  }
+})
+
+# 合并数据用于绘图，去除NULL值
+plot_df <- bind_rows(plot_data, .id = "paper") %>% na.omit()
+
+# 散点图
+ggplot(plot_df, aes(x = mean_ACC_Matching, y = mean_RT_ms_Matching, shape = Identity)) +
+  geom_point(size = 3) +
+  labs(x = "平均ACC", y = "平均RT (ms)") +
   theme_minimal() +
-  labs(title = "Reaction Time by Condition", y = "Reaction Time (ms)", x = "Condition")
+  geom_point(data = plot_df %>% filter(!is.na(mean_ACC_Nonmatching)), 
+             aes(x = mean_ACC_Nonmatching, y = mean_RT_ms_Nonmatching), 
+             shape = 17, size = 3)
+
+# 2. 统计每篇论文的被试量及性别
+subject_counts <- lapply(df, function(data) {
+  if ("Subject" %in% names(data) && "Gender" %in% names(data)) {
+    data %>%
+      summarise(
+        total_subjects = n_distinct(Subject),
+        male_count = sum(Gender == "Male", na.rm = TRUE),
+        female_count = sum(Gender == "Female", na.rm = TRUE)
+      )
+  } else {
+    warning("Missing columns in data for subject counts")
+    return(NULL)
+  }
+})
+
+# 转换为数据框，去除NULL值
+subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
+subject_counts_df
+
+
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# 假设df是一个包含多篇论文数据的列表
+# 检查每个数据框的列名
+lapply(df, names)
+
+# 1. 计算每个被试的平均ACC和RT_ms
+plot_data <- lapply(df, function(data) {
+  if ("Identity" %in% names(data) && "Matching" %in% names(data)) {
+    data %>%
+      group_by(Identity, Matching) %>%
+      summarise(mean_ACC = mean(ACC, na.rm = TRUE), mean_RT_ms = mean(RT_ms, na.rm = TRUE)) %>%
+      pivot_wider(names_from = Matching, values_from = c(mean_ACC, mean_RT_ms), names_sep = "_")
+  } else {
+    warning("Missing columns in data")
+    return(NULL)
+  }
+})
+
+# 合并数据用于绘图，去除NULL值
+plot_df <- bind_rows(plot_data, .id = "paper") %>% na.omit()
+
+# 散点图
+ggplot(plot_df, aes(x = mean_ACC_Matching, y = mean_RT_ms_Matching, shape = Identity)) +
+  geom_point(size = 3) +
+  labs(x = "平均ACC", y = "平均RT (ms)") +
+  theme_minimal() +
+  geom_point(data = plot_df %>% filter(!is.na(mean_ACC_Nonmatching)), 
+             aes(x = mean_ACC_Nonmatching, y = mean_RT_ms_Nonmatching), 
+             shape = 17, size = 3)
+
+# 2. 统计每篇论文的被试量及性别
+subject_counts <- lapply(df, function(data) {
+  if ("Subject" %in% names(data) && "Gender" %in% names(data)) {
+    data %>%
+      distinct(Subject, Gender) %>%  # 去重以确保每个被试只计算一次
+      summarise(
+        total_subjects = n_distinct(Subject),
+        male_count = sum(Gender == "Male", na.rm = TRUE),
+        female_count = sum(Gender == "Female", na.rm = TRUE)
+      )
+  } else {
+    warning("Missing columns in data for subject counts")
+    return(NULL)
+  }
+})
+
+# 转换为数据框，去除NULL值
+subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
+subject_counts_df
+
+```
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# 假设df是一个包含多篇论文数据的列表
+
+# 1. 计算每个被试的平均ACC和RT_ms
+plot_data <- lapply(df, function(data) {
+  if ("Identity" %in% names(data) && "Matching" %in% names(data)) {
+    data %>%
+      group_by(Identity, Matching) %>%
+      summarise(mean_ACC = mean(ACC, na.rm = TRUE), 
+                mean_RT_ms = mean(RT_ms, na.rm = TRUE), 
+                .groups = "drop")
+  } else {
+    return(NULL)  # 如果缺少列，返回NULL
+  }
+})
+
+# 合并数据用于绘图，去除NULL值
+plot_df <- bind_rows(plot_data, .id = "paper") %>% na.omit()
+
+# 散点图，绘制存在的数据
+ggplot(plot_df, aes(x = mean_ACC, y = mean_RT_ms, shape = Identity)) +
+  geom_point(size = 3) +
+  labs(x = "平均ACC", y = "平均RT (ms)") +
+  theme_minimal()
+
+# 2. 统计每篇论文的被试量及性别
+subject_counts <- lapply(df, function(data) {
+  if ("Subject" %in% names(data) && "Gender" %in% names(data)) {
+    data %>%
+      distinct(Subject, Gender) %>%
+      summarise(
+        total_subjects = n_distinct(Subject),
+        male_count = sum(Gender == "Male", na.rm = TRUE),
+        female_count = sum(Gender == "Female", na.rm = TRUE),
+        .groups = "drop"
+      )
+  } else {
+    return(NULL)  # 如果缺少列，返回NULL
+  }
+})
+
+# 转换为数据框，去除NULL值
+subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
+
+# 输出结果
+print(subject_counts_df)
+
+
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# 假设df是一个包含多篇论文数据的列表
+
+# 1. 计算每个被试的平均ACC和RT_ms
+plot_data <- lapply(df, function(data) {
+  if ("Identity" %in% names(data) && "Matching" %in% names(data)) {
+    data %>%
+      mutate(Identity = case_when(
+        Identity == "Self" ~ "Self",
+        Identity == "Friend" ~ "Friend",
+        TRUE ~ "Others"  # 其他归为Others
+      )) %>%
+      group_by(Identity, Matching) %>%
+      summarise(mean_ACC = mean(ACC, na.rm = TRUE), 
+                mean_RT_ms = mean(RT_ms, na.rm = TRUE), 
+                .groups = "drop")
+  } else {
+    return(NULL)  # 如果缺少列，返回NULL
+  }
+})
+
+# 合并数据用于绘图，去除NULL值
+plot_df <- bind_rows(plot_data, .id = "paper") %>% na.omit()
+
+# 散点图，绘制存在的数据
+ggplot(plot_df, aes(x = mean_ACC, y = mean_RT_ms, shape = Identity)) +
+  geom_point(size = 3) +
+  labs(x = "平均ACC", y = "平均RT (ms)") +
+  theme_minimal()
+
+# 2. 统计每篇论文的被试量及性别
+subject_counts <- lapply(df, function(data) {
+  if ("Subject" %in% names(data) && "Gender" %in% names(data)) {
+    data %>%
+      distinct(Subject, Gender) %>%
+      summarise(
+        total_subjects = n_distinct(Subject),
+        male_count = sum(Gender == "Male", na.rm = TRUE),
+        female_count = sum(Gender == "Female", na.rm = TRUE),
+        .groups = "drop"
+      )
+  } else {
+    return(NULL)  # 如果缺少列，返回NULL
+  }
+})
+
+# 转换为数据框，去除NULL值
+subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
+
+# 输出结果
+print(subject_counts_df)
+
 ```
 
 ## Conclusion
