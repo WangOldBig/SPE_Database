@@ -155,196 +155,7 @@ rm(subject_df, age_data, avg_age, current_gender_count, female_count, gender_cou
 
 ```
 
-```{r}
-# 加载必要的库
-library(dplyr)
-library(ggplot2)
-library(plyr)
 
-# 假设df是你的原始数据框列表
-for (i in seq_along(df)) {
-  df[[i]] <- df[[i]][df[[i]]$ACC >= 0.3 & df[[i]]$RT_ms <= 10000, ]
-}
-#
-
-# 使用rbind.fill合并数据框
-combined_df <- rbind.fill(df)
-
-ggplot(combined_df, aes(x = RT_ms, y = ACC)) +
-  geom_point() +
-  labs(x = "RT_ms", y = "ACC'")
-
-
-rm(i)
-```
-
-```{r}
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-
-# 假设df是一个包含多篇论文数据的列表
-# 检查每个数据框的列名
-lapply(df, names)
-
-# 1. 计算每个被试的平均ACC和RT_ms
-plot_data <- lapply(df, function(data) {
-  # 确保使用正确的列名
-  if ("Identity" %in% names(data) && "Matching" %in% names(data)) {
-    data %>%
-      group_by(Identity, Matching) %>%
-      summarise(mean_ACC = mean(ACC, na.rm = TRUE), mean_RT_ms = mean(RT_ms, na.rm = TRUE)) %>%
-      pivot_wider(names_from = Matching, values_from = c(mean_ACC, mean_RT_ms), names_sep = "_")
-  } else {
-    warning("Missing columns in data")
-    return(NULL)
-  }
-})
-
-# 合并数据用于绘图，去除NULL值
-plot_df <- bind_rows(plot_data, .id = "paper") %>% na.omit()
-
-# 散点图
-ggplot(plot_df, aes(x = mean_ACC_Matching, y = mean_RT_ms_Matching, shape = Identity)) +
-  geom_point(size = 3) +
-  labs(x = "平均ACC", y = "平均RT (ms)") +
-  theme_minimal() +
-  geom_point(data = plot_df %>% filter(!is.na(mean_ACC_Nonmatching)), 
-             aes(x = mean_ACC_Nonmatching, y = mean_RT_ms_Nonmatching), 
-             shape = 17, size = 3)
-
-# 2. 统计每篇论文的被试量及性别
-subject_counts <- lapply(df, function(data) {
-  if ("Subject" %in% names(data) && "Gender" %in% names(data)) {
-    data %>%
-      summarise(
-        total_subjects = n_distinct(Subject),
-        male_count = sum(Gender == "Male", na.rm = TRUE),
-        female_count = sum(Gender == "Female", na.rm = TRUE)
-      )
-  } else {
-    warning("Missing columns in data for subject counts")
-    return(NULL)
-  }
-})
-
-# 转换为数据框，去除NULL值
-subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
-subject_counts_df
-
-
-```
-
-```{r}
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-
-# 假设df是一个包含多篇论文数据的列表
-# 检查每个数据框的列名
-lapply(df, names)
-
-# 1. 计算每个被试的平均ACC和RT_ms
-plot_data <- lapply(df, function(data) {
-  if ("Identity" %in% names(data) && "Matching" %in% names(data)) {
-    data %>%
-      group_by(Identity, Matching) %>%
-      summarise(mean_ACC = mean(ACC, na.rm = TRUE), mean_RT_ms = mean(RT_ms, na.rm = TRUE)) %>%
-      pivot_wider(names_from = Matching, values_from = c(mean_ACC, mean_RT_ms), names_sep = "_")
-  } else {
-    warning("Missing columns in data")
-    return(NULL)
-  }
-})
-
-# 合并数据用于绘图，去除NULL值
-plot_df <- bind_rows(plot_data, .id = "paper") %>% na.omit()
-
-# 散点图
-ggplot(plot_df, aes(x = mean_ACC_Matching, y = mean_RT_ms_Matching, shape = Identity)) +
-  geom_point(size = 3) +
-  labs(x = "平均ACC", y = "平均RT (ms)") +
-  theme_minimal() +
-  geom_point(data = plot_df %>% filter(!is.na(mean_ACC_Nonmatching)), 
-             aes(x = mean_ACC_Nonmatching, y = mean_RT_ms_Nonmatching), 
-             shape = 17, size = 3)
-
-# 2. 统计每篇论文的被试量及性别
-subject_counts <- lapply(df, function(data) {
-  if ("Subject" %in% names(data) && "Gender" %in% names(data)) {
-    data %>%
-      distinct(Subject, Gender) %>%  # 去重以确保每个被试只计算一次
-      summarise(
-        total_subjects = n_distinct(Subject),
-        male_count = sum(Gender == "Male", na.rm = TRUE),
-        female_count = sum(Gender == "Female", na.rm = TRUE)
-      )
-  } else {
-    warning("Missing columns in data for subject counts")
-    return(NULL)
-  }
-})
-
-# 转换为数据框，去除NULL值
-subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
-subject_counts_df
-
-```
-
-
-```{r}
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-
-# 假设df是一个包含多篇论文数据的列表
-
-# 1. 计算每个被试的平均ACC和RT_ms
-plot_data <- lapply(df, function(data) {
-  if ("Identity" %in% names(data) && "Matching" %in% names(data)) {
-    data %>%
-      group_by(Identity, Matching) %>%
-      summarise(mean_ACC = mean(ACC, na.rm = TRUE), 
-                mean_RT_ms = mean(RT_ms, na.rm = TRUE), 
-                .groups = "drop")
-  } else {
-    return(NULL)  # 如果缺少列，返回NULL
-  }
-})
-
-# 合并数据用于绘图，去除NULL值
-plot_df <- bind_rows(plot_data, .id = "paper") %>% na.omit()
-
-# 散点图，绘制存在的数据
-ggplot(plot_df, aes(x = mean_ACC, y = mean_RT_ms, shape = Identity)) +
-  geom_point(size = 3) +
-  labs(x = "平均ACC", y = "平均RT (ms)") +
-  theme_minimal()
-
-# 2. 统计每篇论文的被试量及性别
-subject_counts <- lapply(df, function(data) {
-  if ("Subject" %in% names(data) && "Gender" %in% names(data)) {
-    data %>%
-      distinct(Subject, Gender) %>%
-      summarise(
-        total_subjects = n_distinct(Subject),
-        male_count = sum(Gender == "Male", na.rm = TRUE),
-        female_count = sum(Gender == "Female", na.rm = TRUE),
-        .groups = "drop"
-      )
-  } else {
-    return(NULL)  # 如果缺少列，返回NULL
-  }
-})
-
-# 转换为数据框，去除NULL值
-subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
-
-# 输出结果
-print(subject_counts_df)
-
-
-```
 
 ```{r}
 library(ggplot2)
@@ -359,7 +170,14 @@ plot_data <- lapply(df, function(data) {
     data %>%
       mutate(Identity = case_when(
         Identity == "Self" ~ "Self",
+        Identity == "P1" ~ "Self",
         Identity == "Friend" ~ "Friend",
+        Identity == "Close" ~ "Close",
+        Identity == "Mother" ~ "Close",
+        Identity == "Father" ~ "Close",
+        Identity == "Familiar" ~ "Close",
+        Identity == "Acquaintance" ~ "Close",
+        Identity == "P2" ~ "Close",
         TRUE ~ "Others"  # 其他归为Others
       )) %>%
       group_by(Identity, Matching) %>%
@@ -401,6 +219,519 @@ subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
 
 # 输出结果
 print(subject_counts_df)
+
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# 假设df是一个包含多篇论文数据的列表
+
+# 1. 计算每个被试的平均ACC和RT_ms
+plot_data <- lapply(df, function(data) {
+  if ("Identity" %in% names(data) && "Matching" %in% names(data)) {
+    data %>%
+      mutate(Identity = case_when(
+        Identity == "Self" ~ "Self",
+        Identity == "P1" ~ "Self",
+        Identity == "Friend" ~ "Friend",
+        Identity == "Close" ~ "Close",
+        Identity == "Mother" ~ "Close",
+        Identity == "Father" ~ "Close",
+        Identity == "Familiar" ~ "Close",
+        Identity == "Acquaintance" ~ "Close",
+        Identity == "P2" ~ "Close",
+        TRUE ~ "Others"
+      )) %>%
+      group_by(Identity, Matching) %>%
+      summarise(mean_ACC = mean(ACC, na.rm = TRUE), 
+                mean_RT_ms = mean(RT_ms, na.rm = TRUE), 
+                .groups = "drop")
+  } else {
+    return(NULL)
+  }
+})
+
+# 合并数据用于绘图，去除NULL值
+plot_df <- bind_rows(plot_data, .id = "paper") %>% na.omit()
+
+# 绘制Matching条件下的散点图
+ggplot(plot_df %>% filter(Matching == "Matching"), aes(x = mean_ACC, y = mean_RT_ms, shape = Identity)) +
+  geom_point(size = 3) +
+  labs(x = "ACC (Matching)", y = "RT (ms)") +
+  theme_minimal()
+
+# 绘制Nonmatching条件下的散点图
+ggplot(plot_df %>% filter(Matching == "Nonmatching"), aes(x = mean_ACC, y = mean_RT_ms, shape = Identity)) +
+  geom_point(size = 3) +
+  labs(x = "ACC (Nonmatching)", y = "RT (ms)") +
+  theme_minimal()
+
+# 2. 统计每篇论文的被试量及性别
+subject_counts <- lapply(df, function(data) {
+  if ("Subject" %in% names(data) && "Gender" %in% names(data)) {
+    data %>%
+      distinct(Subject, Gender) %>%
+      summarise(
+        total_subjects = n_distinct(Subject),
+        male_count = sum(Gender == "Male", na.rm = TRUE),
+        female_count = sum(Gender == "Female", na.rm = TRUE),
+        .groups = "drop"
+      )
+  } else {
+    return(NULL)
+  }
+})
+
+# 转换为数据框，去除NULL值
+subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
+
+# 输出结果
+print(subject_counts_df)
+
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# 假设df是一个包含多篇论文数据的列表
+
+# 1. 计算每个被试的平均ACC和RT_ms
+plot_data <- lapply(df, function(data) {
+  if ("Identity" %in% names(data) && "Matching" %in% names(data) && "Subject" %in% names(data)) {
+    data %>%
+      mutate(Identity = case_when(
+        Identity == "Self" ~ "Self",
+        Identity == "P1" ~ "Self",
+        Identity == "Friend" ~ "Friend",
+        Identity == "Close" ~ "Close",
+        Identity == "Mother" ~ "Close",
+        Identity == "Father" ~ "Close",
+        Identity == "Familiar" ~ "Close",
+        Identity == "Acquaintance" ~ "Close",
+        Identity == "P2" ~ "Close",
+        TRUE ~ "Others"
+      )) %>%
+      group_by(Subject, Identity, Matching) %>%
+      summarise(mean_ACC = mean(ACC, na.rm = TRUE), 
+                mean_RT_ms = mean(RT_ms, na.rm = TRUE), 
+                .groups = "drop")
+  } else {
+    return(NULL)
+  }
+})
+
+# 合并数据用于绘图，去除NULL值
+plot_df <- bind_rows(plot_data, .id = "paper") %>% na.omit()
+
+# 绘制Matching条件下的散点图
+ggplot(plot_df %>% filter(Matching == "Matching"), aes(x = mean_ACC, y = mean_RT_ms, shape = Identity)) +
+  geom_point(size = 3) +
+  labs(x = "平均ACC (Matching)", y = "平均RT (ms)") +
+  theme_minimal()
+
+# 绘制Nonmatching条件下的散点图
+ggplot(plot_df %>% filter(Matching == "Nonmatching"), aes(x = mean_ACC, y = mean_RT_ms, shape = Identity)) +
+  geom_point(size = 3) +
+  labs(x = "平均ACC (Nonmatching)", y = "平均RT (ms)") +
+  theme_minimal()
+
+# 2. 统计每篇论文的被试量及性别
+subject_counts <- lapply(df, function(data) {
+  if ("Subject" %in% names(data) && "Gender" %in% names(data)) {
+    data %>%
+      distinct(Subject, Gender) %>%
+      summarise(
+        total_subjects = n_distinct(Subject),
+        male_count = sum(Gender == "Male", na.rm = TRUE),
+        female_count = sum(Gender == "Female", na.rm = TRUE),
+        .groups = "drop"
+      )
+  } else {
+    return(NULL)
+  }
+})
+
+# 转换为数据框，去除NULL值
+subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
+
+# 输出结果
+print(subject_counts_df)
+
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# 假设df是一个包含多篇论文数据的列表
+
+# 1. 计算每个被试的平均ACC和RT_ms
+plot_data <- lapply(df, function(data) {
+  if ("Identity" %in% names(data) && "Matching" %in% names(data) && "Subject" %in% names(data)) {
+    data %>%
+      mutate(Identity = case_when(
+        Identity == "Self" ~ "Self",
+        Identity == "P1" ~ "Self",
+        Identity == "Friend" ~ "Friend",
+        Identity == "Close" ~ "Close",
+        Identity == "Mother" ~ "Close",
+        Identity == "Father" ~ "Close",
+        Identity == "Familiar" ~ "Close",
+        Identity == "Acquaintance" ~ "Close",
+        Identity == "P2" ~ "Close",
+        TRUE ~ "Others"
+      )) %>%
+      group_by(Subject, Identity, Matching) %>%
+      summarise(mean_ACC = mean(pmin(pmax(ACC, 0), 1), na.rm = TRUE),
+                mean_RT_ms = mean(RT_ms, na.rm = TRUE),
+                .groups = "drop")
+  } else {
+    return(NULL)
+  }
+})
+
+# 合并数据用于绘图，去除NULL值
+plot_df <- bind_rows(plot_data, .id = "paper") %>% na.omit()
+
+# 自定义形状和颜色
+shape_values <- c("Self" = 1, "Friend" = 17, "Close" = 15, "Others" = 3)
+color_values <- c("Self" = "black", "Friend" = "gray", "Close" = "lightgray", "Others" = "#A9A9A9")
+
+# 绘制Matching条件下的散点图
+ggplot(plot_df %>% filter(Matching == "Matching"), aes(x = mean_ACC, y = mean_RT_ms, shape = Identity, color = Identity)) +
+  geom_point(size = 3) +
+  scale_shape_manual(values = shape_values) +
+  scale_color_manual(values = color_values) +
+  labs(x = "平均ACC (Matching)", y = "平均RT (ms)") +
+  theme_minimal()
+
+# 绘制Nonmatching条件下的散点图
+ggplot(plot_df %>% filter(Matching == "Nonmatching"), aes(x = mean_ACC, y = mean_RT_ms, shape = Identity, color = Identity)) +
+  geom_point(size = 3) +
+  scale_shape_manual(values = shape_values) +
+  scale_color_manual(values = color_values) +
+  labs(x = "平均ACC (Nonmatching)", y = "平均RT (ms)") +
+  theme_minimal()
+
+# 2. 统计每篇论文的被试量及性别
+subject_counts <- lapply(df, function(data) {
+  if ("Subject" %in% names(data) && "Gender" %in% names(data)) {
+    data %>%
+      distinct(Subject, Gender) %>%
+      summarise(
+        total_subjects = n_distinct(Subject),
+        male_count = sum(Gender == "Male", na.rm = TRUE),
+        female_count = sum(Gender == "Female", na.rm = TRUE),
+        .groups = "drop"
+      )
+  } else {
+    return(NULL)
+  }
+})
+
+# 转换为数据框，去除NULL值
+subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
+
+# 输出结果
+print(subject_counts_df)
+
+```
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# 假设df是一个包含多篇论文数据的列表
+
+# 合并数据并处理Identity
+plot_data <- bind_rows(lapply(df, function(data) {
+  if ("Identity" %in% names(data) && "Matching" %in% names(data) && "Subject" %in% names(data)) {
+    data %>%
+      mutate(Identity = case_when(
+        Identity == "Self" ~ "Self",
+        Identity == "P1" ~ "Self",
+        Identity == "Friend" ~ "Friend",
+        Identity == "Close" ~ "Close",
+        Identity == "Mother" ~ "Close",
+        Identity == "Father" ~ "Close",
+        Identity == "Familiar" ~ "Close",
+        Identity == "Acquaintance" ~ "Close",
+        Identity == "P2" ~ "Close",
+        TRUE ~ "Others"
+      ))
+  } else {
+    return(NULL)
+  }
+}))
+
+# 自定义形状和颜色
+shape_values <- c("Self" = 1, "Friend" = 17, "Close" = 15, "Others" = 3)
+color_values <- c("Self" = "lightgray", "Friend" = "gray", "Close" = "#A9A9A9", "Others" = "black")
+
+# 绘制Matching条件下的散点图
+ggplot(plot_data %>% filter(Matching == "Matching"), aes(x = ACC, y = RT_ms, shape = Identity, color = Identity)) +
+  stat_summary(fun = mean, geom = "point", size = 3) +
+  scale_shape_manual(values = shape_values) +
+  scale_color_manual(values = color_values) +
+  labs(x = "平均ACC (Matching)", y = "平均RT (ms)") +
+  theme_minimal()
+
+# 绘制Nonmatching条件下的散点图
+ggplot(plot_data %>% filter(Matching == "Nonmatching"), aes(x = ACC, y = RT_ms, shape = Identity, color = Identity)) +
+  stat_summary(fun = mean, geom = "point", size = 3) +
+  scale_shape_manual(values = shape_values) +
+  scale_color_manual(values = color_values) +
+  labs(x = "平均ACC (Nonmatching)", y = "平均RT (ms)") +
+  theme_minimal()
+
+# 2. 统计每篇论文的被试量及性别
+subject_counts <- lapply(df, function(data) {
+  if ("Subject" %in% names(data) && "Gender" %in% names(data)) {
+    data %>%
+      distinct(Subject, Gender) %>%
+      summarise(
+        total_subjects = n_distinct(Subject),
+        male_count = sum(Gender == "Male", na.rm = TRUE),
+        female_count = sum(Gender == "Female", na.rm = TRUE),
+        .groups = "drop"
+      )
+  } else {
+    return(NULL)
+  }
+})
+
+# 转换为数据框，去除NULL值
+subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
+
+# 输出结果
+print(subject_counts_df)
+
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+
+# 假设df是一个包含多篇论文数据的列表
+
+# 合并数据并处理Identity，同时计算每个被试的正确反应数、总反应数和平均反应时间
+plot_data <- bind_rows(lapply(df, function(data) {
+  if ("Identity" %in% names(data) && "Matching" %in% names(data) && "Subject" %in% names(data)) {
+    data <- data %>%
+      mutate(Identity = case_when(
+        Identity == "Self" ~ "Self",
+        Identity == "P1" ~ "Self",
+        Identity == "Friend" ~ "Friend",
+        Identity == "Close" ~ "Close",
+        Identity == "Mother" ~ "Close",
+        Identity == "Father" ~ "Close",
+        Identity == "Familiar" ~ "Close",
+        Identity == "Acquaintance" ~ "Close",
+        Identity == "P2" ~ "Close",
+        TRUE ~ "Others"
+      )) %>%
+      group_by(Subject, Identity, Matching) %>%
+      summarise(
+        correct_count = sum(ACC == 1, na.rm = TRUE),  # 计算正确反应数
+        total_count = n(),  # 总记录数
+        mean_RT_ms = mean(RT_ms, na.rm = TRUE),  # 计算平均反应时间
+        .groups = "drop"
+      ) %>%
+      mutate(mean_ACC = correct_count / total_count)  # 计算准确率
+    return(data)
+  } else {
+    return(NULL)
+  }
+})) %>% na.omit()  # 移除缺失值
+
+# 将结果合并为一个数据框
+plot_data <- bind_rows(plot_data) %>% na.omit()
+
+
+
+# 计算每个被试的平均ACC和平均RT（Matching条件）
+average_data_matching <- plot_data %>%
+  filter(Matching == "Matching") %>%  # 只选择Matching条件
+  group_by(Subject, Identity) %>%
+  summarise(
+    mean_ACC = mean(mean_ACC, na.rm = TRUE),  # 每个身份的平均ACC
+    mean_RT = mean(mean_RT_ms, na.rm = TRUE),  # 每个身份的平均RT
+    .groups = "drop"
+  )
+
+# 计算每个被试的平均ACC和平均RT（Nonmatching条件）
+average_data_nonmatching <- plot_data %>%
+  filter(Matching == "Nonmatching") %>%  # 只选择Nonmatching条件
+  group_by(Subject, Identity) %>%
+  summarise(
+    mean_ACC = mean(mean_ACC, na.rm = TRUE),  # 每个身份的平均ACC
+    mean_RT = mean(mean_RT_ms, na.rm = TRUE),  # 每个身份的平均RT
+    .groups = "drop"
+  )
+
+# 定义形状和颜色
+shape_values <- c("Self" = 1, "Friend" = 17, "Others" = 4)  # 1: 空心圆，17: 实心三角，4: 小叉
+color_values <- c("Self" = "black", "Friend" = "gray", "Others" = "black")
+
+# 绘制Matching条件的散点图
+p1 <- ggplot(average_data_matching, aes(x = mean_ACC, y = mean_RT, shape = Identity, color = Identity)) +
+  geom_point(size = 3) +
+  scale_shape_manual(values = shape_values) +
+  scale_color_manual(values = color_values) +
+  labs(x = "平均ACC (Matching)", y = "平均RT (ms)", title = "Matching条件下被试的平均ACC与平均RT散点图") +
+  theme_minimal()
+
+# 绘制Nonmatching条件的散点图
+p2 <- ggplot(average_data_nonmatching, aes(x = mean_ACC, y = mean_RT, shape = Identity, color = Identity)) +
+  geom_point(size = 3) +
+  scale_shape_manual(values = shape_values) +
+  scale_color_manual(values = color_values) +
+  labs(x = "平均ACC (Nonmatching)", y = "平均RT (ms)", title = "Nonmatching条件下被试的平均ACC与平均RT散点图") +
+  theme_minimal()
+
+# 打印两个图
+print(p1)
+print(p2)
+
+# 统计每篇论文的被试量及性别
+subject_counts <- lapply(df, function(data) {
+  if ("Subject" %in% names(data) && "Gender" %in% names(data)) {
+    data %>%
+      distinct(Subject, Gender) %>%
+      summarise(
+        total_subjects = n_distinct(Subject),
+        male_count = sum(Gender == "Male", na.rm = TRUE),
+        female_count = sum(Gender == "Female", na.rm = TRUE),
+        .groups = "drop"
+      )
+  } else {
+    return(NULL)
+  }
+})
+
+# 转换为数据框，去除NULL值
+subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
+
+# 输出结果
+print(subject_counts_df)
+
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# 假设df是一个包含多篇论文数据的列表
+
+# 合并数据并处理Identity，同时计算每个被试的正确反应数、总反应数和平均反应时间
+plot_data <- bind_rows(lapply(seq_along(df), function(i) {
+  data <- df[[i]]
+  if ("Identity" %in% names(data) && "Matching" %in% names(data) && "Subject" %in% names(data)) {
+    data <- data %>%
+      mutate(Identity = case_when(
+        Identity == "Self" ~ "Self",
+        Identity == "P1" ~ "Self",
+        Identity == "Friend" ~ "Friend",
+        Identity == "Close" ~ "Close",
+        Identity == "Mother" ~ "Close",
+        Identity == "Father" ~ "Close",
+        Identity == "Familiar" ~ "Close",
+        Identity == "Acquaintance" ~ "Close",
+        Identity == "P2" ~ "Close",
+        TRUE ~ "Others"
+      )) %>%
+      group_by(Subject, Identity, Matching) %>%
+      summarise(
+        correct_count = sum(ACC == 1, na.rm = TRUE),  # 计算正确反应数
+        total_count = n(),  # 总记录数
+        mean_RT_ms = mean(RT_ms, na.rm = TRUE),  # 计算平均反应时间
+        .groups = "drop"
+      ) %>%
+      mutate(mean_ACC = correct_count / total_count)  # 计算准确率
+    data$Subject <- paste0("S", seq_along(data$Subject) + sum(sapply(df[1:(i - 1)], function(x) n_distinct(x$Subject))))  # 重新编号
+    return(data)
+  } else {
+    return(NULL)
+  }
+})) %>% na.omit()  # 移除缺失值
+
+# 计算每个被试的平均ACC和平均RT（Matching条件）
+average_data_matching <- plot_data %>%
+  filter(Matching == "Matching") %>%
+  group_by(Subject, Identity) %>%
+  summarise(
+    mean_ACC = mean(mean_ACC, na.rm = TRUE),
+    mean_RT = mean(mean_RT_ms, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# 计算每个被试的平均ACC和平均RT（Nonmatching条件）
+average_data_nonmatching <- plot_data %>%
+  filter(Matching == "Nonmatching") %>%
+  group_by(Subject, Identity) %>%
+  summarise(
+    mean_ACC = mean(mean_ACC, na.rm = TRUE),
+    mean_RT = mean(mean_RT_ms, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# 定义形状和颜色
+shape_values <- c("Self" = 1, "Friend" = 17, "Others" = 4)
+color_values <- c("Self" = "black", "Friend" = "gray", "Others" = "black")
+
+# 绘制Matching条件的散点图
+p1 <- ggplot(average_data_matching, aes(x = mean_ACC, y = mean_RT, shape = Identity, color = Identity)) +
+  geom_point(size = 3) +
+  scale_shape_manual(values = shape_values) +
+  scale_color_manual(values = color_values) +
+  labs(x = "平均ACC (Matching)", y = "平均RT (ms)", title = "Matching条件下被试的平均ACC与平均RT散点图") +
+  theme_minimal()
+
+# 绘制Nonmatching条件的散点图
+p2 <- ggplot(average_data_nonmatching, aes(x = mean_ACC, y = mean_RT, shape = Identity, color = Identity)) +
+  geom_point(size = 3) +
+  scale_shape_manual(values = shape_values) +
+  scale_color_manual(values = color_values) +
+  labs(x = "平均ACC (Nonmatching)", y = "平均RT (ms)", title = "Nonmatching条件下被试的平均ACC与平均RT散点图") +
+  theme_minimal()
+
+# 打印两个图
+print(p1)
+print(p2)
+
+# 统计每篇论文的被试量及性别
+subject_counts <- lapply(df, function(data) {
+  if ("Subject" %in% names(data) && "Gender" %in% names(data)) {
+    data %>%
+      distinct(Subject, Gender) %>%
+      summarise(
+        total_subjects = n_distinct(Subject),
+        male_count = sum(Gender == "Male", na.rm = TRUE),
+        female_count = sum(Gender == "Female", na.rm = TRUE),
+        .groups = "drop"
+      )
+  } else {
+    return(NULL)
+  }
+})
+
+# 转换为数据框，去除NULL值
+subject_counts_df <- do.call(rbind, subject_counts) %>% na.omit()
+
+# 输出结果
+print(subject_counts_df)
+
 
 ```
 

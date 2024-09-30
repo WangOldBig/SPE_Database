@@ -787,7 +787,7 @@ df[[13]] <- read.csv(
     Response = Target.RESP,
     Gender = Sex,
     Age = Age,
-    Word = Word,
+    Label = Word,
     CloseShape,
     MediumShape,
     FarShape,
@@ -803,8 +803,8 @@ df[[13]] <- read.csv(
       TRUE ~ Shape # 存在NA
     ),
     Matching = case_when(
-      Identity == Word ~ "Matching",
-      Identity != Word ~ "Nonmatching",
+      Identity == Label ~ "Matching",
+      Identity != Label ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT),
     RT_sec = RT_ms / 1000,
@@ -824,7 +824,7 @@ df[[13]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage,
-    Shape, Word, Matching, Identity, Response, RT_ms, RT_sec, ACC
+    Shape, Label, Matching, Identity, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
@@ -855,6 +855,7 @@ df[[14]] <- read.csv(
     CloseShape,
     MediumShape,
     FarShape,
+    BlockType,
     RT = Target.RT,
     ACC = Target.ACC
   ) %>%
@@ -867,8 +868,10 @@ df[[14]] <- read.csv(
       TRUE ~ Shape # 存在NA
     ),
     Matching = case_when(
-      Identity == Shape ~ "Matching",
-      Identity != Shape ~ "Nonmatching",
+      BlockType == "CloseBlock" & Shape == CloseShape ~ "Matching",
+      BlockType == "MediumBlock" & Shape == MediumShape ~ "Matching",
+      BlockType == "FarBlock" & Shape == FarShape ~ "Matching",
+      TRUE ~ "Nonmatching"
     ),
     RT_ms = as.numeric(RT),
     RT_sec = RT_ms / 1000,

@@ -112,10 +112,10 @@ identities <- c("P1", "P2", "Stranger")
         correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
     
         # 计算Hit Rate和False Alarm Rate
-        hit_rate <- ifelse(hit + miss > 0, hit / (hit + miss), 0)
-        false_alarm_rate <- ifelse(false_alarm + correct_rejection > 0, 
-                                   false_alarm / (false_alarm + correct_rejection), 
-                                   0)
+        hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+        false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
     
         # 计算z分数
         z_hit <- qnorm(hit_rate)
@@ -264,10 +264,10 @@ df[[3]] <- read.csv(
         correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
     
         # 计算Hit Rate和False Alarm Rate
-        hit_rate <- ifelse(hit + miss > 0, hit / (hit + miss), 0)
-        false_alarm_rate <- ifelse(false_alarm + correct_rejection > 0, 
-                                   false_alarm / (false_alarm + correct_rejection), 
-                                   0)
+        hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+        false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
     
         # 计算z分数
         z_hit <- qnorm(hit_rate)
@@ -379,10 +379,10 @@ df[[4]] <- read.csv(
         correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
     
         # 计算Hit Rate和False Alarm Rate
-        hit_rate <- ifelse(hit + miss > 0, hit / (hit + miss), 0)
-        false_alarm_rate <- ifelse(false_alarm + correct_rejection > 0, 
-                                   false_alarm / (false_alarm + correct_rejection), 
-                                   0)
+        hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+        false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
     
         # 计算z分数
         z_hit <- qnorm(hit_rate)
@@ -493,10 +493,10 @@ df[[5]] <- read.csv(
         correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
     
         # 计算Hit Rate和False Alarm Rate
-        hit_rate <- ifelse(hit + miss > 0, hit / (hit + miss), 0)
-        false_alarm_rate <- ifelse(false_alarm + correct_rejection > 0, 
+        hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+        false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
                                    false_alarm / (false_alarm + correct_rejection), 
-                                   0)
+                                   1 / (2 * (false_alarm + correct_rejection)))
     
         # 计算z分数
         z_hit <- qnorm(hit_rate)
@@ -621,10 +621,10 @@ df[[6]] <- read.csv(
         correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
         
         # 计算Hit Rate和False Alarm Rate
-        hit_rate <- ifelse(hit + miss > 0, hit / (hit + miss), 0)
-        false_alarm_rate <- ifelse(false_alarm + correct_rejection > 0, 
+        hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+        false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
                                    false_alarm / (false_alarm + correct_rejection), 
-                                   0)
+                                   1 / (2 * (false_alarm + correct_rejection)))
         
         # 计算z分数
         z_hit <- qnorm(hit_rate)
@@ -770,10 +770,10 @@ d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), na
         correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
         
         # 计算Hit Rate和False Alarm Rate
-        hit_rate <- ifelse(hit + miss > 0, hit / (hit + miss), 0)
-        false_alarm_rate <- ifelse(false_alarm + correct_rejection > 0, 
+        hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+        false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
                                    false_alarm / (false_alarm + correct_rejection), 
-                                   0)
+                                   1 / (2 * (false_alarm + correct_rejection)))
         
         # 计算z分数
         z_hit <- qnorm(hit_rate)
@@ -879,10 +879,10 @@ df[[9]] <- read.csv(
       correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
       
       # 计算Hit Rate和False Alarm Rate
-      hit_rate <- ifelse(hit + miss > 0, hit / (hit + miss), 0)
-      false_alarm_rate <- ifelse(false_alarm + correct_rejection > 0, 
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
                                  false_alarm / (false_alarm + correct_rejection), 
-                                 0)
+                                 1 / (2 * (false_alarm + correct_rejection)))
       
       # 计算z分数
       z_hit <- qnorm(hit_rate)
@@ -928,8 +928,6 @@ df[[10]] <- read.csv(
   )
 # 为Self, Friend，Stranger分别计算
   identities <- c("Self","Friend","Stranger")
-  # 为Self, Friend，Stranger分别计算
-  identities <- c("Self","Mother", "Acquaintance","none")
   d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
   ## 计算整篇文章的d'
   # 创建一个新的d_prime数据框，用于保存d_prime值
@@ -990,10 +988,10 @@ df[[10]] <- read.csv(
       correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
       
       # 计算Hit Rate和False Alarm Rate
-      hit_rate <- ifelse(hit + miss > 0, hit / (hit + miss), 0)
-      false_alarm_rate <- ifelse(false_alarm + correct_rejection > 0, 
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
                                  false_alarm / (false_alarm + correct_rejection), 
-                                 0)
+                                 1 / (2 * (false_alarm + correct_rejection)))
       
       # 计算z分数
       z_hit <- qnorm(hit_rate)
@@ -1039,14 +1037,59 @@ df[[11]] <- read.csv(
     Subject, Matching, Identity
   )
 # 为Self, Friend，Stranger分别计算
-  identities <- c("Self","Friend","Stranger")
-  d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
-  # 创建一个新的d_prime数据框，用于保存d_prime值
-  df_d_prime[[11]] <- data.frame(Identity = character(), d_prime = numeric())
+identities <- c("Self","Friend","Stranger")
+d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+## 计算整篇文章的d'
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_prime[[11]] <- data.frame(Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  # 提取当前Identity的数据
+  subset_data <- df[[11]] %>% filter(Identity == identity)
+  
+  # 计算HR和FAR
+  hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+  miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+  false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+  correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+  
+  # 计算Hit Rate和False Alarm Rate
+  hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+  false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                             false_alarm / (false_alarm + correct_rejection), 
+                             1 / (2 * (false_alarm + correct_rejection)))
+  
+  # 计算z分数
+  z_hit <- qnorm(hit_rate)
+  z_false_alarm <- qnorm(false_alarm_rate)
+  
   # 计算d'
-  for (identity in identities) {
-    # 提取当前Identity的数据
-    subset_data <- df[[11]] %>% filter(Identity == identity)
+  d_prime <- z_hit - z_false_alarm
+  
+  # 保存计算结果到df_d_prime[[11]]
+  df_d_prime[[11]] <- rbind(df_d_prime[[11]], data.frame(Identity = identity, d_prime = d_prime))
+}
+
+# 打印df_d_prime[[11]]，包含所有Identity的d'值
+print(df_d_prime[[11]])
+
+# 更新列名
+names(df)[11] <- "Golubickis_2021_AP_Exp1"
+
+##计算每个被试的d'
+d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_paper[[11]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  subjects <- unique(df[[11]]$Subject)  # 获取所有被试
+  
+  for (subject in subjects) {
+    # 提取当前Identity和Subject的数据
+    subset_data <- df[[11]] %>% filter(Identity == identity & Subject == subject)
     
     # 计算HR和FAR
     hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
@@ -1055,10 +1098,10 @@ df[[11]] <- read.csv(
     correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
     
     # 计算Hit Rate和False Alarm Rate
-    hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
-    false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
-                               false_alarm / (false_alarm + correct_rejection), 
-                               1 / (2 * (false_alarm + correct_rejection)))
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
     
     # 计算z分数
     z_hit <- qnorm(hit_rate)
@@ -1068,18 +1111,19 @@ df[[11]] <- read.csv(
     d_prime <- z_hit - z_false_alarm
     
     # 保存结果
-    d_primes <- rbind(d_primes, data.frame(Identity = identity, d_prime = d_prime))
-      # 保存计算结果到df_d_prime[[11]]
-    df_d_prime[[11]] <- rbind(df_d_prime[[11]], data.frame(Identity = identity, d_prime = d_prime))
+    d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    # 保存计算结果到df_d_paper[[11]]
+    df_d_paper[[11]] <- rbind(df_d_paper[[11]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
   }
-  
-  # 打印df_d_prime[[11]]，包含所有Identity的d'值
-  print(df_d_prime[[11]])
+}
 
-
-names(df)[11] <- "Golubickis_2021_AP Exp 1"
-summary(df[[11]])
-rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit)
+# 打印df_d_paper[[11]]，包含所有Subject和Identity的d'值
+print(df_d_paper[[11]])
+# 输出到新的CSV文件
+write.csv(df_d_paper[[11]], "../1_Clean_Data/d_prime/Golubickis_2021_AP_Exp1_d'.csv", row.names = FALSE)
+# 显示数据总结
+summary(df[[11]]) 
+rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
 ```
 
 ## Experiment 2 (Identity = 3)
@@ -1106,14 +1150,59 @@ df[[12]] <- read.csv(
     Subject, Matching, Identity
   )
 # 为Self, Friend，Stranger分别计算
-  identities <- c("Self","Friend","Stranger")
-  d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
-  # 创建一个新的d_prime数据框，用于保存d_prime值
-  df_d_prime[[12]] <- data.frame(Identity = character(), d_prime = numeric())
+identities <- c("Self","Friend","Stranger")
+d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+## 计算整篇文章的d'
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_prime[[12]] <- data.frame(Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  # 提取当前Identity的数据
+  subset_data <- df[[12]] %>% filter(Identity == identity)
+  
+  # 计算HR和FAR
+  hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+  miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+  false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+  correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+  
+  # 计算Hit Rate和False Alarm Rate
+  hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+  false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                             false_alarm / (false_alarm + correct_rejection), 
+                             1 / (2 * (false_alarm + correct_rejection)))
+  
+  # 计算z分数
+  z_hit <- qnorm(hit_rate)
+  z_false_alarm <- qnorm(false_alarm_rate)
+  
   # 计算d'
-  for (identity in identities) {
-    # 提取当前Identity的数据
-    subset_data <- df[[12]] %>% filter(Identity == identity)
+  d_prime <- z_hit - z_false_alarm
+  
+  # 保存计算结果到df_d_prime[[12]]
+  df_d_prime[[12]] <- rbind(df_d_prime[[12]], data.frame(Identity = identity, d_prime = d_prime))
+}
+
+# 打印df_d_prime[[12]]，包含所有Identity的d'值
+print(df_d_prime[[12]])
+
+# 更新列名
+names(df)[12] <- "Golubickis_2021_AP_Exp2"
+
+##计算每个被试的d'
+d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_paper[[12]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  subjects <- unique(df[[12]]$Subject)  # 获取所有被试
+  
+  for (subject in subjects) {
+    # 提取当前Identity和Subject的数据
+    subset_data <- df[[12]] %>% filter(Identity == identity & Subject == subject)
     
     # 计算HR和FAR
     hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
@@ -1122,10 +1211,10 @@ df[[12]] <- read.csv(
     correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
     
     # 计算Hit Rate和False Alarm Rate
-    hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
-    false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
-                               false_alarm / (false_alarm + correct_rejection), 
-                               1 / (2 * (false_alarm + correct_rejection)))
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
     
     # 计算z分数
     z_hit <- qnorm(hit_rate)
@@ -1135,17 +1224,19 @@ df[[12]] <- read.csv(
     d_prime <- z_hit - z_false_alarm
     
     # 保存结果
-    d_primes <- rbind(d_primes, data.frame(Identity = identity, d_prime = d_prime))
-      # 保存计算结果到df_d_prime[[12]]
-    df_d_prime[[12]] <- rbind(df_d_prime[[12]], data.frame(Identity = identity, d_prime = d_prime))
+    d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    # 保存计算结果到df_d_paper[[12]]
+    df_d_paper[[12]] <- rbind(df_d_paper[[12]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
   }
-  
-  # 打印df_d_prime[[12]]，包含所有Identity的d'值
-  print(df_d_prime[[12]])
-  
-names(df)[12] <- "Golubickis_2021_AP Exp 2"
-summary(df[[12]])
-rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit)
+}
+
+# 打印df_d_paper[[12]]，包含所有Subject和Identity的d'值
+print(df_d_paper[[12]])
+# 输出到新的CSV文件
+write.csv(df_d_paper[[12]], "../1_Clean_Data/d_prime/Golubickis_2021_AP_Exp2_d'.csv", row.names = FALSE)
+# 显示数据总结
+summary(df[[12]]) 
+rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
 ```
 
 # Mayan Navon_2021
@@ -1172,15 +1263,61 @@ df[[13]] <- read.csv(
     Subject, Matching, Identity
   )
 # 为Self, Friend，Stranger分别计算
-  identities <- c("Self","Friend","Stranger")
-  d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
-  # 创建一个新的d_prime数据框，用于保存d_prime值
-  df_d_prime[[13]] <- data.frame(Identity = character(), d_prime = numeric())
+identities <- c("Self","Friend","Stranger")
+d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+## 计算整篇文章的d'
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_prime[[13]] <- data.frame(Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  # 提取当前Identity的数据
+  subset_data <- df[[13]] %>% filter(Identity == identity)
+  
+  # 计算HR和FAR
+  hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+  miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+  false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+  correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+  
+  # 计算Hit Rate和False Alarm Rate
+  hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+  false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                             false_alarm / (false_alarm + correct_rejection), 
+                             1 / (2 * (false_alarm + correct_rejection)))
+  
+  # 计算z分数
+  z_hit <- qnorm(hit_rate)
+  z_false_alarm <- qnorm(false_alarm_rate)
+  
   # 计算d'
-  for (identity in identities) {
-    # 提取当前Identity的数据
-    subset_data <- df[[13]] %>% filter(Identity == identity)
+  d_prime <- z_hit - z_false_alarm
+  
+  # 保存计算结果到df_d_prime[[13]]
+  df_d_prime[[13]] <- rbind(df_d_prime[[13]], data.frame(Identity = identity, d_prime = d_prime))
+}
+
+# 打印df_d_prime[[13]]，包含所有Identity的d'值
+print(df_d_prime[[13]])
+
+# 更新列名
+names(df)[13] <- "Navon_2021_Exp1"
+
+##计算每个被试的d'
+d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_paper[[13]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  subjects <- unique(df[[13]]$Subject)  # 获取所有被试
+  
+  for (subject in subjects) {
+    # 提取当前Identity和Subject的数据
+    subset_data <- df[[13]] %>% filter(Identity == identity & Subject == subject)
     
+
     # 计算HR和FAR
     hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
     miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
@@ -1190,9 +1327,9 @@ df[[13]] <- read.csv(
     # 计算Hit Rate和False Alarm Rate
     hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
     false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
-                               false_alarm / (false_alarm + correct_rejection), 
-                               1 / (2 * (false_alarm + correct_rejection)))
-    
+                             false_alarm / (false_alarm + correct_rejection), 
+                             1 / (2 * (false_alarm + correct_rejection)))
+  
     # 计算z分数
     z_hit <- qnorm(hit_rate)
     z_false_alarm <- qnorm(false_alarm_rate)
@@ -1200,18 +1337,21 @@ df[[13]] <- read.csv(
     # 计算d'
     d_prime <- z_hit - z_false_alarm
     
+    
     # 保存结果
-    d_primes <- rbind(d_primes, data.frame(Identity = identity, d_prime = d_prime))
-      # 保存计算结果到df_d_prime[[13]]
-    df_d_prime[[13]] <- rbind(df_d_prime[[13]], data.frame(Identity = identity, d_prime = d_prime))
+    d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    # 保存计算结果到df_d_paper[[13]]
+    df_d_paper[[13]] <- rbind(df_d_paper[[13]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
   }
-  
-  # 打印df_d_prime[[13]]，包含所有Identity的d'值
-  print(df_d_prime[[13]])
-  
-names(df)[13] <- "Mayan Navon_2021 Exp 1"
-summary(df[[13]])
-rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit)
+}
+
+# 打印df_d_paper[[13]]，包含所有Subject和Identity的d'值
+print(df_d_paper[[13]])
+# 输出到新的CSV文件
+write.csv(df_d_paper[[13]], "../1_Clean_Data/d_prime/Navon_2021_Exp1_d'.csv", row.names = FALSE)
+# 显示数据总结
+summary(df[[13]]) 
+rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
 ```
 
 ## Experiment 2 (Identity = 3)
@@ -1238,14 +1378,59 @@ df[[14]] <- read.csv(
   )
 
 # 为Self, Friend，Stranger分别计算
-  identities <- c("Father","Close","Stranger")
-  d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
-  # 创建一个新的d_prime数据框，用于保存d_prime值
-  df_d_prime[[14]] <- data.frame(Identity = character(), d_prime = numeric())
+identities <- c("Father", "Close", "Stranger")
+d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+## 计算整篇文章的d'
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_prime[[14]] <- data.frame(Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  # 提取当前Identity的数据
+  subset_data <- df[[14]] %>% filter(Identity == identity)
+  
+  # 计算HR和FAR
+  hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+  miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+  false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+  correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+  
+  # 计算Hit Rate和False Alarm Rate
+  hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+  false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                             false_alarm / (false_alarm + correct_rejection), 
+                             1 / (2 * (false_alarm + correct_rejection)))
+  
+  # 计算z分数
+  z_hit <- qnorm(hit_rate)
+  z_false_alarm <- qnorm(false_alarm_rate)
+  
   # 计算d'
-  for (identity in identities) {
-    # 提取当前Identity的数据
-    subset_data <- df[[14]] %>% filter(Identity == identity)
+  d_prime <- z_hit - z_false_alarm
+  
+  # 保存计算结果到df_d_prime[[14]]
+  df_d_prime[[14]] <- rbind(df_d_prime[[14]], data.frame(Identity = identity, d_prime = d_prime))
+}
+
+# 打印df_d_prime[[14]]，包含所有Identity的d'值
+print(df_d_prime[[14]])
+
+# 更新列名
+names(df)[14] <- "Navon_2021_Exp2"
+
+##计算每个被试的d'
+d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_paper[[14]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  subjects <- unique(df[[14]]$Subject)  # 获取所有被试
+  
+  for (subject in subjects) {
+    # 提取当前Identity和Subject的数据
+    subset_data <- df[[14]] %>% filter(Identity == identity & Subject == subject)
     
     # 计算HR和FAR
     hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
@@ -1267,15 +1452,19 @@ df[[14]] <- read.csv(
     d_prime <- z_hit - z_false_alarm
     
     # 保存结果
-    d_primes <- rbind(d_primes, data.frame(Identity = identity, d_prime = d_prime))
-      # 保存计算结果到df_d_prime[[14]]
-    df_d_prime[[14]] <- rbind(df_d_prime[[14]], data.frame(Identity = identity, d_prime = d_prime))
+    d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    # 保存计算结果到df_d_paper[[14]]
+    df_d_paper[[14]] <- rbind(df_d_paper[[14]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
   }
-  
-  # 打印df_d_prime[[14]]，包含所有Identity的d'值
-  print(df_d_prime[[14]])
-names(df)[14] <- "Mayan Navon_2021 Exp 2"
-summary(df[[14]])
+}
+
+# 打印df_d_paper[[14]]，包含所有Subject和Identity的d'值
+print(df_d_paper[[14]])
+# 输出到新的CSV文件
+write.csv(df_d_paper[[14]], "../1_Clean_Data/d_prime/Navon_2021_Exp2_d'.csv", row.names = FALSE)
+# 显示数据总结
+summary(df[[14]]) 
+rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
 ```
 
 ## Experiment 3 (Identity = 3) 
