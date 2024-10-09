@@ -235,14 +235,14 @@ plot_data <- lapply(df, function(data) {
     data %>%
       mutate(Identity = case_when(
         Identity == "Self" ~ "Self",
-        Identity == "P1" ~ "Self",
+        # Identity == "P1" ~ "Self",
         Identity == "Friend" ~ "Friend",
         Identity == "Close" ~ "Close",
         Identity == "Mother" ~ "Close",
         Identity == "Father" ~ "Close",
         Identity == "Familiar" ~ "Close",
         Identity == "Acquaintance" ~ "Close",
-        Identity == "P2" ~ "Close",
+        # Identity == "P2" ~ "Close",
         TRUE ~ "Others"
       )) %>%
       group_by(Identity, Matching) %>%
@@ -734,6 +734,182 @@ print(subject_counts_df)
 
 
 ```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# 假设 df、df_d_prime、df_d_paper 已经加载
+
+# 遍历每篇文章
+for (n in names(df)) {
+  # 获取具体文章的数据
+  aRT_msicle_data <- df[[n]]
+  d_prime_value <- df_d_prime[[n]]
+  
+  # 处理数据，排除不合条件的试次
+  cleaned_data <- aRT_msicle_data %>%
+    filter(ACC >= 0.3, RT_ms <= 10000) %>%
+    mutate(d_prime_value = d_prime_value)  # 添加 d' 值作为新列
+  
+  # 1. 散点图，横坐标是RT_ms，纵坐标是d'
+  # p1 <- ggplot(cleaned_data, aes(x = RT_ms, y = d_prime_value)) +
+  #   geom_point() +
+  #   labs(title = paste("RT_ms vs d' for", n),
+  #        x = "RT_ms",
+  #        y = "d'") +
+  #   theme_minimal()
+  # 
+  # print(p1)
+  # 
+  # 2. Matching 条件下的散点图
+  matching_data <- cleaned_data %>%
+    filter(Matching == "Matching") %>%
+    filter(ACC >= 0.5, RT_ms >= 500, RT_ms <= 1000)
+  
+  p2 <- ggplot(matching_data, aes(x = ACC, y = RT_ms, shape = Identity)) +
+    geom_point(size = 3) +
+    labs(title = paste("ACC vs RT_ms (Matching) for", n),
+         x = "ACC",
+         y = "RT_ms") +
+    scale_shape_manual(values = c(16, 17, 3)) +  # 16: Circle, 17: Triangle, 3: Cross
+    theme_minimal()
+  
+  print(p2)
+  
+  # 3. Nonmatching 条件下的散点图
+  nonmatching_data <- cleaned_data %>%
+    filter(Matching == "Nonmatching") %>%
+    filter(ACC >= 0.5, RT_ms >= 500, RT_ms <= 1000)
+  
+  p3 <- ggplot(nonmatching_data, aes(x = ACC, y = RT_ms, shape = Identity)) +
+    geom_point(size = 3) +
+    labs(title = paste("ACC vs RT_ms (Nonmatching) for", n),
+         x = "ACC",
+         y = "RT_ms") +
+    scale_shape_manual(values = c(16, 17, 3)) +
+    theme_minimal()
+  
+  print(p3)
+  
+  # 4. 条形图，横坐标是Identity，纵坐标是d'，并给出误差线
+  # identity_dprime <- cleaned_data %>%
+  #   group_by(Identity) %>%
+  #   summarise(mean_dprime = mean(d_prime_value, na.rm = TRUE),
+  #             se_dprime = sd(d_prime_value, na.rm = TRUE) / sqRT_ms(n()))
+  # 
+  # p4 <- ggplot(identity_dprime, aes(x = Identity, y = mean_dprime)) +
+  #   geom_bar(stat = "identity", position = "dodge") +
+  #   geom_errorbar(aes(ymin = mean_dprime - se_dprime, ymax = mean_dprime + se_dprime), width = 0.2) +
+  #   labs(title = paste("Mean d' by Identity for", n),
+  #        x = "Identity",
+  #        y = "Mean d'") +
+  #   theme_minimal()
+  # 
+  # print(p4)
+}
+
+
+
+```
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# 假设 df、df_d_prime、df_d_paper 已经加载
+
+# 创建一个列表保存每篇文章的绘图
+plots <- list()
+
+# 遍历每篇文章
+for (n in names(df)) {
+  # 获取具体文章的数据
+  article_data <- df[[n]]
+  
+  # 确认使用的列名
+  if ("Identity" %in% names(article_data) && "Matching" %in% names(article_data) && "RT_ms" %in% names(article_data) && "ACC" %in% names(article_data)) {
+    
+    # 打印 ACC 的分布
+    print(table(article_data$ACC))
+
+    plot_data <- article_data %>%
+      mutate(Identity = case_when(
+        Identity == "Self" ~ "Self",
+        Identity == "Friend" ~ "Friend",
+        Identity == "Close" ~ "Close",
+        Identity == "Mother" ~ "Close",
+        Identity == "Father" ~ "Close",
+        Identity == "Familiar" ~ "Close",
+        Identity == "Acquaintance" ~ "Close",
+        TRUE ~ "Others"
+      )) %>%
+      group_by(Subject, Matching) %>%
+      summarise(
+        correct_count = sum(ACC == 1, na.rm = TRUE),  # 计算正确反应数
+        total_count = n(),  # 总记录数
+        mean_ACC = correct_count / total_count,  # 计算正确率
+        mean_RT_ms = mean(RT_ms, na.rm = TRUE),  # 计算平均反应时间
+        Identity = first(Identity),  # 获取每个被试的 Identity
+        .groups = "drop"
+      )
+  } else {
+    next
+  }
+
+  # 检查是否有缺失的 Identity 值
+  if (any(is.na(plot_data$Identity))) {
+    cat("Skipping article:", n, "due to missing Identity values.\n")
+    next
+  }
+  
+  # 处理数据，排除不合条件的试次
+  cleaned_data <- plot_data %>%
+    filter(mean_ACC >= 0.3, mean_RT_ms <= 10000)
+
+  # 输出 cleaned_data 以检查数据
+  print(cleaned_data)
+
+  # 1. Matching 条件下的散点图
+  matching_data <- cleaned_data %>%
+    filter(Matching == "Matching") %>%
+    filter(mean_ACC >= 0.5, mean_RT_ms >= 500, mean_RT_ms <= 1000)
+  
+  if (nrow(matching_data) > 0) {
+    p1 <- ggplot(matching_data, aes(x = mean_ACC, y = mean_RT_ms, shape = Identity)) +
+      geom_point(size = 3) +
+      labs(title = paste("Mean ACC vs Mean RT_ms (Matching) for", n),
+           x = "Mean ACC",
+           y = "Mean RT_ms") +
+      scale_shape_manual(values = c(16, 17, 3)) +
+      theme_minimal()
+    
+    print(p1)
+  }
+  
+  # 2. Nonmatching 条件下的散点图
+  nonmatching_data <- cleaned_data %>%
+    filter(Matching == "Nonmatching") %>%
+    filter(mean_ACC >= 0.5, mean_RT_ms >= 500, mean_RT_ms <= 1000)
+  
+  if (nrow(nonmatching_data) > 0) {
+    p2 <- ggplot(nonmatching_data, aes(x = mean_ACC, y = mean_RT_ms, shape = Identity)) +
+      geom_point(size = 3) +
+      labs(title = paste("Mean ACC vs Mean RT_ms (Nonmatching) for", n),
+           x = "Mean ACC",
+           y = "Mean RT_ms") +
+      scale_shape_manual(values = c(16, 17, 3)) +
+      theme_minimal()
+    
+    print(p2)
+  }
+}
+
+
+```
+
+
 
 ## Conclusion
 
