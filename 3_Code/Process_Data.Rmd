@@ -40,7 +40,7 @@ df[[1]] <- read.csv(
     ScreenGamma = NA, # 文档中未提及屏幕γ值
     Year = 2020,
     Sample_Size = 92,
-    Formal_Trials = 120,
+    Formal_Trials = 240,
     Behavior_Data = 1,
     Questionnaire_Data = 0,
     EEG_Data = 0,
@@ -160,6 +160,7 @@ df[[2]] <- read.csv(
     LuminanceStrongLight = "340 cd/m²",  # 强光亮度，直接使用文本输出
     TextColor = "Black", # 文本颜色，假设文本颜色为黑色
     VisualAngle = "57/1000", 
+    Formal_Trials = 192,
     Gender = case_when(
       Gender == "F" ~ "Female",
       Gender == "M" ~ "Male",
@@ -193,7 +194,7 @@ df[[3]] <- read.csv(
     Color = NA, # 文档中未提及具体颜色
     Contrast = NA, # 文档中未提及对比度
     ScreenGamma = NA, # 文档中未提及屏幕γ值
-    
+    Formal_Trials = 192,
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -309,6 +310,7 @@ df[[4]] <- read.csv(
     VisualAngle = NA, # 文档中未提及视觉角度
     Color = NA, # 文档中未提及具体颜色
     Contrast = NA, # 文档中未提及对比度
+    Formal_Trials = 144,
     Gender = case_when(
       Gender == "female" ~ "Female",
       Gender == "male" ~ "Male",
@@ -423,6 +425,7 @@ df[[5]] <- read.csv(
     VisualAngle = NA, # 文档中未提及视觉角度
     Color = NA, # 文档中未提及具体颜色
     Contrast = NA, # 文档中未提及对比度
+    Formal_Trials = 100,
     Gender = case_when(
       Gender == "female" ~ "Female",
       Gender == "male" ~ "Male",
@@ -537,6 +540,7 @@ df[[6]] <- read.csv(
     VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
     Color = NA, # 文档中未提及具体颜色
     Contrast = NA, # 文档中未提及对比度
+    Formal_Trials = 144,
     Identity = case_when(
       Identity == "Ich" ~ "Self",
       Identity == "Mutter" ~ "Mother",
@@ -813,6 +817,7 @@ df[[9]] <- read.csv(
     StimuliColor = "white", # 刺激颜色
     VisualAngle = NA, # 文档中未提及视觉角度
     Contrast = NA, # 文档中未提及对比度
+    Formal_Trials = 672,
   ) %>%
   dplyr::arrange(
     Subject, Matching, Identity
@@ -921,7 +926,7 @@ df[[10]] <- read.csv(
     StimuliColor = "white", # 刺激颜色
     VisualAngle = NA, # 文档中未提及视觉角度
     Contrast = NA, # 文档中未提及对比度
-    
+    Formal_Trials = 672,
   ) %>%
   dplyr::arrange(
     Subject, Matching, Identity

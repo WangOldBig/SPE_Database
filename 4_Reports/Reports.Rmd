@@ -26,6 +26,151 @@ Recently, more and more researchers have become interested in how self-relevance
 
 The Self-Prioritization Effects Database is hosted on the [Open Science Framework (OSF)](https://osf.io/s46pr/) website. Each dataset is represented by two folders: **Raw_Data** and **Clean_Data**.
 
+
+```{r}
+# Number of trials per subject
+# 1. 创建数据框
+data <- data.frame(
+  Paper = c("P5", "P5", "P5", "P5", "P6", "P20", "P34", "P45", "P46", "P51", 
+            "P51", "P54", "P95", "P95", "Pn4", "Pn4", "Pn13", "Pn13", "Pn13", 
+            "Pn13", "Pn14", "Pn14", "Pn14", "Pn16", "Pn16", "Pn16", "Pn23", 
+            "Ps1", "Ps2", "Ps3", "Ps4", "Ps4", "Ps5", "Ps5", "Ps5", "Ps5", 
+            "Pt1", "Pt2", "Pt3", "Pt5", "Pt6", "Pt6", "Pt7", "Pt9", "Pt9", 
+            "Pt9", "Pt10", "Pt13", "Pt18", "Pt27", "Pt28"),
+  Formal_Trials = c(96, 96, 96, 80, 240, 312, 100, 960, 192, 144, 
+                    100, 144, 672, 672, 360, 360, 360, 360, 360, 
+                    360, 128, 240, 240, 200, 400, 400, 360, 64, 
+                    90, 40, 40, 40, 60, 60, 60, 60, 240, 60, 360, 
+                    300, 240, 240, 360, 360, 360, 360, 96, 320, 960, 240, 360)
+)
+
+# 2. 定义区间
+bins <- c(0, 100, 200, 400, 700, 1000)  # 定义五个范围
+labels <- c("0-100", "101-200", "201-400", "401-700", "701-1000")
+
+# 3. 将Formal_Trials数据按范围分组
+data$Range <- cut(data$Formal_Trials, breaks = bins, labels = labels, right = TRUE)
+
+# 4. 按范围汇总总数
+library(dplyr)
+trial_range_summary <- data %>%
+  group_by(Range) %>%
+  summarise(Total_Trials = sum(Formal_Trials))
+
+# 5. 定义渐变颜色
+colors <- colorRampPalette(c("lightblue", "blue"))(length(trial_range_summary$Range))
+
+# 6. 绘制饼图
+pie(trial_range_summary$Total_Trials, 
+    labels = trial_range_summary$Range, 
+    main = "Number of trials per subject",
+    col = colors,  # 使用渐变色
+    border = "white")  # 设置白色边框
+
+# 添加图例
+legend("topright", 
+       legend = trial_range_summary$Range, 
+       fill = colors, 
+       title = "Ranges")
+
+```
+
+```{r}
+# 1. 创建数据框
+data <- data.frame(
+  Paper = c("P5", "P5", "P5", "P5", "P6", "P20", "P34", "P45", "P46", "P51", 
+            "P51", "P54", "P95", "P95", "Pn4", "Pn4", "Pn13", "Pn13", "Pn13", 
+            "Pn13", "Pn14", "Pn14", "Pn14", "Pn16", "Pn16", "Pn16", "Pn23", 
+            "Ps1", "Ps2", "Ps3", "Ps4", "Ps4", "Ps5", "Ps5", "Ps5", "Ps5", 
+            "Pt1", "Pt2", "Pt3", "Pt5", "Pt6", "Pt6", "Pt7", "Pt9", "Pt9", 
+            "Pt9", "Pt10", "Pt13", "Pt18", "Pt27", "Pt28"),
+  Sample_Size = c(28, 28, 28, 40, 92, 46, 31, 40, 56, 26, 
+                  26, 103, 19, 20, 30, 30, 13, 27, 27, 26, 
+                  38, 33, 36, 20, 24, 25, 105, 302, 23, 
+                  24, 20, 21, 24, 18, 22, 20, 40, 144, 109, 
+                  40, 30, 104, 328, 23, 21, 18, 380, 84, 20, 32, 70)
+)
+
+# 2. 定义区间
+bins <- c(0, 25, 50, 100, 200, 400)  # 定义五个范围
+labels <- c("0-25", "26-50", "51-100", "101-200", "201-400")
+
+# 3. 将Sample_Size数据按范围分组
+data$Range <- cut(data$Sample_Size, breaks = bins, labels = labels, right = TRUE)
+
+# 4. 按范围汇总每个区间的被试总数
+library(dplyr)
+subject_summary <- data %>%
+  group_by(Range) %>%
+  summarise(Total_Subjects = sum(Sample_Size))
+
+# 5. 定义渐变颜色（保持前面的颜色风格）
+colors <- colorRampPalette(c("lightblue", "blue"))(length(subject_summary$Range))
+
+# 6. 绘制饼图
+pie(subject_summary$Total_Subjects, 
+    labels = subject_summary$Range, 
+    main = "Number of subjects",
+    col = colors,  # 使用渐变色
+    border = "white")  # 设置白色边框
+
+# 添加图例
+legend("topright", 
+       legend = subject_summary$Range, 
+       fill = colors, 
+       title = "Sample Size Ranges")
+
+
+```
+
+```{r}
+# 1. 创建数据框
+data <- data.frame(
+  Paper = c("P5", "P5", "P5", "P5", "P6", "P20", "P34", "P45", "P46", "P51", 
+            "P51", "P54", "P95", "P95", "Pn4", "Pn4", "Pn13", "Pn13", "Pn13", 
+            "Pn13", "Pn14", "Pn14", "Pn14", "Pn16", "Pn16", "Pn16", "Pn23", 
+            "Ps1", "Ps2", "Ps3", "Ps4", "Ps4", "Ps5", "Ps5", "Ps5", "Ps5", 
+            "Pt1", "Pt2", "Pt3", "Pt5", "Pt6", "Pt6", "Pt7", "Pt9", "Pt9", 
+            "Pt9", "Pt10", "Pt13", "Pt18", "Pt27", "Pt28"),
+  Year = c(2019, 2019, 2019, 2019, 2020, 2020, 2020, 2021, 2020, 2020, 
+           2020, 2019, 2018, 2018, 2021, 2021, 2021, 2021, 2021, 2021, 
+           2020, 2020, 2020, 2022, 2022, 2022, 2021, 2023, 2023, 2014, 
+           2015, 2015, 2014, 2014, 2014, 2014, 2023, 2023, 2021, 2023, 
+           2022, 2022, 2022, 2020, 2020, 2020, 2023, 2021, 2023, 2024, 2024)
+)
+
+# 2. 定义年份区间
+bins <- c(2010, 2015, 2020, 2021, 2022, 2024)  # 定义五个年份范围
+labels <- c("2010-2015", "2016-2020", "2021", "2022", "2023-2024")
+
+# 3. 将Year数据按范围分组
+data$Year_Range <- cut(data$Year, breaks = bins, labels = labels, right = TRUE)
+
+# 4. 按年份区间汇总每个区间的文章数量
+library(dplyr)
+year_summary <- data %>%
+  group_by(Year_Range) %>%
+  summarise(Total_Papers = n())
+
+# 5. 定义渐变颜色（保持前面的颜色风格）
+colors <- colorRampPalette(c("lightblue", "blue"))(length(year_summary$Year_Range))
+
+# 6. 绘制饼图
+pie(year_summary$Total_Papers, 
+    labels = year_summary$Year_Range, 
+    main = "Publication year",
+    col = colors,  # 使用渐变色
+    border = "white")  # 设置白色边框
+
+# 添加图例
+legend("topright", 
+       legend = year_summary$Year_Range, 
+       fill = colors, 
+       title = "Year Ranges")
+
+
+```
+
 -   The **Raw_Data** folder contains the original data from the study.
 -   The **Clean_Data** folder includes processed data files in `.csv` format and a corresponding codebook in `.xlsx` format.
 
@@ -170,14 +315,14 @@ plot_data <- lapply(df, function(data) {
     data %>%
       mutate(Identity = case_when(
         Identity == "Self" ~ "Self",
-        Identity == "P1" ~ "Self",
+        # Identity == "P1" ~ "Self",
         Identity == "Friend" ~ "Friend",
         Identity == "Close" ~ "Close",
         Identity == "Mother" ~ "Close",
         Identity == "Father" ~ "Close",
         Identity == "Familiar" ~ "Close",
         Identity == "Acquaintance" ~ "Close",
-        Identity == "P2" ~ "Close",
+        # Identity == "P2" ~ "Close",
         TRUE ~ "Others"  # 其他归为Others
       )) %>%
       group_by(Identity, Matching) %>%
@@ -377,14 +522,14 @@ plot_data <- lapply(df, function(data) {
     data %>%
       mutate(Identity = case_when(
         Identity == "Self" ~ "Self",
-        Identity == "P1" ~ "Self",
+        # Identity == "P1" ~ "Self",
         Identity == "Friend" ~ "Friend",
         Identity == "Close" ~ "Close",
         Identity == "Mother" ~ "Close",
         Identity == "Father" ~ "Close",
         Identity == "Familiar" ~ "Close",
         Identity == "Acquaintance" ~ "Close",
-        Identity == "P2" ~ "Close",
+        # Identity == "P2" ~ "Close",
         TRUE ~ "Others"
       )) %>%
       group_by(Subject, Identity, Matching) %>%
@@ -641,14 +786,14 @@ plot_data <- bind_rows(lapply(seq_along(df), function(i) {
     data <- data %>%
       mutate(Identity = case_when(
         Identity == "Self" ~ "Self",
-        Identity == "P1" ~ "Self",
+        # Identity == "P1" ~ "Self",
         Identity == "Friend" ~ "Friend",
         Identity == "Close" ~ "Close",
         Identity == "Mother" ~ "Close",
         Identity == "Father" ~ "Close",
         Identity == "Familiar" ~ "Close",
         Identity == "Acquaintance" ~ "Close",
-        Identity == "P2" ~ "Close",
+        # Identity == "P2" ~ "Close",
         TRUE ~ "Others"
       )) %>%
       group_by(Subject, Identity, Matching) %>%
