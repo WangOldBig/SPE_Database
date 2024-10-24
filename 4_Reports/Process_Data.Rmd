@@ -1,0 +1,4990 @@
+---
+title: "Process_Data"
+author: "czx"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Process Coding
+## Loading package
+```{r Package, warning = FALSE,message = FALSE}
+# clean data
+library(tidyr)
+library(dplyr)
+library(stringr)
+```
+
+# Initial Data.Frame List
+```{r Data.Frame List}
+df <- list()
+df_d_prime <- list()
+df_d_paper <-  list()
+```
+
+# MerrynD.Constable_2020_AP
+## Experiment 1 (Identity = 3)
+"Self", "Partner", "Stranger"
+```{r Paper p6 Experiment 1}
+df[[1]] <- read.csv(
+  "../1_Clean_Data/Constable_2020_AP/Constable_2020_AP_Exp1_Clean.csv"
+) %>%
+  # 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = NA, # 文档中未提及屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA, # 文档中未提及亮度
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Color = NA, # 文档中未提及具体颜色
+    Contrast = NA, # 文档中未提及对比度
+    ScreenGamma = NA, # 文档中未提及屏幕γ值
+    Year = 2020,
+    Sample_Size = 92,
+    Formal_Trials = 240,
+    Behavior_Data = 1,
+    Questionnaire_Data = 0,
+    EEG_Data = 0,
+    Stimu_language = "Hungarian"
+  ) %>%
+  dplyr::arrange(Subject, Matching, ShapeLoc)
+
+# 为P1, P2, Stranger分别计算d'
+identities <- c("P1", "P2", "Stranger")
+
+  ## 计算整篇文章的d'
+    # 创建一个新的d_prime数据框，用于保存d_prime值
+    df_d_prime[[1]] <- data.frame(Identity = character(), d_prime = numeric())
+    
+    # 计算d'
+    for (identity in identities) {
+      # 提取当前Identity的数据
+      subset_data <- df[[1]] %>% filter(Identity == identity)
+      
+      # 计算HR和FAR
+      hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+      miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+      false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+      correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+      
+      # 计算Hit Rate和False Alarm Rate
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
+      
+      # 计算z分数
+      z_hit <- qnorm(hit_rate)
+      z_false_alarm <- qnorm(false_alarm_rate)
+      
+      # 计算d'
+      d_prime <- z_hit - z_false_alarm
+      
+      # 保存计算结果到df_d_prime[[1]]
+      df_d_prime[[1]] <- rbind(df_d_prime[[1]], data.frame(Identity = identity, d_prime = d_prime))
+    }
+    
+    # 打印df_d_prime[[1]]，包含所有Identity的d'值
+    print(df_d_prime[[1]])
+    
+    # 更新列名
+    names(df)[1] <- "Constable_2020_AP_Exp1"
+
+  ##计算每个被试的d'
+    # 为Self, Stranger分别计算
+    identities <- c("P1", "P2", "Stranger")
+    d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+    
+    # 创建一个新的d_prime数据框，用于保存d_prime值
+    df_d_paper[[1]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+    
+    # 计算d'
+    for (identity in identities) {
+      subjects <- unique(df[[1]]$Subject)  # 获取所有被试
+    
+      for (subject in subjects) {
+        # 提取当前Identity和Subject的数据
+        subset_data <- df[[1]] %>% filter(Identity == identity & Subject == subject)
+    
+        # 计算HR和FAR
+        hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+        miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+        false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+        correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+    
+        # 计算Hit Rate和False Alarm Rate
+        hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+        false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
+    
+        # 计算z分数
+        z_hit <- qnorm(hit_rate)
+        z_false_alarm <- qnorm(false_alarm_rate)
+    
+        # 计算d'
+        d_prime <- z_hit - z_false_alarm
+    
+        # 保存结果
+        d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+        # 保存计算结果到df_d_paper[[3]]
+        df_d_paper[[1]] <- rbind(df_d_paper[[1]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+      }
+    }
+    
+    # 打印df_d_paper[[1]]，包含所有Subject和Identity的d'值
+    print(df_d_paper[[1]])
+    
+    # 输出到新的CSV文件
+    write.csv(df_d_paper[[1]], "../1_Clean_Data/d_prime/Constable_2020_AP_d'.csv", row.names = FALSE)
+    
+    # 显示数据总结
+    summary(df[[1]])
+    
+    rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+```
+
+# Merryn Dale Constable_2020_CE
+## Experiment 1 (Identity = 2)
+"Self", "Stranger"
+```{r Paper p46 Experiment 1}
+df[[2]] <- read.csv(
+  "../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp1_Clean.csv"
+  ) %>%
+   dplyr::mutate(
+    ScreenResolution = "1920*1080", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = "169 cd/m²", # 背景亮度，直接使用文本输出
+    LuminanceStrongDark = "2 cd/m²", # 强暗亮度，直接使用文本输出
+    LuminanceWeakDark = "86 cd/m²", # 弱暗亮度，直接使用文本输出
+    LuminanceWeakLight = "255 cd/m²", # 弱光亮度，直接使用文本输出
+    LuminanceStrongLight = "340 cd/m²",  # 强光亮度，直接使用文本输出
+    TextColor = "Black", # 文本颜色，假设文本颜色为黑色
+    VisualAngle = "57/1000", 
+    Formal_Trials = 192,
+    Gender = case_when(
+      Gender == "F" ~ "Female",
+      Gender == "M" ~ "Male",
+      ),
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Shape
+  )
+names(df)[2] <- "Constable_2020_CE Exp 1"
+summary(df[[2]])
+```
+
+# Merryn Dale Constable_2020_CE (Dark Light Box)
+## Experiment 2 (Identity = 2)
+"Self", "Stranger"
+```{r Paper p46 Experiment 2}
+df[[3]] <- read.csv(
+  "../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp2_Clean.csv"
+  ) %>%
+  # 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = "1920*1080", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    LuminanceBackground = "169 cd/m²", # 背景亮度，直接使用文本输出
+    LuminanceStrongDark = "2 cd/m²", # 强暗亮度，直接使用文本输出
+    LuminanceWeakDark = "86 cd/m²", # 弱暗亮度，直接使用文本输出
+    LuminanceWeakLight = "255 cd/m²", # 弱光亮度，直接使用文本输出
+    LuminanceStrongLight = "340 cd/m²",  # 强光亮度，直接使用文本输出
+    TextColor = "Black", # 文本颜色，假设文本颜色为黑色
+    VisualAngle = "57/1000", # 视觉角度，假设57厘米为视距，具体数值需要根据实验设置调整
+    Color = NA, # 文档中未提及具体颜色
+    Contrast = NA, # 文档中未提及对比度
+    ScreenGamma = NA, # 文档中未提及屏幕γ值
+    Formal_Trials = 192,
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Shape
+  )
+  # 为Self, Stranger分别计算d'
+  identities <- c("Self", "Stranger")
+
+  ## 计算整篇文章的d'
+    # 创建一个新的d_prime数据框，用于保存d_prime值
+    df_d_prime[[3]] <- data.frame(Identity = character(), d_prime = numeric())
+    
+    # 计算d'
+    for (identity in identities) {
+      # 提取当前Identity的数据
+      subset_data <- df[[3]] %>% filter(Identity == identity)
+      
+      # 计算HR和FAR
+      hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+      miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+      false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+      correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+      
+      # 计算Hit Rate和False Alarm Rate
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
+      
+      # 计算z分数
+      z_hit <- qnorm(hit_rate)
+      z_false_alarm <- qnorm(false_alarm_rate)
+      
+      # 计算d'
+      d_prime <- z_hit - z_false_alarm
+      
+      # 保存计算结果到df_d_prime[[3]]
+      df_d_prime[[3]] <- rbind(df_d_prime[[3]], data.frame(Identity = identity, d_prime = d_prime))
+    }
+    
+    # 打印df_d_prime[[3]]，包含所有Identity的d'值
+    print(df_d_prime[[3]])
+    
+    # 更新列名
+    names(df)[3] <- "Constable_2020_CE_Exp2"
+
+  ##计算每个被试的d'
+    d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+    
+    # 创建一个新的d_prime数据框，用于保存d_prime值
+    df_d_paper[[3]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+    
+    # 计算d'
+    for (identity in identities) {
+      subjects <- unique(df[[3]]$Subject)  # 获取所有被试
+    
+      for (subject in subjects) {
+        # 提取当前Identity和Subject的数据
+        subset_data <- df[[3]] %>% filter(Identity == identity & Subject == subject)
+    
+        # 计算HR和FAR
+        hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+        miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+        false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+        correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+    
+        # 计算Hit Rate和False Alarm Rate
+        hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+        false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
+    
+        # 计算z分数
+        z_hit <- qnorm(hit_rate)
+        z_false_alarm <- qnorm(false_alarm_rate)
+    
+        # 计算d'
+        d_prime <- z_hit - z_false_alarm
+    
+        # 保存结果
+        d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+        # 保存计算结果到df_d_paper[[3]]
+        df_d_paper[[3]] <- rbind(df_d_paper[[3]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+      }
+    }
+    
+    # 打印df_d_paper[[3]]，包含所有Subject和Identity的d'值
+    print(df_d_paper[[3]])
+    
+    # 输出到新的CSV文件
+    write.csv(df_d_paper[[3]], "../1_Clean_Data/d_prime/Constable_2020_CE_Exp2_d'.csv", row.names = FALSE)
+    
+    # 显示数据总结
+    summary(df[[3]])
+    rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+```
+
+# Haoyue Qian_2019_QJEP 
+## Experiment 1 (Identity = 3)
+"Self", "Familiar", "Stranger"
+```{r Paper p51 Experiment 1}
+df[[4]] <- read.csv(
+  "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp1_Clean.csv"
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "17-in cathode-ray tube (CRT) monitor", # 屏幕分辨率
+    RefreshRate = NA, # 刷新率，直接使用文本输出
+    Luminance = NA, # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及具体颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Color = NA, # 文档中未提及具体颜色
+    Contrast = NA, # 文档中未提及对比度
+    Formal_Trials = 144,
+    Gender = case_when(
+      Gender == "female" ~ "Female",
+      Gender == "male" ~ "Male",
+      ),
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity, Session
+  )
+# 为Self, Familiar, Stranger分别计算d'
+  identities <- c("Self", "Familiar", "Stranger")
+
+  ## 计算整篇文章的d'
+    # 创建一个新的d_prime数据框，用于保存d_prime值
+    df_d_prime[[4]] <- data.frame(Identity = character(), d_prime = numeric())
+    
+    # 计算d'
+    for (identity in identities) {
+      # 提取当前Identity的数据
+      subset_data <- df[[4]] %>% filter(Identity == identity)
+      
+      # 计算HR和FAR
+      hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+      miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+      false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+      correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+      
+      # 计算Hit Rate和False Alarm Rate
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
+      
+      # 计算z分数
+      z_hit <- qnorm(hit_rate)
+      z_false_alarm <- qnorm(false_alarm_rate)
+      
+      # 计算d'
+      d_prime <- z_hit - z_false_alarm
+      
+      # 保存计算结果到df_d_prime[[4]]
+      df_d_prime[[4]] <- rbind(df_d_prime[[4]], data.frame(Identity = identity, d_prime = d_prime))
+    }
+    
+    # 打印df_d_prime[[4]]，包含所有Identity的d'值
+    print(df_d_prime[[4]])
+    
+    # 更新列名
+    names(df)[4] <- "Qian_2019_QJEP_Exp1"
+
+  ##计算每个被试的d'
+    d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+    
+    # 创建一个新的d_prime数据框，用于保存d_prime值
+    df_d_paper[[4]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+    
+    # 计算d'
+    for (identity in identities) {
+      subjects <- unique(df[[4]]$Subject)  # 获取所有被试
+    
+      for (subject in subjects) {
+        # 提取当前Identity和Subject的数据
+        subset_data <- df[[4]] %>% filter(Identity == identity & Subject == subject)
+    
+        # 计算HR和FAR
+        hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+        miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+        false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+        correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+    
+        # 计算Hit Rate和False Alarm Rate
+        hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+        false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
+    
+        # 计算z分数
+        z_hit <- qnorm(hit_rate)
+        z_false_alarm <- qnorm(false_alarm_rate)
+    
+        # 计算d'
+        d_prime <- z_hit - z_false_alarm
+    
+        # 保存结果
+        d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+        # 保存计算结果到df_d_paper[[4]]
+        df_d_paper[[4]] <- rbind(df_d_paper[[4]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+      }
+    }
+    
+    # 打印df_d_paper[[4]]，包含所有Subject和Identity的d'值
+    print(df_d_paper[[4]])
+    
+    # 输出到新的CSV文件
+    write.csv(df_d_paper[[4]], "../1_Clean_Data/d_prime/Qian_2019_QJEP_Exp1_d'.csv", row.names = FALSE)
+    # 显示数据总结
+    summary(df[[4]])
+    rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+```
+
+## Experiment 2 (Identity = 2)
+"Self", "Familiar"
+```{r Paper p51 Experiment 2}
+df[[5]] <- read.csv(
+  "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp2_Clean.csv"
+  ) %>%
+  # 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = "17-in cathode-ray tube (CRT) monitor", # 屏幕分辨率
+    RefreshRate = NA, # 文档中没有提及刷新率
+    Luminance = NA, # 文档中没有提及亮度
+    TextColor = NA, # 文档中没有提及具体颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Color = NA, # 文档中未提及具体颜色
+    Contrast = NA, # 文档中未提及对比度
+    Formal_Trials = 100,
+    Gender = case_when(
+      Gender == "female" ~ "Female",
+      Gender == "male" ~ "Male",
+      ),
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+# 为Self, Familiar分别计算d'
+  identities <- c("Self", "Familiar")
+
+  ## 计算整篇文章的d'
+    # 创建一个新的d_prime数据框，用于保存d_prime值
+    df_d_prime[[5]] <- data.frame(Identity = character(), d_prime = numeric())
+    
+    # 计算d'
+    for (identity in identities) {
+      # 提取当前Identity的数据
+      subset_data <- df[[5]] %>% filter(Identity == identity)
+      
+      # 计算HR和FAR
+      hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+      miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+      false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+      correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+      
+      # 计算Hit Rate和False Alarm Rate
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
+      
+      # 计算z分数
+      z_hit <- qnorm(hit_rate)
+      z_false_alarm <- qnorm(false_alarm_rate)
+      
+      # 计算d'
+      d_prime <- z_hit - z_false_alarm
+      
+      # 保存计算结果到df_d_prime[[5]]
+      df_d_prime[[5]] <- rbind(df_d_prime[[5]], data.frame(Identity = identity, d_prime = d_prime))
+    }
+    
+    # 打印df_d_prime[[5]]，包含所有Identity的d'值
+    print(df_d_prime[[5]])
+    
+    # 更新列名
+    names(df)[5] <- "Qian_2019_QJEP_Exp2"
+
+  ##计算每个被试的d'
+    d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+    
+    # 创建一个新的d_prime数据框，用于保存d_prime值
+    df_d_paper[[5]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+    
+    # 计算d'
+    for (identity in identities) {
+      subjects <- unique(df[[5]]$Subject)  # 获取所有被试
+    
+      for (subject in subjects) {
+        # 提取当前Identity和Subject的数据
+        subset_data <- df[[5]] %>% filter(Identity == identity & Subject == subject)
+    
+        # 计算HR和FAR
+        hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+        miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+        false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+        correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+    
+        # 计算Hit Rate和False Alarm Rate
+        hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+        false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                   false_alarm / (false_alarm + correct_rejection), 
+                                   1 / (2 * (false_alarm + correct_rejection)))
+    
+        # 计算z分数
+        z_hit <- qnorm(hit_rate)
+        z_false_alarm <- qnorm(false_alarm_rate)
+    
+        # 计算d'
+        d_prime <- z_hit - z_false_alarm
+    
+        # 保存结果
+        d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+        # 保存计算结果到df_d_paper[[5]]
+        df_d_paper[[5]] <- rbind(df_d_paper[[5]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+      }
+    }
+    
+    # 打印df_d_paper[[5]]，包含所有Subject和Identity的d'值
+    print(df_d_paper[[5]])
+        # 输出到新的CSV文件
+    write.csv(df_d_paper[[5]], "../1_Clean_Data/d_prime/Qian_2019_QJEP_Exp2_d'.csv", row.names = FALSE)
+    # 显示数据总结
+    summary(df[[5]]) 
+    rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+```
+
+# Sarah Schäfer_2019_CP 
+## Experiment 1 (Identity = 4)
+"Self", "Mother","none", "Acquaintance"
+```{r Paper p54 Experiment 1}
+df[[6]] <- read.csv(
+  "../1_Clean_Data/Schäfer_2019_CP/Schäfer_2019_CP_Exp1_Clean.csv"
+  ) %>%
+  # 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = "1680*1050", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及具体颜色
+    VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
+    Color = NA, # 文档中未提及具体颜色
+    Contrast = NA, # 文档中未提及对比度
+    Formal_Trials = 144,
+    Identity = case_when(
+      Identity == "Ich" ~ "Self",
+      Identity == "Mutter" ~ "Mother",
+      Identity == "Bekannter" ~ "Acquaintance",
+      Identity == "none" ~ "none"
+      ),
+    Gender = case_when(
+      Gender == "female" ~ "Female",
+      Gender == "male" ~ "Male",
+      ),
+  ) %>%
+  dplyr::select(
+    Subject, Gender, Age, Handedness,
+    Matching, Identity, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+# 为Self, Friend，Stranger分别计算
+  identities <- c("Self","Mother", "Acquaintance","none")
+  d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+    ## 计算整篇文章的d'
+    # 创建一个新的d_prime数据框，用于保存d_prime值
+    df_d_prime[[6]] <- data.frame(Identity = character(), d_prime = numeric())
+    
+    # 计算d'
+    for (identity in identities) {
+      # 提取当前Identity的数据
+      subset_data <- df[[6]] %>% filter(Identity == identity)
+      
+      # 计算HR和FAR
+      hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+      miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+      false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+      correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+      
+      # 计算Hit Rate和False Alarm Rate
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
+      
+      # 计算z分数
+      z_hit <- qnorm(hit_rate)
+      z_false_alarm <- qnorm(false_alarm_rate)
+      
+      # 计算d'
+      d_prime <- z_hit - z_false_alarm
+      
+      # 保存计算结果到df_d_prime[[6]]
+      df_d_prime[[6]] <- rbind(df_d_prime[[6]], data.frame(Identity = identity, d_prime = d_prime))
+    }
+    
+    # 打印df_d_prime[[6]]，包含所有Identity的d'值
+    print(df_d_prime[[6]])
+    
+    # 更新列名
+    names(df)[6] <- "Schäfer_2019_CP_Exp1"
+
+  ##计算每个被试的d'
+    d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+    
+    # 创建一个新的d_prime数据框，用于保存d_prime值
+    df_d_paper[[6]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+    
+    # 计算d'
+    for (identity in identities) {
+      subjects <- unique(df[[6]]$Subject)  # 获取所有被试
+      
+      for (subject in subjects) {
+        # 提取当前Identity和Subject的数据
+        subset_data <- df[[6]] %>% filter(Identity == identity & Subject == subject)
+        
+        # 计算HR和FAR
+        hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+        miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+        false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+        correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+        
+        # 计算Hit Rate和False Alarm Rate
+        hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+        false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                   false_alarm / (false_alarm + correct_rejection), 
+                                   1 / (2 * (false_alarm + correct_rejection)))
+        
+        # 计算z分数
+        z_hit <- qnorm(hit_rate)
+        z_false_alarm <- qnorm(false_alarm_rate)
+        
+        # 计算d'
+        d_prime <- z_hit - z_false_alarm
+        
+        # 保存结果
+        d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+        # 保存计算结果到df_d_paper[[6]]
+        df_d_paper[[6]] <- rbind(df_d_paper[[6]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+      }
+    }
+    
+    # 打印df_d_paper[[6]]，包含所有Subject和Identity的d'值
+    print(df_d_paper[[6]])
+    # 输出到新的CSV文件
+    write.csv(df_d_paper[[6]], "../1_Clean_Data/d_prime/Schäfer_2019_CP_Exp1_d'.csv", row.names = FALSE)
+    # 显示数据总结
+    summary(df[[6]]) 
+    rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+```
+
+## Experiment 2 (Identity = 4)
+"Self", "Mother","none", "Acquaintance"
+```{r Paper p54 Experiment 2}
+df[[7]] <- read.csv(
+  "../1_Clean_Data/Schäfer_2019_CP/Schäfer_2019_CP_Exp2_Clean.csv"
+  ) %>%
+  # 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = "1680*1050", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及具体颜色
+    VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
+    Color = NA, # 文档中未提及具体颜色
+    Contrast = NA, # 文档中未提及对比度
+    Gender = case_when(
+      Gender == "female" ~ "Female",
+      Gender == "male" ~ "Male",
+      ),
+  ) %>%
+  dplyr::arrange(
+    Subject, Condition
+  )
+names(df)[7] <- "Schäfer_2019_CP Exp 2"
+summary(df[[7]])
+```
+
+## Experiment 3 (Identity = 3)
+"Self", "Mother", "Acquaintance"
+```{r Paper p54 Experiment 3}
+df[[8]] <- read.csv(
+  "../1_Clean_Data/Schäfer_2019_CP/Schäfer_2019_CP_Exp3_Clean.csv"
+  ) %>%
+  # 添加新的环境变量
+  dplyr::mutate(
+    ScreenResolution = "1680*1050", # 屏幕分辨率
+    RefreshRate = "60 Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及具体颜色
+    VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
+    Color = NA, # 文档中未提及具体颜色
+    Contrast = NA, # 文档中未提及对比度
+    Identity = case_when(
+      Identity == "Ich" ~ "Self",
+      Identity == "Mutter" ~ "Mother",
+      Identity == "Bekannter" ~ "Acquaintance",
+      ),
+    Gender = case_when(
+      Gender == "female" ~ "Female",
+      Gender == "male" ~ "Male",
+      ),
+    Matching = case_when(
+      Matching == "comp" ~ "Matching",
+      Matching == "incomp" ~ "Nonmatching",
+      ),
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity,
+  )
+# 为Self, Friend，Stranger分别计算
+identities <- c("Self", "Mother", "Acquaintance")
+d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+  ## 计算整篇文章的d'
+    # 创建一个新的d_prime数据框，用于保存d_prime值
+    df_d_prime[[8]] <- data.frame(Identity = character(), d_prime = numeric())
+    
+    # 计算d'
+    for (identity in identities) {
+      # 提取当前Identity的数据
+      subset_data <- df[[8]] %>% filter(Identity == identity)
+      
+      # 计算HR和FAR
+      hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+      miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+      false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+      correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+      
+      # 计算Hit Rate和False Alarm Rate
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
+      
+      # 计算z分数
+      z_hit <- qnorm(hit_rate)
+      z_false_alarm <- qnorm(false_alarm_rate)
+      
+      # 计算d'
+      d_prime <- z_hit - z_false_alarm
+      
+      # 保存计算结果到df_d_prime[[8]]
+      df_d_prime[[8]] <- rbind(df_d_prime[[8]], data.frame(Identity = identity, d_prime = d_prime))
+    }
+    
+    # 打印df_d_prime[[8]]，包含所有Identity的d'值
+    print(df_d_prime[[8]])
+    
+    # 更新列名
+    names(df)[8] <- "Schäfer_2019_CP_Exp3"
+    
+  ##计算每个被试的d'
+    d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+    
+    # 创建一个新的d_prime数据框，用于保存d_prime值
+    df_d_paper[[8]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+    
+    # 计算d'
+    for (identity in identities) {
+      subjects <- unique(df[[8]]$Subject)  # 获取所有被试
+      
+      for (subject in subjects) {
+        # 提取当前Identity和Subject的数据
+        subset_data <- df[[8]] %>% filter(Identity == identity & Subject == subject)
+        
+        # 计算HR和FAR
+        hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+        miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+        false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+        correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+        
+        # 计算Hit Rate和False Alarm Rate
+        hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+        false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                   false_alarm / (false_alarm + correct_rejection), 
+                                   1 / (2 * (false_alarm + correct_rejection)))
+        
+        # 计算z分数
+        z_hit <- qnorm(hit_rate)
+        z_false_alarm <- qnorm(false_alarm_rate)
+        
+        # 计算d'
+        d_prime <- z_hit - z_false_alarm
+        
+        # 保存结果
+        d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+        # 保存计算结果到df_d_paper[[8]]
+        df_d_paper[[8]] <- rbind(df_d_paper[[8]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+      }
+    }
+    
+    # 打印df_d_paper[[8]]，包含所有Subject和Identity的d'值
+    print(df_d_paper[[8]])
+    # 输出到新的CSV文件
+    write.csv(df_d_paper[[8]], "../1_Clean_Data/d_prime/Schäfer_2019_CP_Exp3_d'.csv", row.names = FALSE)
+    # 显示数据总结
+    summary(df[[8]]) 
+    rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+```
+
+# Mateusz Woźniak_2018_PLOS (Face)
+## Experiment 1 (Identity = 3)
+"Self", "Friend", "Stranger"
+```{r Paper p95 Experiment 1}
+df[[9]] <- read.csv(
+  "../1_Clean_Data/Woźniak_2018_PLOS/Woźniak_2018_PLOS_Exp1_Clean.csv"
+  ) %>%
+   dplyr::mutate(
+    ScreenResolution = "24’’ widescreen LED monito", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    BackgroundColor = "black", # 背景颜色
+    StimuliColor = "white", # 刺激颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA, # 文档中未提及对比度
+    Formal_Trials = 672,
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+# 为Self, Friend，Stranger分别计算
+  identities <- c("Self","Friend","Stranger")
+  d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+  ## 计算整篇文章的d'
+  # 创建一个新的d_prime数据框，用于保存d_prime值
+  df_d_prime[[9]] <- data.frame(Identity = character(), d_prime = numeric())
+  
+  # 计算d'
+  for (identity in identities) {
+    # 提取当前Identity的数据
+    subset_data <- df[[9]] %>% filter(Identity == identity)
+    
+    # 计算HR和FAR
+    hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+    miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+    false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+    correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+    
+    # 计算Hit Rate和False Alarm Rate
+    hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+    false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                               false_alarm / (false_alarm + correct_rejection), 
+                               1 / (2 * (false_alarm + correct_rejection)))
+    
+    # 计算z分数
+    z_hit <- qnorm(hit_rate)
+    z_false_alarm <- qnorm(false_alarm_rate)
+    
+    # 计算d'
+    d_prime <- z_hit - z_false_alarm
+    
+    # 保存计算结果到df_d_prime[[9]]
+    df_d_prime[[9]] <- rbind(df_d_prime[[9]], data.frame(Identity = identity, d_prime = d_prime))
+  }
+  
+  # 打印df_d_prime[[9]]，包含所有Identity的d'值
+  print(df_d_prime[[9]])
+  
+  # 更新列名
+  names(df)[9] <- "Woźniak_2018_PLOS_Exp1"
+  
+  ##计算每个被试的d'
+  d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+  
+  # 创建一个新的d_prime数据框，用于保存d_prime值
+  df_d_paper[[9]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+  
+  # 计算d'
+  for (identity in identities) {
+    subjects <- unique(df[[9]]$Subject)  # 获取所有被试
+    
+    for (subject in subjects) {
+      # 提取当前Identity和Subject的数据
+      subset_data <- df[[9]] %>% filter(Identity == identity & Subject == subject)
+      
+      # 计算HR和FAR
+      hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+      miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+      false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+      correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+      
+      # 计算Hit Rate和False Alarm Rate
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
+      
+      # 计算z分数
+      z_hit <- qnorm(hit_rate)
+      z_false_alarm <- qnorm(false_alarm_rate)
+      
+      # 计算d'
+      d_prime <- z_hit - z_false_alarm
+      
+      # 保存结果
+      d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+      # 保存计算结果到df_d_paper[[9]]
+      df_d_paper[[9]] <- rbind(df_d_paper[[9]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    }
+  }
+  
+  # 打印df_d_paper[[9]]，包含所有Subject和Identity的d'值
+  print(df_d_paper[[9]])
+  # 输出到新的CSV文件
+  write.csv(df_d_paper[[9]], "../1_Clean_Data/d_prime/Woźniak_2018_PLOS_Exp1_d'.csv", row.names = FALSE)
+  # 显示数据总结
+  summary(df[[9]]) 
+  rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+```
+
+## Experiment 2 (Identity = 3)
+"Self", "Friend", "Stranger"
+```{r Paper p95 Experiment 2}
+df[[10]] <- read.csv(
+  "../1_Clean_Data/Woźniak_2018_PLOS/Woźniak_2018_PLOS_Exp2_Clean.csv"
+  ) %>%
+   dplyr::mutate(
+    ScreenResolution = "24’’ widescreen LED monito", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA, # 文档中未提及亮度
+    BackgroundColor = "black", # 背景颜色
+    StimuliColor = "white", # 刺激颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA, # 文档中未提及对比度
+    Formal_Trials = 672,
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+# 为Self, Friend，Stranger分别计算
+  identities <- c("Self","Friend","Stranger")
+  d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+  ## 计算整篇文章的d'
+  # 创建一个新的d_prime数据框，用于保存d_prime值
+  df_d_prime[[10]] <- data.frame(Identity = character(), d_prime = numeric())
+  
+  # 计算d'
+  for (identity in identities) {
+    # 提取当前Identity的数据
+    subset_data <- df[[10]] %>% filter(Identity == identity)
+    
+    # 计算HR和FAR
+    hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+    miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+    false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+    correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+    
+    # 计算Hit Rate和False Alarm Rate
+    hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+    false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                               false_alarm / (false_alarm + correct_rejection), 
+                               1 / (2 * (false_alarm + correct_rejection)))
+    
+    # 计算z分数
+    z_hit <- qnorm(hit_rate)
+    z_false_alarm <- qnorm(false_alarm_rate)
+    
+    # 计算d'
+    d_prime <- z_hit - z_false_alarm
+    
+    # 保存计算结果到df_d_prime[[10]]
+    df_d_prime[[10]] <- rbind(df_d_prime[[10]], data.frame(Identity = identity, d_prime = d_prime))
+  }
+  
+  # 打印df_d_prime[[10]]，包含所有Identity的d'值
+  print(df_d_prime[[10]])
+  
+  # 更新列名
+  names(df)[10] <- "Woźniak_2018_PLOS_Exp2"
+  
+  ##计算每个被试的d'
+  d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+  
+  # 创建一个新的d_prime数据框，用于保存d_prime值
+  df_d_paper[[10]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+  
+  # 计算d'
+  for (identity in identities) {
+    subjects <- unique(df[[10]]$Subject)  # 获取所有被试
+    
+    for (subject in subjects) {
+      # 提取当前Identity和Subject的数据
+      subset_data <- df[[10]] %>% filter(Identity == identity & Subject == subject)
+      
+      # 计算HR和FAR
+      hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+      miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+      false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+      correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+      
+      # 计算Hit Rate和False Alarm Rate
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
+      
+      # 计算z分数
+      z_hit <- qnorm(hit_rate)
+      z_false_alarm <- qnorm(false_alarm_rate)
+      
+      # 计算d'
+      d_prime <- z_hit - z_false_alarm
+      
+      # 保存结果
+      d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+      # 保存计算结果到df_d_paper[[10]]
+      df_d_paper[[10]] <- rbind(df_d_paper[[10]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    }
+  }
+  
+  # 打印df_d_paper[[10]]，包含所有Subject和Identity的d'值
+  print(df_d_paper[[10]])
+  # 输出到新的CSV文件
+  write.csv(df_d_paper[[10]], "../1_Clean_Data/d_prime/Woźniak_2018_PLOS_Exp2_d'.csv", row.names = FALSE)
+  # 显示数据总结
+  summary(df[[10]]) 
+  rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+```
+
+# Marius Golubickis_2021_AP 
+## Experiment 1 (Identity = 3)
+"Self", "Friend", "Stranger"
+```{r Paper n4 Experiment 1}
+df[[11]] <- read.csv(
+  "../1_Clean_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp1_Clean.csv"
+  ) %>%
+   dplyr::mutate(
+    ScreenResolution = NA, # 文档中未提及屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及文本颜色
+    Color = NA, # 文档中未提及颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA, # 文档中未提及对比度
+    
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+# 为Self, Friend，Stranger分别计算
+identities <- c("Self","Friend","Stranger")
+d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+## 计算整篇文章的d'
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_prime[[11]] <- data.frame(Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  # 提取当前Identity的数据
+  subset_data <- df[[11]] %>% filter(Identity == identity)
+  
+  # 计算HR和FAR
+  hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+  miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+  false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+  correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+  
+  # 计算Hit Rate和False Alarm Rate
+  hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+  false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                             false_alarm / (false_alarm + correct_rejection), 
+                             1 / (2 * (false_alarm + correct_rejection)))
+  
+  # 计算z分数
+  z_hit <- qnorm(hit_rate)
+  z_false_alarm <- qnorm(false_alarm_rate)
+  
+  # 计算d'
+  d_prime <- z_hit - z_false_alarm
+  
+  # 保存计算结果到df_d_prime[[11]]
+  df_d_prime[[11]] <- rbind(df_d_prime[[11]], data.frame(Identity = identity, d_prime = d_prime))
+}
+
+# 打印df_d_prime[[11]]，包含所有Identity的d'值
+print(df_d_prime[[11]])
+
+# 更新列名
+names(df)[11] <- "Golubickis_2021_AP_Exp1"
+
+##计算每个被试的d'
+d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_paper[[11]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  subjects <- unique(df[[11]]$Subject)  # 获取所有被试
+  
+  for (subject in subjects) {
+    # 提取当前Identity和Subject的数据
+    subset_data <- df[[11]] %>% filter(Identity == identity & Subject == subject)
+    
+    # 计算HR和FAR
+    hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+    miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+    false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+    correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+    
+    # 计算Hit Rate和False Alarm Rate
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
+    
+    # 计算z分数
+    z_hit <- qnorm(hit_rate)
+    z_false_alarm <- qnorm(false_alarm_rate)
+    
+    # 计算d'
+    d_prime <- z_hit - z_false_alarm
+    
+    # 保存结果
+    d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    # 保存计算结果到df_d_paper[[11]]
+    df_d_paper[[11]] <- rbind(df_d_paper[[11]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+  }
+}
+
+# 打印df_d_paper[[11]]，包含所有Subject和Identity的d'值
+print(df_d_paper[[11]])
+# 输出到新的CSV文件
+write.csv(df_d_paper[[11]], "../1_Clean_Data/d_prime/Golubickis_2021_AP_Exp1_d'.csv", row.names = FALSE)
+# 显示数据总结
+summary(df[[11]]) 
+rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+```
+
+## Experiment 2 (Identity = 3)
+"Self", "Friend", "Stranger"
+```{r Paper n4 Experiment 2}
+df[[12]] <- read.csv(
+  "../1_Clean_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp2_Clean.csv"
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = NA, # 文档中未提及屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及文本颜色
+    Color = NA, # 文档中未提及颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA, # 文档中未提及对比度
+    Identity = case_when(
+      Identity == "self" ~ "Self",
+      Identity == "friend" ~ "Friend",
+      Identity == "stranger" ~ "Stranger",
+      ),
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+# 为Self, Friend，Stranger分别计算
+identities <- c("Self","Friend","Stranger")
+d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+## 计算整篇文章的d'
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_prime[[12]] <- data.frame(Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  # 提取当前Identity的数据
+  subset_data <- df[[12]] %>% filter(Identity == identity)
+  
+  # 计算HR和FAR
+  hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+  miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+  false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+  correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+  
+  # 计算Hit Rate和False Alarm Rate
+  hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+  false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                             false_alarm / (false_alarm + correct_rejection), 
+                             1 / (2 * (false_alarm + correct_rejection)))
+  
+  # 计算z分数
+  z_hit <- qnorm(hit_rate)
+  z_false_alarm <- qnorm(false_alarm_rate)
+  
+  # 计算d'
+  d_prime <- z_hit - z_false_alarm
+  
+  # 保存计算结果到df_d_prime[[12]]
+  df_d_prime[[12]] <- rbind(df_d_prime[[12]], data.frame(Identity = identity, d_prime = d_prime))
+}
+
+# 打印df_d_prime[[12]]，包含所有Identity的d'值
+print(df_d_prime[[12]])
+
+# 更新列名
+names(df)[12] <- "Golubickis_2021_AP_Exp2"
+
+##计算每个被试的d'
+d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_paper[[12]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  subjects <- unique(df[[12]]$Subject)  # 获取所有被试
+  
+  for (subject in subjects) {
+    # 提取当前Identity和Subject的数据
+    subset_data <- df[[12]] %>% filter(Identity == identity & Subject == subject)
+    
+    # 计算HR和FAR
+    hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+    miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+    false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+    correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+    
+    # 计算Hit Rate和False Alarm Rate
+      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                                 false_alarm / (false_alarm + correct_rejection), 
+                                 1 / (2 * (false_alarm + correct_rejection)))
+    
+    # 计算z分数
+    z_hit <- qnorm(hit_rate)
+    z_false_alarm <- qnorm(false_alarm_rate)
+    
+    # 计算d'
+    d_prime <- z_hit - z_false_alarm
+    
+    # 保存结果
+    d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    # 保存计算结果到df_d_paper[[12]]
+    df_d_paper[[12]] <- rbind(df_d_paper[[12]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+  }
+}
+
+# 打印df_d_paper[[12]]，包含所有Subject和Identity的d'值
+print(df_d_paper[[12]])
+# 输出到新的CSV文件
+write.csv(df_d_paper[[12]], "../1_Clean_Data/d_prime/Golubickis_2021_AP_Exp2_d'.csv", row.names = FALSE)
+# 显示数据总结
+summary(df[[12]]) 
+rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+```
+
+# Mayan Navon_2021
+## Experiment 1 (Identity = 3)
+"Self", "Friend", "Stranger"
+```{r Paper n13 Experiment 1}
+df[[13]] <- read.csv(
+  "../1_Clean_Data/Navon_2021/Navon_2021_Exp1_Clean.csv"
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920*1080", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及文本颜色
+    Color = NA, # 文档中未提及颜色
+    VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA, # 文档中未提及对比度
+    Gender = case_when(
+      Gender == "female" ~ "Female",
+      Gender == "male" ~ "Male",
+      ),
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+# 为Self, Friend，Stranger分别计算
+identities <- c("Self","Friend","Stranger")
+d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+## 计算整篇文章的d'
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_prime[[13]] <- data.frame(Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  # 提取当前Identity的数据
+  subset_data <- df[[13]] %>% filter(Identity == identity)
+  
+  # 计算HR和FAR
+  hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+  miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+  false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+  correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+  
+  # 计算Hit Rate和False Alarm Rate
+  hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+  false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                             false_alarm / (false_alarm + correct_rejection), 
+                             1 / (2 * (false_alarm + correct_rejection)))
+  
+  # 计算z分数
+  z_hit <- qnorm(hit_rate)
+  z_false_alarm <- qnorm(false_alarm_rate)
+  
+  # 计算d'
+  d_prime <- z_hit - z_false_alarm
+  
+  # 保存计算结果到df_d_prime[[13]]
+  df_d_prime[[13]] <- rbind(df_d_prime[[13]], data.frame(Identity = identity, d_prime = d_prime))
+}
+
+# 打印df_d_prime[[13]]，包含所有Identity的d'值
+print(df_d_prime[[13]])
+
+# 更新列名
+names(df)[13] <- "Navon_2021_Exp1"
+
+##计算每个被试的d'
+d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_paper[[13]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  subjects <- unique(df[[13]]$Subject)  # 获取所有被试
+  
+  for (subject in subjects) {
+    # 提取当前Identity和Subject的数据
+    subset_data <- df[[13]] %>% filter(Identity == identity & Subject == subject)
+    
+
+    # 计算HR和FAR
+    hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+    miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+    false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+    correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+    
+    # 计算Hit Rate和False Alarm Rate
+    hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+    false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                             false_alarm / (false_alarm + correct_rejection), 
+                             1 / (2 * (false_alarm + correct_rejection)))
+  
+    # 计算z分数
+    z_hit <- qnorm(hit_rate)
+    z_false_alarm <- qnorm(false_alarm_rate)
+    
+    # 计算d'
+    d_prime <- z_hit - z_false_alarm
+    
+    
+    # 保存结果
+    d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    # 保存计算结果到df_d_paper[[13]]
+    df_d_paper[[13]] <- rbind(df_d_paper[[13]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+  }
+}
+
+# 打印df_d_paper[[13]]，包含所有Subject和Identity的d'值
+print(df_d_paper[[13]])
+# 输出到新的CSV文件
+write.csv(df_d_paper[[13]], "../1_Clean_Data/d_prime/Navon_2021_Exp1_d'.csv", row.names = FALSE)
+# 显示数据总结
+summary(df[[13]]) 
+rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+```
+
+## Experiment 2 (Identity = 3)
+"Father", "Close", "Stranger"
+```{r Paper n13 Experiment 2}
+df[[14]] <- read.csv(
+  "../1_Clean_Data/Navon_2021/Navon_2021_Exp2_Clean.csv"
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920*1080", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及文本颜色
+    Color = NA, # 文档中未提及颜色
+    VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA, # 文档中未提及对比度
+    Gender = case_when(
+      Gender == "female" ~ "Female",
+      Gender == "male" ~ "Male",
+      ),
+  ) %>%
+  dplyr::arrange( 
+    Subject, Identity, Matching
+  )
+
+# 为Self, Friend，Stranger分别计算
+identities <- c("Father", "Close", "Stranger")
+d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+## 计算整篇文章的d'
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_prime[[14]] <- data.frame(Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  # 提取当前Identity的数据
+  subset_data <- df[[14]] %>% filter(Identity == identity)
+  
+  # 计算HR和FAR
+  hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+  miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+  false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+  correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+  
+  # 计算Hit Rate和False Alarm Rate
+  hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+  false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                             false_alarm / (false_alarm + correct_rejection), 
+                             1 / (2 * (false_alarm + correct_rejection)))
+  
+  # 计算z分数
+  z_hit <- qnorm(hit_rate)
+  z_false_alarm <- qnorm(false_alarm_rate)
+  
+  # 计算d'
+  d_prime <- z_hit - z_false_alarm
+  
+  # 保存计算结果到df_d_prime[[14]]
+  df_d_prime[[14]] <- rbind(df_d_prime[[14]], data.frame(Identity = identity, d_prime = d_prime))
+}
+
+# 打印df_d_prime[[14]]，包含所有Identity的d'值
+print(df_d_prime[[14]])
+
+# 更新列名
+names(df)[14] <- "Navon_2021_Exp2"
+
+##计算每个被试的d'
+d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+
+# 创建一个新的d_prime数据框，用于保存d_prime值
+df_d_paper[[14]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+
+# 计算d'
+for (identity in identities) {
+  subjects <- unique(df[[14]]$Subject)  # 获取所有被试
+  
+  for (subject in subjects) {
+    # 提取当前Identity和Subject的数据
+    subset_data <- df[[14]] %>% filter(Identity == identity & Subject == subject)
+    
+    # 计算HR和FAR
+    hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
+    miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
+    false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
+    correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
+    
+    # 计算Hit Rate和False Alarm Rate
+    hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
+    false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
+                               false_alarm / (false_alarm + correct_rejection), 
+                               1 / (2 * (false_alarm + correct_rejection)))
+    
+    # 计算z分数
+    z_hit <- qnorm(hit_rate)
+    z_false_alarm <- qnorm(false_alarm_rate)
+    
+    # 计算d'
+    d_prime <- z_hit - z_false_alarm
+    
+    # 保存结果
+    d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    # 保存计算结果到df_d_paper[[14]]
+    df_d_paper[[14]] <- rbind(df_d_paper[[14]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+  }
+}
+
+# 打印df_d_paper[[14]]，包含所有Subject和Identity的d'值
+print(df_d_paper[[14]])
+# 输出到新的CSV文件
+write.csv(df_d_paper[[14]], "../1_Clean_Data/d_prime/Navon_2021_Exp2_d'.csv", row.names = FALSE)
+# 显示数据总结
+summary(df[[14]]) 
+rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+```
+
+## Experiment 3 (Identity = 3) 
+"Self", "Father", "Stranger"
+```{r Paper n13 Experiment 3}
+df[[15]] <- read.csv(
+  "../1_Clean_Data/Navon_2021/Navon_2021_Exp3_Clean.csv"
+  ) %>%
+  dplyr::filter(
+  Procedure.SubTrial. == "MMProc"
+  ) %>%
+  dplyr::select(
+    Subject,
+    Handedness = Handedness,
+    First_Lanugage = MotherTongue,
+    Gender = Sex,
+    Age = Age,
+    Shape = Stimulus,
+    Label = Word,
+    CloseShape,
+    MediumShape,
+    FarShape,
+    Response = Target.RESP,
+    RT = Target.RT,
+    ACC = Target.ACC
+  ) %>%
+  dplyr::mutate(
+    Identity = case_when(
+      Shape == CloseShape ~ "Self",
+      Shape == MediumShape ~ "Father",
+      Shape == FarShape ~ "Stranger",
+      TRUE ~ Shape),
+    Matching = case_when(
+      Identity == Label ~ "Matching",
+      Identity != Label ~ "Nonmatching",
+    ),
+    RT_ms = as.numeric(RT),
+    RT_sec = RT_ms / 1000,
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Father", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Gender, Age, Handedness, First_Lanugage, 
+    Matching, Identity, Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920*1080", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及文本颜色
+    Color = NA, # 文档中未提及颜色
+    VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[15] <- "Mayan Navon_2021 Exp 3"
+summary(df[[15]])
+```
+
+## Experiment 4 (Identity = 3)
+"Self", "Friend", "Stranger"
+```{r Paper n13 Experiment 4}
+df[[16]] <- read.csv(
+  "../1_Clean_Data/Navon_2021/Navon_2021_Exp4_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject,
+    Handedness = Handedness,
+    First_Lanugage = MotherTongue,
+    Gender = Sex,
+    Age = Age,
+    Shape = Stimulus,
+    Word = Word,
+    CloseShape,
+    MediumShape,
+    FarShape,
+    RT = Target.RT,
+    ACC = Target.ACC,
+    Response = Target.RESP
+    ) %>%
+  dplyr::mutate(
+    Identity = case_when(
+      Shape == CloseShape ~ "Self",
+      Shape == MediumShape ~ "Friend",
+      Shape == FarShape ~ "Stranger",
+      TRUE ~ Shape
+      ),
+    Matching = case_when(
+      Identity == Word ~ "Matching",
+      Identity != Word ~ "Nonmatching",
+    ),
+    RT_ms = as.numeric(RT),
+    RT_sec = RT_ms / 1000,
+    ACC = as.numeric(ACC),
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+      ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "Stranger")
+      ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    ) %>%
+  dplyr::select(
+    Subject, Gender, Age, Handedness, First_Lanugage, 
+    Shape, Word, Matching, Identity, Response, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920*1080", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及文本颜色
+    Color = NA, # 文档中未提及颜色
+    VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[16] <- "Mayan Navon_2021 Exp 4"
+summary(df[[16]])
+```
+
+# Saga L. Svensson_2021_PR
+## Experiment 1 (Identity = 2)
+"Self", "Friend"
+```{r Paper n16 Experiment 1}
+df[[17]] <- read.csv(
+  "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_PR_Exp1_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Participant..,
+    Matching = Trial.Type,
+    Word = Target.Label,
+    Shape = Shape.Association,
+    Identity = Shape.Association,
+    RT_ms = Reponse.Time,
+    ACC = Target.Accuracy
+    ) %>%
+  dplyr::mutate(
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+      ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend")
+      ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    ) %>%
+  dplyr::select(
+    Subject, Word, Shape, Matching, Identity, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::mutate(
+    ScreenResolution = NA, # 文档中未提及屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及文本颜色
+    Color = NA, # 文档中未提及颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[17] <- "Saga L. Svensson_2021_PR Exp 1"
+summary(df[[17]])
+```
+
+## Experiment 2 (Identity = 2)
+"Self", "Friend"
+```{r Paper n16 Experiment 2}
+df[[18]] <- read.csv(
+  "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_PR_Exp2_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Participant,
+    Matching = Trial.Type,
+    Word = Expectancy,
+    Shape = Shape.Association,
+    Identity = Shape.Association,
+    RT_ms = Response.Time,
+    ACC = Target.Accuracy
+    ) %>%
+  dplyr::mutate(
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+      ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend")
+      ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    ) %>%
+  dplyr::select(
+    Subject, Word, Matching, Identity, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+   dplyr::mutate(
+    ScreenResolution = NA, # 文档中未提及屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及文本颜色
+    Color = NA, # 文档中未提及颜色
+    VisualAngle = NA, # 文档中未视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[18] <- "Saga L. Svensson_2021_PR Exp 2"
+summary(df[[18]])
+```
+
+## Experiment 3 (Identity = 2)
+"Self", "Friend"
+```{r Paper n16 Experiment 3}
+df[[19]] <- read.csv(
+  "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_PR_Exp3_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Participant,
+    Matching = Trial.Type,
+    Word = Expectancy,
+    Shape = Shape.Association,
+    Identity = Shape.Association,
+    RT_ms = Response.Time,
+    ACC = Target.Accuracy
+    ) %>%
+  dplyr::mutate(
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+      ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend")
+      ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    ) %>%
+  dplyr::select(
+    Subject, Word, Shape, Matching, Identity, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+   dplyr::mutate(
+    ScreenResolution = NA, # 文档中未提及屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及强光亮度
+    TextColor = NA, # 文档中未提及文本颜色
+    Color = NA, # 文档中未提及颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[19] <- "Saga L. Svensson_2021_PR Exp 3"
+summary(df[[19]])
+```
+
+# Yang Xu_2021_CP
+## Experiment 1 (Identity = 3)
+"Self", "Friend", "Stranger"
+```{r Paper n23 Experiment 1}
+df[[20]] <- read.csv(
+  "../1_Clean_Data/Yang_2021_CP/Yang_2021_CP_Exp1_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Gender = Sex,
+    Shape = Shape,
+    Word = Label,
+    Matching = Correctanswer,
+    Identity = Shape,
+    Group = Group,
+    RT_ms = iti.RT,
+    ACC = iti.ACC,
+    ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "j" ~ "Matching",
+      Matching == "f" ~ "Nonmatching"),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+      ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "Stranger")
+      ),
+    Group = as.factor(Group),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    ) %>%
+  dplyr::select(
+    Subject, Shape, Word, Matching, Identity, Group, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+   dplyr::mutate(
+    ScreenResolution = " 1024*768", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及文本颜色
+    BackgroundColor = "white", # 背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity, Group
+    )
+
+names(df)[20] <- "Yang Xu_2021_CP Exp 1"
+summary(df[[20]])
+```
+
+# Hu_2023_PA-  
+## Experiment 1 (Identity = 2)
+"Self", "Stranger"
+```{r Paper s2 Experiment 1}
+df[[21]] <- read.csv(
+  "../1_Clean_Data/Hu_2023_PA/Hu_2023_PA_Exp1_Clean.csv"
+  ) %>%
+  dplyr::filter(
+    Session != 3,
+    !(Subject %in% c(6205, 6209, 6223)),
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Matching = CorrectAnswer,
+    Identity = identity,
+    RT = Target.RT,
+    ACC = Target.ACC
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "m" ~ "Matching",
+      Matching == "k" ~ "Nonmatching"
+    ),
+    Identity = case_when(
+      Identity == "self" ~ "Self",
+      Identity == "other" ~ "Stranger"
+    ),
+    RT_ms = as.numeric(RT),
+    RT_sec = RT_ms / 1000,
+  ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Matching, Identity,RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+   dplyr::mutate(
+    ScreenResolution = " 22-inch CRT monitors", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, # 文档中未提及文本颜色
+    BackgroundColor = "white", # 背景颜色
+    VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[21] <- "Hu_2023_PA_Exp1"
+summary(df[[21]])
+```
+
+# Constable_2019_EPHPP
+## Experiment 1 (Identity = 4)
+"Self", "We", "They","Alone"
+```{r Paper p5 Experiment 1}
+df[[22]] <- read.csv(
+  "../1_Clean_Data/Constable_2019_EPHPP/Exp1/Constable_2019_EPHPP_Exp1_Clean.csv"
+  ) %>%
+  dplyr::filter(
+    Outlier == 0,
+    rt != "None"
+  ) %>%
+  dplyr::select(
+    Subject = Participant.Number,
+    Gender = Gender,
+    Age = Age,
+    Handedness = Handedness,
+    First_Language = First.Language,
+    Matching = Condition,
+    Identity = Shape,
+    Phase = Training.Experiment,
+    Shape = Shape,
+    Label = Label, 
+    WeShape = WeShape,
+    SelfShape = SelfShape,
+    TheyShape = TheyShape,
+    AloneShape = AloneShape,
+    ShapeLoc = ShapeLoc,
+    Response = resp,
+    RT_sec = rt,
+    ACC = corr,
+  ) %>%
+  dplyr::mutate(
+    ACC = as.numeric(ACC),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+    RT_ms = as.numeric(RT_ms),
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920️*1080", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = "white、red、yellow", #  文本颜色
+    BackgroundColor = "black", # 背景颜色
+    VisualAngle = "57cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+names(df)[22] <- "Constable_2019_EPHPP_Exp1"
+summary(df[[22]])
+```
+# Constable_2019_EPHPP
+## Experiment 2 (Identity = 4)
+"Self", "We", "They","Alone"
+```{r Paper p5 Experiment 2}
+df[[23]] <- read.csv(
+  "../1_Clean_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_Clean.csv"
+  ) %>%
+  dplyr::filter(
+    Outlier == 0,
+    rt != "None"
+  ) %>%
+  dplyr::select(
+    Subject = Participant.Number,
+    Gender = Gender,
+    Age = Age,
+    Handedness = Handedness,
+    First_Language = First.Language,
+    Matching = Condition,
+    Identity = Shape,
+    Phase = Training.Experiment,
+    Shape = Shape,
+    Label = Label, 
+    WeShape = WeShape,
+    SelfShape = SelfShape,
+    TheyShape = TheyShape,
+    AloneShape = AloneShape,
+    ShapeLoc = ShapeLoc,
+    Response = resp,
+    RT_sec = rt,
+    ACC = corr,
+  ) %>%
+  dplyr::mutate(
+    ACC = as.numeric(ACC),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+    RT_ms = as.numeric(RT_ms),
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920️*1080", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = "white、red、yellow", #  文本颜色
+    BackgroundColor = "black", # 背景颜色
+    VisualAngle = "57cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[23] <- "Constable_2019_EPHPP_Exp2"
+summary(df[[23]])
+```
+# Constable_2019_EPHPP
+## Experiment 3 (Identity = 4)
+"Self", "We", "They","Alone"
+```{r Paper p5 Experiment 3}
+df[[24]] <- read.csv(
+  "../1_Clean_Data/Constable_2019_EPHPP/Exp3/Constable_2019_EPHPP_Exp3_Clean.csv"
+  ) %>%
+  dplyr::filter(
+    Outlier == 0,
+    rt != "None"
+  ) %>%
+  dplyr::select(
+    Subject = Participant.Number,
+    Gender = Gender,
+    Age = Age,
+    Handedness = Handedness,
+    First_Language = First.Language,
+    Matching = Condition,
+    Identity = Shape,
+    Phase = Training.Experiment,
+    Shape = Shape,
+    Label = Label, 
+    WeShape = WeShape,
+    SelfShape = SelfShape,
+    TheyShape = TheyShape,
+    AloneShape = AloneShape,
+    ShapeLoc = ShapeLoc,
+    Response = resp,
+    RT_sec = rt,
+    ACC = corr,
+  ) %>%
+  dplyr::mutate(
+    ACC = as.numeric(ACC),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+    RT_ms = as.numeric(RT_ms),
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920️*1080", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = "white、red、yellow", #  文本颜色
+    BackgroundColor = "black", # 背景颜色
+    VisualAngle = "57cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[24] <- "Constable_2019_EPHPP_Exp3"
+summary(df[[24]])
+```
+# Constable_2019_EPHPP
+## Experiment 4 (Identity = 5)
+"Self", "We", "They","Alone"
+```{r Paper p5 Experiment 4}
+df[[25]] <- read.csv(
+  "../1_Clean_Data/Constable_2019_EPHPP/Exp4/Constable_2019_EPHPP_Exp4_Clean.csv"
+  ) %>%
+  dplyr::filter(
+    rt != "None"
+  ) %>%
+  dplyr::select(
+    Subject = Pair.Number,
+    P1Age = P1Age,
+    P2Age = P2Age,
+    Matching = Condition,
+    Identity = Shape,
+    Shape = Shape,
+    Label = Label, 
+    ShapeLoc = ShapeLoc,
+    Response = resp,
+    RT_sec = rt,
+    ACC = corr,
+  ) %>%
+  dplyr::mutate(
+    ACC = as.numeric(ACC),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+    RT_ms = as.numeric(RT_ms),
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920️*1080", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = "white、red、yellow", #  文本颜色
+    BackgroundColor = "black", # 背景颜色
+    VisualAngle = "57cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[25] <- "Constable_2019_EPHPP_Exp4"
+summary(df[[25]])
+```
+
+# Vicovaro_2022_EPHPP
+## Experiment 1 (Identity = 2)
+"Self", "Stranger"
+```{r Paper t6 Experiment 1}
+df[[26]] <- read.csv(
+  "../1_Clean_Data/Vicovaro_2022/Vicovaro_2022_Exp1_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = participant_id,
+    Age = age,
+    Handedness = handedness,
+    Gender = sex,
+    Response = responseKey,
+    Symmetry = block,
+    Matching = match,
+    Identity = shape,
+    RT_sec = respRt,
+    ACC = respCorr,
+  ) %>%
+  dplyr::mutate(
+    Symmetry = case_when(
+      Symmetry == "selfS" ~ "Symmetry",
+      Symmetry == "selfA" ~ "Asymmetry"
+    ),
+    Identity = case_when(
+      Identity == "self-related" ~ "Self",
+      Identity == "stranger-related" ~ "Stranger"
+    ),
+    Matching = case_when(
+      Matching == "yes" ~ "Matching",
+      Matching == "no" ~ "Nonmatching",
+    ),
+    ACC = case_when(
+      ACC == 1 ~ 1,
+      ACC == 0 ~ 0,
+      ACC == "missed" ~ NA
+    ),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Handedness, Gender, Response, Symmetry, Matching, Identity, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "15.5’’ computer screen0", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = "grey", # 背景颜色
+    VisualAngle = "57cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[26] <- "Vicovaro_2022_Exp1"
+summary(df[[26]])
+```
+# Vicovaro_2022_EPHPP
+## Experiment 2 (Identity = 2)
+"Self", "Stranger"
+```{r Paper t6 Experiment 2}
+temp <- read.csv(
+  "../1_Clean_Data/Vicovaro_2022/Vicovaro_2022_Exp2_Clean.csv"
+  ) %>%
+  dplyr::filter(block == "selfS") %>%
+  dplyr::select(
+    Subject = participant_id,
+    Age = age,
+    Handedness = handedness,
+    Gender = sex,
+    Response = responseKey,
+    Symmetry = block,
+    Matching = match,
+    Identity = shape,
+    RT_sec = respRt,
+    ACC = respCorr,
+  ) %>%
+  dplyr::mutate(
+    Symmetry = dplyr::case_when(
+      Symmetry == "selfS" ~ "Symmetry",
+      Symmetry == "selfA" ~ "Asymmetry"
+    ),
+    Identity = case_when(
+      Identity == "self-related" ~ "Self",
+      Identity == "stranger-related" ~ "Stranger"
+    ),
+    Matching = case_when(
+      Matching == "yes" ~ "Matching",
+      Matching == "no" ~ "Nonmatching",
+    ),
+    ACC = case_when(
+      ACC == 1 ~ 1,
+      ACC == 0 ~ 0,
+      ACC == "missed" ~ NA
+    ),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000
+  ) 
+
+Subject_ID <- temp %>% # nolint
+  dplyr::group_by(
+    Subject
+  ) %>%
+  dplyr::summarise(
+    count = n()
+  ) %>%
+  dplyr::mutate(
+    Subject_ID = row_number()
+  ) %>%
+  dplyr::select(
+    Subject, Subject_ID
+  )
+
+
+df[[27]] <- temp %>%
+  dplyr::left_join(
+    Subject_ID,
+    by = "Subject"
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject_ID),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Handedness, Gender, Response, Symmetry, Matching, Identity, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+ dplyr::mutate(
+    ScreenResolution = "15.5’’ computer screen0", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = "grey", # 背景颜色
+    VisualAngle = "57cm", # 视觉角度，根据文档中提供的信息
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+names(df)[27] <- "Vicovaro_2022_Exp2"
+summary(df[[27]])
+rm(Subject_ID,temp)
+```
+# Perrykkad_2022_BMC
+## Experiment 1 (Identity = 3)
+"Self", "Friend", "Stranger"
+```{r Paper t7 Experiment 1}
+df[[28]] <- read.csv(
+  "../1_Clean_Data/Perrykkad_2022_BMC/Perrykkad_2022_BMC_Exp1_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Identity = shapeCategory,
+    Shape = shapeImage,
+    Label = text,
+    Phase = phase,
+    Response = response,
+    SelfShape = selfShape,
+    FriendShape = friendShape,
+    StrangerShape = strangerShape,
+    Matching = matchCondition,
+    RT_ms = latency,
+    ACC = correct,
+    ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "mismatch" ~ "Nonmatching"),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+      ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    ) %>%
+  dplyr::select(
+    Subject, Phase, Shape, Label, Response, SelfShape, FriendShape,
+    StrangerShape, Matching, Identity, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::mutate(
+    ScreenResolution = NA, # 文档中未提及屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = NA, # 文档中未提及背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Phase, Matching, Identity
+    )
+
+names(df)[28] <- "Perrykkad_2022_BMC_Exp 1"
+summary(df[[28]])
+```
+# Hu_2020_CP
+## Experiment 1 (Identity = 2)
+"Self", "Other"
+```{r Paper p20 Experiment 1}
+df[[29]] <- read.csv(
+  "../1_Clean_Data/Hu_2020_CP/Hu_2020_CP_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Age = Age,
+    Gender = Sex,
+    Handedness = Hand,
+    Identity = Identity,
+    Morality = Morality,
+    Shape = Shape,
+    Label = Label,
+    Bin = Bin,
+    Response = Resp,
+    Matching = Match,
+    RT_sec = RT,
+    ACC = ACC,
+    ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "mismatch" ~ "Nonmatching"),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+      ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness,
+    Shape, Label,  Matching, Identity, Morality,
+    Response, Bin, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1024*768", # 屏幕分辨率
+    RefreshRate = "100Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = "grey", # 背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity, Morality
+    )
+
+names(df)[29] <- "Hu_2020_CP"
+summary(df[[29]])
+```
+
+# Hu_2023_PA
+## Experiment 1 (Identity = 2)
+"Self", "Other"
+```{r Paper s2 Experiment 1}
+df[[30]] <- read.csv(
+  "../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv"
+  ) %>%
+  # dplyr::filter(PracList.Sample != 1) %>%
+  dplyr::select(
+    Subject = Subject,
+    Age = Age,
+    Gender = Sex,
+    Handedness = Handedness,
+    Identity = identity,
+    Morality = morality,
+    Shape = Shape,
+    Label = Label,
+    Target = Target,
+    Response = Target.RESP,
+    RT_ms = Target.RT,
+    ACC = Target.ACC,
+    ) %>%
+  dplyr::mutate(
+    Label_cleaned = tolower(Label),  # 将Label列的值转换为小写
+    Shape_cleaned = tolower(Shape),  # 将Shape列的值转换为小写
+    Matching = case_when(
+      gsub("\\.bmp$", "", Label_cleaned) == Shape_cleaned ~ "Matching",
+      TRUE ~ "Nomatching"
+    ),
+    ) %>%
+  dplyr::mutate(
+    RT_ms = ifelse(is.na(RT_ms) | RT_ms == "", NA,
+    as.numeric(as.character(RT_ms))),
+    RT_sec = RT_ms / 1000
+    ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness,
+    Shape, Label,  Matching, Identity, Morality,
+    Response, Target, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::mutate(
+    ScreenResolution = "22-inch CRT monitors", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = NA, # 文档中未提及背景颜色
+    VisualAngle = "60cm", # 视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity, Morality
+    )
+
+names(df)[30] <- "Hu_2023_PA"
+summary(df[[30]])
+```
+
+# Woźniak_2022_PR
+## Experiment 1 (Identity = 3)
+"Self", "Friend", "None"
+```{r Paper t9 Experiment 1}
+###############################Save Clean Data####################################
+# 获取文件列表
+file_list <- list.files(
+  path = "../1_Clean_Data/Woźniak_2022_PR/Data - Experiment 1/",
+  pattern = "^SelfPriorExp_3.*\\.dat$",
+  full.names = TRUE
+)
+
+# 读取dat文件并存入list中
+data_list <- lapply(file_list, read.table, header = FALSE, sep = " ")
+
+combined_data <- do.call(rbind, data_list)
+
+rm(file_list, data_list, combined_data)
+```
+
+```{r Paper t9 Experiment 1}
+##################################Clean Data####################################
+df[[31]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp1_Clean.csv") %>%
+  dplyr::select(
+    Subject = V1,
+    Gender = V2,
+    Shape = V7,
+    Label1 = V10,
+    Label2 = V,
+    Label3 = V12,
+    Matching = V14,
+    Response = V5,
+    ACC = V15,
+    RT_ms = V16,
+  ) %>%
+  dplyr::mutate(
+    Shape = case_when(
+      Shape == "shape1.jpg" ~ Label1,
+      Shape == "shape2.jpg" ~ Label2,
+      Shape == "shape3.jpg" ~ Label3,
+    ),
+    Identity = case_when(
+      Shape == "You" ~ "Self",
+      Shape == "none" ~ "None",
+      TRUE ~ "Friend"
+    ),
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 2 ~ "Nonmatching"),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "None")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Gender, 
+    Shape, Label1, Label2, Label3, Identity,  
+    Matching, Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "21.5-inch", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = "white", #  文本颜色
+    BackgroundColor = "grey", # 背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[31] <- "Woźniak_2022_PR_Exp 1"
+summary(df[[31]])
+```
+# Woźniak_2022_PR
+## Experiment 2 (Identity = 3)
+"Self", "Friend", "None"
+```{r Paper t9 Experiment 2}
+###############################Save Clean Data####################################
+# 获取文件列表
+file_list <- list.files(
+  path = "../1_Clean_Data/Woźniak_2022_PR/Data - Experiment 2/",
+  pattern = "^SelfPriorExp_1.*\\.dat$",
+  full.names = TRUE
+)
+
+# 读取dat文件并存入list中
+data_list <- lapply(file_list, read.table, header = FALSE, sep = " ")
+
+combined_data <- do.call(rbind, data_list)
+
+rm(file_list, data_list, combined_data)
+```
+
+```{r Paper t9 Experiment 2}
+##################################Clean Data####################################
+df[[32]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp2_Clean.csv") %>%
+  dplyr::select(
+    Subject = V1,
+    Gender = V2,
+    Shape = V7,
+    Label1 = V10,
+    Label2 = V11,
+    Label3 = V12,
+    Matching = V14,
+    Response = V5,
+    ACC = V15,
+    RT_ms = V16,
+  ) %>%
+  dplyr::mutate(
+    Shape = case_when(
+      Shape == "shape1.jpg" ~ Label1,
+      Shape == "shape2.jpg" ~ Label2,
+      Shape == "shape3.jpg" ~ Label3,
+    ),
+    Identity = case_when(
+      Shape == "You" ~ "Self",
+      Shape == "none" ~ "None",
+      TRUE ~ "Friend"
+    ),
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 2 ~ "Nonmatching"),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "None")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Gender, 
+    Shape, Label1, Label2, Label3, Identity,  
+    Matching, Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "21.5-inch", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = "white", #  文本颜色
+    BackgroundColor = "grey", # 背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[32] <- "Woźniak_2022_PR_Exp 2"
+summary(df[[32]])
+```
+
+# Woźniak_2022_PR
+## Experiment 3 (Identity = 3)
+"Self", "Friend", "None"
+```{r Paper t9 Experiment 3}
+###############################Save Clean Data####################################
+# 获取文件列表
+file_list <- list.files(
+  path = "../1_Clean_Data/Woźniak_2022_PR/Data - Experiment 3/",
+  pattern = "^SelfPriorExp_2.*\\.dat$",
+  full.names = TRUE
+)
+
+# 读取dat文件并存入list中
+data_list <- lapply(file_list, read.table, header = FALSE, sep = " ")
+
+combined_data <- do.call(rbind, data_list)
+
+rm(file_list, data_list, combined_data)
+```
+
+```{r Paper t9 Experiment 3}
+##################################Clean Data####################################
+df[[33]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp3_Clean.csv") %>%
+  dplyr::select(
+    Subject = V1,
+    Gender = V2,
+    Shape = V7,
+    Label1 = V10,
+    Label2 = V11,
+    Label3 = V12,
+    Matching = V14,
+    Response = V5,
+    ACC = V15,
+    RT_ms = V16,
+  ) %>%
+  dplyr::mutate(
+    Shape = case_when(
+      Shape == "shape1.jpg" ~ Label1,
+      Shape == "shape2.jpg" ~ Label2,
+      Shape == "shape3.jpg" ~ Label3,
+    ),
+    Identity = case_when(
+      Shape == "You" ~ "Self",
+      Shape == "none" ~ "None",
+      TRUE ~ "Friend"
+    ),
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 2 ~ "Nonmatching"),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "None")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Gender, 
+    Shape, Label1, Label2, Label3, Identity,  
+    Matching, Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "21.5-inch", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = "white", #  文本颜色
+    BackgroundColor = "grey", # 背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[33] <- "Woźniak_2022_PR_Exp 3"
+summary(df[[33]])
+```
+# Haciahmet_2023_Psychophysiology 
+## Experiment 1 (Identity = 2)
+"Self", "Stranger"
+```{r Paper t1 Experiment 1}
+df[[34]] <- read.csv(
+  "../1_Clean_Data/Haciahmet_2023_Psy/Haciahmet_2023_Psy_Exp1_Clean.csv"
+  ) %>%
+  dplyr::filter(Phase == 1
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Age = Alter,
+    Gender = Geschlecht,
+    Handedness = Hand,
+    Identity = Target,
+    Shape = TargetImage,
+    Label = LabelText,
+    Matching = Condition,
+    Response = WaitResponse.RESP,
+    RT_ms = WaitResponse.RT,
+    ACC = WaitResponse.ACC,
+    ) %>%
+  dplyr::mutate(
+    Shape = case_when(
+      Shape == ".\\Stimuli\\circle.png" ~ "circle.png",
+      Shape == ".\\Stimuli\\triangle.png" ~ "triangle.png"
+    ),
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 2 ~ "Nonmatching"
+    ),
+    Identity = case_when(
+      Identity == 1 ~ "self",
+      Identity == 2 ~ "stranger"
+    ),
+    ) %>%
+  dplyr::mutate(
+    as.numeric(as.character(RT_ms)),
+    RT_sec = RT_ms / 1000
+    ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness,
+    Shape, Label,  Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1280*1024", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = NA, # 文档中未提及背景颜色
+    VisualAngle = "60cm", # 视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[34] <- "Haciahmet_2023_Psy"
+summary(df[[34]])
+```
+
+# Sui_2023_CC
+## Experiment 1 (Identity = 2)
+"Self", "Other"
+```{r Paper t18 Experiment 1}
+df[[35]] <- read.csv(
+  "../1_Clean_Data/Sui_2023_CC/Sui_2023_CC_Exp1_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subj_idx,
+    Identity = person,
+    Stim = stim,
+    Response = response,
+    Matching = match,
+    RT_sec = rt,
+    ACC = accuracy,
+    ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "mismatch" ~ "Nonmatching"),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+      ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    ) %>%
+  dplyr::select(
+    Subject,
+    Stim,  Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::mutate(
+    ScreenResolution = NA, # 屏幕分辨率
+    RefreshRate = NA, # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = "white", #  文本颜色
+    BackgroundColor = "grey", # 背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[35] <- "Sui_2023_CC"
+summary(df[[35]])
+```
+
+# Hobbs_2023_PM 
+## Experiment 1 (Identity = 3)
+"Self", "Friend", "Stranger"
+```{r Paper t2 Experiment 1}
+temp <- read.csv(
+  "../1_Clean_Data/Hobbs_2023_PM/Hobbs_2023_PM_Exp1_Clean.csv"
+  ) %>%
+  dplyr::filter(
+    Task == "Self",
+  ) %>%
+  dplyr::select(
+    Subject = subject,
+    Age = age,
+    Gender = gender,
+    Ethnicity = ethnicity,
+    Employment_Status = employment_status,
+    Education = education,
+    Depression = depression,
+    Treatment = treatment,
+    Shape = Shape,
+    Matching = Matching,
+    Identity = stimuli,
+    RT_ms = mean_rt_mult,
+    RT_sec = trial_resp.rt,
+    ACC = acc,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 0 ~ "Nonmatching"
+    ))
+
+Subject_ID <- temp %>% # nolint
+  dplyr::group_by(
+    Subject
+  ) %>%
+  dplyr::summarise(
+    count = n()
+  ) %>%
+  dplyr::mutate(
+    Subject_ID = row_number()
+  ) %>%
+  dplyr::select(
+    Subject, Subject_ID
+  )
+
+
+df[[36]] <- temp %>%
+  dplyr::left_join(
+    Subject_ID,
+    by = "Subject"
+  ) %>%
+  dplyr::mutate(
+    Subject = Subject_ID
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Ethnicity, Employment_Status, Education,Depression,
+    Treatment,
+    Shape, Matching, Identity, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = NA, # 文档中未提及屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = NA, # 文档中未提及背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+rm(temp, Subject_ID)
+
+names(df)[36] <- "Hobbs_2023_PM"
+summary(df[[36]])
+```
+
+# Mcivor_2020_EJN 
+## Experiment 1 (Identity = 2)
+"Self", "Other"
+```{r Paper p45 Experiment 1}
+df[[37]] <- read.csv(
+  "../1_Clean_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_Exp1_Clean.csv"
+  ) %>%
+  mutate(Running.SubTrial. = str_to_lower(Running.SubTrial.)) %>%
+  filter(Running.SubTrial. == "testphase"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Age = Age,
+    Handedness = Handedness,
+    Gender = Sex,
+    Happyshapeother = Happyshapeother,
+    Happyshapeself = Happyshapeself,
+    Neutralshapeother = Neutralshapeother,
+    Neutralshapeself = Neutralshapeself,
+    Sadshapeother = Sadshapeother,
+    Sadshapeself = Sadshapeself,
+    Othershape = Othershape,
+    Selfshape = Selfshape,
+    Label = CellLabel,
+    Identity = Label2,
+    Response = ITI2.RESP,
+    Matching = CellLabel,
+    RT_ms = ITI2.RT,
+    ACC = ITI2.ACC,
+    ) %>%
+  dplyr::mutate(
+    MatchingExtra = str_extract(Label, "(?<=self|other)(match|nonmatch)"),
+    # 将提取的匹配类型转换为"Matching"或"Nomatching"
+    Matching = case_when(
+      MatchingExtra == "match" ~ "Matching",
+      MatchingExtra == "nonmatch" ~ "Nomatching",
+      TRUE ~ "Nomatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness,
+    Happyshapeother, Happyshapeself, Neutralshapeother, Neutralshapeself,
+    Sadshapeother, Sadshapeself, Othershape, Selfshape, Label, Identity,
+    Matching, Response, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1280*960", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = NA, # 文档中未提及背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+    )
+
+names(df)[37] <- "Mcivor_2020_EJN"
+summary(df[[37]])
+```
+
+# Liang_2021_HBM
+## Experiment 1 (Identity = 2)
+"Self", "Friend", "Stranger"
+```{r Paper t3 Experiment 1}
+df[[38]] <- read.csv(
+  "../1_Clean_Data/Liang_2021_HBM/Liang_2021_HBM_Exp1_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subj_idx,
+    Age = age,
+    Gender = gender,
+    Shape = shape,
+    Matching = match,
+    Identity = shape,
+    Response = response,
+    Phase = session,
+    RT_sec = rt,
+    ACC = acc,
+  ) %>%
+  dplyr::mutate(
+    Identity = case_when(
+      Identity == "self" ~ "Self",
+      Identity == "friend" ~ "Friend",
+      Identity == "stranger" ~ "Stranger",
+    ),
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 0 ~ "Nonmatching"
+    ),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, 
+    Shape, Matching, Identity, Response, Phase, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1024*768", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = NA, # 文档中未提及背景颜色
+    VisualAngle = "57cm", # 视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+names(df)[38] <- "Liang_2021_HBM"
+summary(df[[38]])
+```
+
+# Kolvoort_2020_HBM 
+## Experiment 1 (Identity = 2)
+"Self", "Friend", "Stranger"
+```{r Paper p34 Experiment 1}
+df[[39]] <- read.csv(
+  "../1_Clean_Data/Kolvoort_2020_HBM/Kolvoort_2020_HBM_Exp1_correctRT_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subid,
+    Age = age,
+    Handedness = handedness,
+    First_Language = firstlanguage,
+    Education = completededucation,
+    Countryself = countryself,
+    Countryparents = countryparents,
+    Shape = shape,
+    Label = label,
+    Matching = matching,
+    Response = respkeymap,
+    RT_ms = reac_time,
+    ACC = accuracy,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 0 ~ "Nonmatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Handedness, First_Language, Education, Countryself, Countryparents, 
+    Shape, Label, Matching, Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = NA, # 文档中未提及屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = NA, # 文档中未提及背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching
+  )
+
+names(df)[39] <- "Kolvoort_2020_HBM"
+summary(df[[39]])
+```
+
+# Liu_2023_CP
+## Experiment 1 (Identity = 2)
+"Self", "Stranger"
+```{r Paper s1 Experiment 1}
+df_Ps1_E1 <- read.csv(
+  "../1_Clean_Data/Liu_2023_CP/Liu_2023_CP_Exp1_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Participant.Public.ID,
+    Match = P_Orginal,
+    Label = Label,
+    Identity = P_Group,
+    Response = Response,
+    RT_ms = Reaction.Time,
+    ACC = Correct,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Match == "JA" ~ "Matching",
+      Match == "NEIN" ~ "Nonmatching"
+    ),
+    Identity = case_when(
+      Identity == "User" ~ "Self",
+      Identity == "Other" ~ "Stranger"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    ACC = as.numeric(ACC)
+    )
+
+df_Subject_ID <- df_Ps1_E1 %>% # nolint
+  dplyr::group_by(
+    Subject
+  ) %>%
+  dplyr::summarise(
+    count = n()
+  ) %>%
+  dplyr::mutate(
+    Subject_ID = row_number()
+  ) %>%
+  dplyr::select(
+    Subject, Subject_ID
+  )
+
+df[[40]] <- df_Ps1_E1 %>%
+  dplyr::left_join(
+    df_Subject_ID,
+    by = "Subject"
+  ) %>%
+  dplyr::mutate(
+    Subject = Subject_ID
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Stranger")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Matching, Label, Response, Identity, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = NA, # 文档中未屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = NA, # 文档中未提及背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity
+  )
+
+rm(df_Subject_ID, df_Ps1_E1)
+
+names(df)[40] <- "Liu_2023_CP"
+summary(df[[40]])
+```
+
+# Orellana-Corrales_2021_EP
+## Experiment 1 (Identity = 2)
+"Self", "Stranger"
+```{r Paper n14 Experiment 1}
+df[[41]] <- read.csv(
+"../1_Clean_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp1_Clean.csv"
+  ) %>%
+  dplyr::filter(
+    Running == "manipCheck",
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Age = Age,
+    Handedness = Handedness,
+    Gender = Sex,
+    Condition = Condition,
+    Matching = match,
+    Shape = shape,
+    Label = label,    
+    Shape1 = S1,
+    Shape2 = S2,
+    Identity1 = ID1,
+    Identity2 = ID2,
+    Response = match03.RESP,
+    RT_ms = match03.RT,
+    ACC = match03.ACC,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "nonmatch" ~ "Nonmatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness, 
+    Shape, Label, Shape1, Shape2, Matching, Identity1, Identity2, 
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+ dplyr::mutate(
+    ScreenResolution = "15.6-in", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = "white", #  文本颜色
+    BackgroundColor = "black", # 背景颜色
+    VisualAngle = "50cm", # 视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[41] <- "Orellana-Corrales_2021_EP"
+summary(df[[41]])
+```
+
+# Orellana-Corrales_2021_EP
+## Experiment 2 (Identity = 2)
+"Self", "Stranger"
+```{r Paper n14 Experiment 2}
+df[[42]] <- read.csv(
+"../1_Clean_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp2_Clean.csv"
+  ) %>%
+  dplyr::filter(
+    Running == "manipCheck",
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Age = Age,
+    Handedness = Handedness,
+    Gender = Sex,
+    Condition = Condition,
+    Matching = match,
+    Shape = shape,
+    Label = label,
+    Shape1 = S1,
+    Shape2 = S2,
+    Identity1 = ID1,
+    Identity2 = ID2,
+    Response = match03.RESP,
+    RT_ms = match03.RT,
+    ACC = match03.ACC,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "nonmatch" ~ "Nonmatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness, 
+    Shape, Label, Matching, Shape1, Shape2, Identity1, Identity2, 
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "15.6-in", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = "white", #  文本颜色
+    BackgroundColor = "black", # 背景颜色
+    VisualAngle = "50cm", # 视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[42] <- "Orellana-Corrales_2021_EP"
+summary(df[[42]])
+```
+
+# Orellana-Corrales_2021_EP
+## Experiment 3 (Identity = 2)
+"Self", "Stranger"
+```{r Paper n14 Experiment 3}
+df[[43]] <- read.csv(
+"../1_Clean_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp3_Clean.csv"
+  ) %>%
+  dplyr::filter(
+    Running == "manipCheck",
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Age = Age,
+    Handedness = Handedness,
+    Gender = Sex,
+    Condition = Condition,
+    Matching = match,
+    Shape = shape,
+    Label = label,
+    Shape1 = S1,
+    Shape2 = S2,
+    Identity1 = ID1,
+    Identity2 = ID2,
+    Response = match03.RESP,
+    RT_ms = match03.RT,
+    ACC = match03.ACC,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "nonmatch" ~ "Nonmatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness, 
+    Shape, Label, Matching, Shape1, Shape2, Identity1, Identity2, 
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "15.6-in", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = "white", #  文本颜色
+    BackgroundColor = "black", # 背景颜色
+    VisualAngle = "50cm", # 视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[43] <- "Orellana-Corrales_2021_EP"
+summary(df[[43]])
+```
+
+# Amodeo_2024_CABN
+## Experiment 1 (Identity = 3)
+"Self","Friend","Stranger"
+```{r Paper t28 Experiment 1}
+df[[44]] <- read.csv(
+"../1_Clean_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Matching = Label,
+    Shape = Target,
+    Label = Label,
+    Identity = Shape,
+    Response = Target.RESP,
+    RT_ms = Target.RT,
+    ACC = Target.ACC,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "Ikzelf" ~ "Self",
+      Matching == "Bekende" ~ "Friend",
+      Matching == "Vreemde" ~ "Stranger"
+    ),
+    Matching = case_when(
+      Matching == Identity ~ "Matching",
+      Matching != Identity ~ "Nonmatching"),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject,  
+    Shape, Label, Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = NA, # 文档中未提及屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = "white", #  文本颜色
+    BackgroundColor = "grey", # 背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[44] <- "Amodeo_2024_CABN"
+summary(df[[44]])
+```
+
+# Zhang_2022_NI
+## Experiment 1 (Identity = 2)
+"Self","Stranger"
+```{r Paper t10 Experiment 1}
+df[[45]] <- read.csv(
+"../1_Clean_Data/Zhang_2022_NI/Zhang_2022_NI_Exp1_Clean.csv"
+  ) %>%
+  dplyr::filter(
+    Procedure.Block. == "ProSelf",
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Handedness = Handedness,
+    Age = Age,
+    Gender = Sex,
+    Shape = Stimulus,
+    Label = Label,
+    Identity = Shape,
+    Matching = Match,
+    Response = TargetS.RESP,
+    RT_ms = TargetS.RT,
+    ACC = TargetS.ACC,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "Matched" ~ "Matching",
+      Matching == "Mismatched" ~ "Nonmatching"
+    ),
+    Identity = case_when(
+      Identity == "你" ~ "Self",
+      Identity == "生人" ~ "Stranger"
+    ),    
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness,
+    Shape, Label, Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1024*768", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = "grey", # 背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[45] <- "Zhang_2022_NI"
+summary(df[[45]])
+```
+
+# Zhang_2022_NI
+## Experiment 2 (Identity = 2)
+"高兴","中性"
+```{r Paper t10 Experiment 2}
+df[[46]] <- read.csv(
+"../1_Clean_Data/Zhang_2022_NI/Zhang_2022_NI_Exp1_Clean.csv"
+  ) %>%
+  dplyr::filter(
+    Procedure.Block. == "ProEmotion",
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Handedness = Handedness,
+    Age = Age,
+    Gender = Sex,
+    Shape = Stimulus,
+    Label = Label,
+    Identity = Shape,
+    Matching = Match,
+    Response = TargetE.RESP,
+    RT_ms = TargetE.RT,
+    ACC = TargetE.ACC,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "Matched" ~ "Matching",
+      Matching == "Mismatched" ~ "Nonmatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness,
+    Shape, Label, Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1024*768", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = "grey", # 背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[46] <- "Zhang_2022_NI"
+summary(df[[46]])
+```
+
+# Zhang_2022_NI
+## Experiment 3 (Identity = 2)
+"￥16","￥1"
+```{r Paper t10 Experiment 3}
+df[[47]] <- read.csv(
+"../1_Clean_Data/Zhang_2022_NI/Zhang_2022_NI_Exp1_Clean.csv"
+  ) %>%
+  dplyr::filter(
+    Procedure.Block. == "ProReward",
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Handedness = Handedness,
+    Age = Age,
+    Gender = Sex,
+    Shape = Stimulus,
+    Label = Label,
+    Identity = Shape,
+    Matching = Match,
+    Response = Target.RESP,
+    RT_ms = Target.RT,
+    ACC = Target.ACC,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "Matched" ~ "Matching",
+      Matching == "Mismatched" ~ "Nonmatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness,
+    Shape, Label, Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1024*768", # 屏幕分辨率
+    RefreshRate = "60Hz", # 刷新率，直接使用文本输出
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = "grey", # 背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[47] <- "Zhang_2022_NI"
+summary(df[[47]])
+```
+
+# Feldborg_2021_ERPH
+## Experiment 1 (Identity = 3)
+"Self","Friend","Stranger"
+```{r Paper t13 Experiment 1}
+df[[48]] <- read.csv(
+"../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subject,
+    Age = SubAge,
+    Gender = SubGender,
+    Ethnicity = SubEthnicity,
+    Handedness = SubHand,
+    Group = group,
+    Matching = Con_match,
+    Shape = fill,
+    Label = Con_label,
+    Identity = Con_shape,
+    Response = response,
+    RT_ms = latency,
+    ACC = correct,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "unmatch" ~ "Nonmatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Ethnicity, Handedness, Group,
+    Shape, Label, Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::mutate(
+    ScreenResolution = NA, # 文档中未提及屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = NA, # 文档中未提及背景颜色
+    VisualAngle = NA, # 文档中未提及视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[48] <- "Feldborg_2021_ERPH"
+summary(df[[48]])
+```
+
+# Martínez-Pérez_2024_CC
+## Experiment 2 (Identity = 3)
+"self", "best friend","stranger"
+```{r Paper t27 Experiment 2}
+df[[49]] <- read.csv(
+  "../1_Clean_Data/Martínez-Pérez_2024_CC/Martinez-Pérez_2024_CC_Exp2_Clean.csv"
+  ) %>%
+  dplyr::filter(
+    Running.Trial. == "bloqueExperimental",
+  ) %>%  
+  dplyr::select(
+    Subject = Subject,
+    Age = Edad,
+    Gender = Sexo,
+    Handedness = Mano,
+    Shape = Figura,
+    Identity = Etiqueta,
+    Matching = TipoEnsayo,
+    Response = Blanco1.RESP,
+    RT_ms = Blanco1.RT,
+    ACC = Blanco1.ACC,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "Matched" ~ "Matching",
+      Matching == "NonMatching" ~ "Nonmatching"
+    ),    
+    ACC = as.numeric(ACC),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    RT_sec = as.numeric(RT_sec),
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::mutate(
+    ScreenResolution = "1920*1080", # 屏幕分辨率
+    RefreshRate = NA, # 文档中未提及刷新率
+    Luminance = NA,  # 文档中未提及亮度
+    TextColor = NA, #  文档中未提及文本颜色
+    BackgroundColor = "black", # 背景颜色
+    VisualAngle = "60cm", # 视觉角度
+    Contrast = NA # 文档中未提及对比度
+  ) %>%
+  dplyr::arrange(
+    Subject, Identity
+    )
+
+names(df)[49] <- "Martínez-Pérez_2024_CC"
+summary(df[[49]])
+```
+
+
+
+```{r List for Data Frame}
+df <- list()
+df[[1]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_6/1_Clean_Data/P6_Exp1_Clean.csv")
+df[[2]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_46/1_Clean_Data/P46_Exp1_Clean.csv")
+df[[3]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_46/1_Clean_Data/P46_Exp2_Clean.csv")
+df[[4]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_51/1_Clean_Data/P51_Exp1_Clean.csv")
+df[[5]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_51/1_Clean_Data/P51_Exp2_Clean.csv")
+df[[6]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_54/1_Clean_Data/P54_Exp1_Clean.csv")
+df[[7]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_54/1_Clean_Data/P54_Exp3_Clean.csv")
+df[[8]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_95/1_Clean_Data/P95_Exp1_Clean.csv")
+df[[9]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_95/1_Clean_Data/P95_Exp2_Clean.csv")
+df[[10]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n4/1_Clean_Data/Pn4_Exp1_Clean.csv")
+df[[11]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n4/1_Clean_Data/Pn4_Exp2_Clean.csv")
+df[[12]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n13/1_Clean_Data/Pn13_Exp1_Clean.csv")
+df[[13]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n13/1_Clean_Data/Pn13_Exp3_Clean.csv")
+df[[14]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n13/1_Clean_Data/Pn13_Exp4_Clean.csv")
+df[[15]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n16/1_Clean_Data/Pn16_Exp1_Clean.csv")
+df[[16]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n16/1_Clean_Data/Pn16_Exp2_Clean.csv")
+df[[17]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n16/1_Clean_Data/Pn16_Exp3_Clean.csv")
+df[[18]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_n23/1_Clean_Data/Pn23_Exp1_Clean.csv")
+df[[19]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_s1/1_Clean_Data/Ps1_Exp1_Clean.csv")
+df[[20]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Not_Good/Paper_s2/Ps2_Exp1_Clean.csv")
+```
+
+#整合数据
+```{r}
+combine_data <- function(data_list) {
+  # 创建一个空数据框
+  combined_df <- data.frame()
+  
+  # 循环遍历数据列表中的每个数据框
+  for (i in seq_along(data_list)) {
+    # 提取关键列
+    key_columns <- data_list[[i]][c("Subject", "Matching", "Identity", "RT_ms", "RT_sec", "ACC")]
+    
+    # 添加 Paper 列
+    key_columns$Paper <- paste0("df_", i)
+    
+    # 将数据框添加到组合数据框中
+    combined_df <- rbind(combined_df, key_columns)
+  }
+  
+  # 返回组合后的数据框
+  return(combined_df)
+}
+
+# 使用函数
+combined_data <- combine_data(df)
+
+rm(combine_data)
+```
+
+# Check ACC
+```{r}
+calculate_min_ACC <- function(data_list) {
+  min_ACC_list <- list()
+  
+  for (i in seq_along(data_list)) {
+    if (!is.null(data_list[[i]])) {
+      min_ACC <- data_list[[i]] %>%
+        group_by(Subject) %>%
+        summarise(mean_ACC = mean(ACC)) %>%
+        ungroup() %>%
+        filter(mean_ACC < 0.5) %>%
+        arrange(mean_ACC)
+      
+      min_ACC_list[[i]] <- min_ACC
+      
+      cat(
+        "For df[[", i, "]], the min ACC is:",
+        ifelse(nrow(min_ACC) > 0, min(min_ACC$mean_ACC), "No data"), # 检查 min_ACC 是否为空
+        "\n"
+      )
+    } else {
+      cat("df[[", i, "]] is empty.\n")
+    }
+  }
+  
+  rm(min_ACC, i)
+  
+  return(min_ACC_list)
+}
+
+# 使用函数
+min_ACC_list <- calculate_min_ACC(df)
+rm(calculate_min_ACC)
+```
+
+#Clean data by ACC
+```{r}
+for (i in seq_along(df)) {
+  if (!is.null(df[[i]])) {
+    filtered_df <- df[[i]] %>%
+      anti_join(min_ACC_list[[i]], by = "Subject") 
+    
+    file_path <- paste0("../4_Data_Extraction/4_3_1_Clean_Data/df_", i, "_filtered.csv")
+    
+    if (!file.exists(file_path)) {
+      # 如果文件不存在，则创建一个空的文件
+      write.csv(
+        x = data.frame(),  # 创建一个空的数据框
+        file = file_path,
+        row.names = FALSE
+      )
+    }
+    
+    
+    # 追加数据到文件末尾
+    write.csv(
+      x = filtered_df,
+      file = file_path,
+      row.names = FALSE,
+    )
+    
+    cat("Filtered data for df[[", i, "]] has been appended to ", file_path, "\n")
+  } else {
+    cat("df[[", i, "]] is empty.\n")
+  }
+}
+
+rm(filtered_df, i, file_path)
+
+```
+
+
+
+
+'''
+Unpublished
+
+
+# Paper s3
+## Experiment 1 (Identity = 3)
+"Self", "Friend", "Stranger"
+```{r Paper s3 Experiment 1}
+df[[22]] <- read.csv(
+  "../4_Data_Extraction/4_2_Open_Data/Paper_s3/Ps3_Exp1_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Session = Session,
+    Group = Block,
+    Shape = SelfRelated,
+    Label = Question, 
+    RT_ms = RT,
+    ACC = ACC,
+  ) %>%
+  dplyr::mutate(
+    Label = case_when(
+      Label == "You" ~ "Self",
+      TRUE ~ Label),
+    Matching = case_when(
+      Shape == Label ~ "Matching",
+      Shape != Label ~ "Nonmatching"),
+    RT_sec = RT_ms / 1000,
+    Identity = Shape
+  ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend","Stranger")
+    ),
+    Session = as.factor(Session),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::filter(
+    RT_sec >= 0.2 & RT_sec <= 1.5,
+    ACC == 1 | ACC == 0
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity, Session
+  )
+
+names(df)[22] <- "Paper s3 Exp 1"
+summary(df[[22]])
+write.csv(x = df[[22]], file = "../4_Data_Extraction/4_2_Open_Data/Paper_s3/Ps3_Exp1_Clean.csv")
+```
+
+# Paper s4
+## Experiment 1 (Identity = 3)
+"Self", "Friend", "Stranger"
+```{r Paper s4 Experiment 1}
+# 获取文件夹内所有满足条件的文件名
+file_list <- list.files(
+  path = "../4_Data_Extraction/4_2_Open_Data/Paper_s4/Source/",
+  pattern = "^PractExperiment_1.*\\.mat$",
+  full.names = TRUE
+)
+
+# 创建一个空的列表来存储读取的.mat文件
+list_mat_e1 <- list()
+
+# 循环读取文件并存储到列表中
+for (file in file_list) {
+  mat_data <- R.matlab::readMat(file)
+  list_mat_e1[[basename(file)]] <- mat_data
+}
+
+rm(file, file_list)
+
+df[[23]] <- read.mat(
+  list = list_mat_e1
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Shape == Label ~ "Matching",
+      Shape != Label ~ "Nonmatching"),
+    Identity = case_when(
+      Shape == 1 ~ "Self",
+      Shape == 2 ~ "Friend",
+      Shape == 3 ~ "Stranger"
+    ),
+    RT_ms = RT,
+    RT_sec = RT / 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend","Stranger")
+    ),
+    Session = as.factor(Session),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::filter(
+    RT_sec >= 0.2 & RT_sec <= 1.5,
+    ACC == 1 | ACC == 0
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity, Session
+  )
+
+rm(list_mat_e1)
+
+names(df)[23] <- "Paper s4 Exp 1"
+summary(df[[23]])
+write.csv(x = df[[23]], file = "../4_Data_Extraction/4_2_Open_Data/Paper_s4/Ps4_Exp1_Clean.csv")
+```
+
+# Paper s4
+## Experiment 2 (Identity = 3)
+"Self", "Friend", "Stranger"
+```{r Paper s4 Experiment 2}
+# 获取文件夹内所有满足条件的文件名
+file_list <- list.files(
+  path = "../4_Data_Extraction/4_2_Open_Data/Paper_s4/Source/",
+  pattern = "^PractExperiment_2.*\\.mat$",
+  full.names = TRUE
+)
+
+# 创建一个空的列表来存储读取的.mat文件
+list_mat_e2 <- list()
+
+# 循环读取文件并存储到列表中
+for (file in file_list) {
+  mat_data <- R.matlab::readMat(file)
+  list_mat_e2[[basename(file)]] <- mat_data
+}
+
+rm(file, file_list)
+
+df[[24]] <- read.mat(list = list_mat_e2) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Shape == Label ~ "Matching",
+      Shape != Label ~ "Nonmatching"
+    ),
+    Identity = case_when(
+      Shape == 1 ~ "Self",
+      Shape == 2 ~ "Friend",
+      Shape == 3 ~ "Stranger"
+    ),
+    RT_ms = RT,
+    RT_sec = RT / 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    Identity = factor(
+      Identity, levels = c("Self", "Friend","Stranger")
+    ),
+    Session = as.factor(Session),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::filter(
+    RT_sec >= 0.2 & RT_sec <= 1.5,
+    ACC == 1 | ACC == 0
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching, Identity, Session
+  )
+
+rm(list_mat_e2)
+
+names(df)[24] <- "Paper s4 Exp 1"
+summary(df[[24]])
+write.csv(x = df[[24]], file = "../4_Data_Extraction/4_2_Open_Data/Paper_s4/Ps4_Exp2_Clean.csv")
+```
+
+# Constable_2019_EPHPP
+## Experiment 2 (Identity = 4)
+"Self", "We", "They","Alone"
+```{r Paper p5 Experiment 2}
+df[[23]] <- read.csv(
+  "../1_Clean_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_Training_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Participant.Number,
+    Gender = Gender,
+    Age = Age,
+    Handedness = Handedness,
+    First_Language = First.Language,
+    Identity = Shape,
+    Shape = Shape,
+    WeShape = WeShape,
+    Wekey = wekey,
+    SelfShape = SelfShape,
+    Selfkey = selfkey,
+    TheyShape = TheyShape,
+    Theykey = theykey,
+    AloneShape = AloneShape,
+    Alonekey = alonekey,
+    Response = resp,
+    RT_sec = rt,
+    ACC = corr,
+  ) %>%
+  dplyr::mutate(
+    ACC = as.numeric(ACC),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000,
+    RT_ms = as.numeric(RT_ms),
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+    ) %>%
+  dplyr::arrange(
+    Subject, Identity
+    )
+
+names(df)[23] <- "Constable_2019_EPHPP"
+summary(df[[23]])
+write.csv(x = df[[23]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_Training_Clean.csv")
+```
+
+# Feldborg_2021_ERPH
+## Experiment 2 (Identity = 3)
+"Self","Friend","Stranger"
+```{r Paper t13 Experiment 1a}
+df[[49]] <- read.csv(
+"../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1a_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subject,
+    Age = SubAge,
+    Gender = SubGender,
+    Ethnicity = SubEthnicity,
+    Handedness = SubHand,
+    Matching = Con_match,
+    Shape = fill,
+    Label = Con_label,
+    Identity = Con_shape,
+    Response = response,
+    RT_ms = latency,
+    ACC = correct,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "unmatch" ~ "Nonmatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Ethnicity, Handedness,
+    Shape, Label, Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[49] <- "Feldborg_2021_ERPH"
+summary(df[[49]])
+write.csv(x = df[[49]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1a_Clean.csv")
+```
+
+# Feldborg_2021_ERPH
+## Experiment 3 (Identity = 3)
+"Self","Friend","Stranger"
+```{r Paper t13 Experiment 1b}
+df[[50]] <- read.csv(
+"../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1b_Clean.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subject,
+    Age = SubAge,
+    Gender = SubGender,
+    Ethnicity = SubEthnicity,
+    Handedness = SubHand,
+    Matching = Con_match,
+    Shape = fill,
+    Label = Con_label,
+    Identity = Con_shape,
+    Response = response,
+    RT_ms = latency,
+    ACC = correct,
+  ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "unmatch" ~ "Nonmatching"
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Ethnicity, Handedness,
+    Shape, Label, Matching, Identity,
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::mutate(
+    RT_sec = round(RT_sec, 3),
+    RT_ms = round(RT_ms, 0)
+  ) %>%
+  dplyr::arrange(
+    Subject, Matching,
+  )
+
+names(df)[50] <- "Feldborg_2021_ERPH"
+summary(df[[50]])
+write.csv(x = df[[50]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1b_Clean.csv")
+```
+
+
+# Darw picture
+
+```{r}
+# 加载ggplot2包
+library(ggplot2)
+
+# 创建数据框
+data <- data.frame(
+  Category = c("Cognitive", "Memory", "Motor", "Multiple", "Exception"),
+  n = c(16, 27, 3, 10, 89)
+)
+
+# 为渐变创建一个连续变量
+data$value <- seq_along(data$n)
+
+# 定义颜色向量
+colors <- c("Cognitive" = "#FF0000", "Memory" = "#FF7F00", "Motor" = "#FFFF00",
+            "Multiple" = "#FFFF00", "Exception" = "#FFFF00")
+
+# 创建饼图
+ggplot(data, aes(x = "", y = n, fill = Category)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start = 0) +
+  scale_fill_manual(values = colors) + # 使用自定义颜色
+  theme_void() + # 使用主题void来隐藏轴和背景
+  labs(fill = "Category", title = "Proportion of Categories") +
+  theme(legend.position = "right") # 调整图例位置
+
+rm(colors)
+```
+
+
+# GPT4
+```{r}
+# 加载必要的库
+library(dplyr)
+library(ggplot2)
+
+# 假设 df 是一个包含文章数据的列表，其中每个元素都是一个数据框
+# df 是一个列表，df[[n]] 是第 n 篇文章，里面包含数据
+
+# 定义一些变量来存储统计信息
+all_data <- data.frame()  # 用于存储所有文章的人口统计学和 RT 数据
+gender_count <- 0  # 存储性别的数量信息
+age_data <- c()  # 存储所有年龄信息
+
+# 遍历每篇文章的数据
+for (i in 1:length(df)) {
+  article_data <- df[[i]]  # 获取每篇文章的数据
+  
+  # 只选择我们关心的列，如 Gender、Age 和 RT_ms，其他的列忽略
+  article_data_filtered <- article_data %>%
+    select(any_of(c("Gender", "Age", "RT_ms")))  # 只选择这些列，如果不存在则忽略
+  
+  # 确保 Age 列统一为数值类型，如果无法转换则设为 NA
+  if ("Age" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Age <- as.numeric(as.character(article_data_filtered$Age))
+  }
+  
+  # 确保合并时类型一致，比如 Gender 和 Age 列
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    # 如果包含 Gender 列，则统计性别
+    gender_count <- gender_count + table(article_data_filtered$Gender)
+  }
+  
+  if ("Age" %in% colnames(article_data_filtered)) {
+    # 如果包含 Age 列，则收集年龄信息
+    age_data <- c(age_data, article_data_filtered$Age)
+  }
+  
+  # 将每篇文章的数据合并，只合并过滤后的数据
+  all_data <- bind_rows(all_data, article_data_filtered)
+}
+
+# 人口统计学描述
+total_subjects <- nrow(all_data)  # 被试总人数
+male_count <- sum(all_data$Gender == "Male", na.rm = TRUE)  # 男性数量
+female_count <- sum(all_data$Gender == "Female", na.rm = TRUE)  # 女性数量
+avg_age <- mean(age_data, na.rm = TRUE)  # 平均年龄
+
+# 输出人口统计学信息
+cat("总被试量: ", total_subjects, "\n")
+cat("男性数量: ", male_count, "\n")
+cat("女性数量: ", female_count, "\n")
+cat("平均年龄: ", avg_age, "\n")
+
+# 对被试量进行分组
+subject_bins <- cut(total_subjects, breaks = c(1, 10, 20, 40, 80, 160, Inf),
+                    labels = c("1-10", "11-20", "21-40", "41-80", "81-160", "160以上"))
+
+# 计算每个区间的被试数量
+subject_distribution <- table(subject_bins)
+
+# 将被试量数据转换为数据框
+subject_df <- as.data.frame(subject_distribution)
+colnames(subject_df) <- c("Range", "Count")
+
+# 画出被试量比例的饼图
+ggplot(subject_df, aes(x = "", y = Count, fill = Range)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  scale_fill_manual(values = colorRampPalette(c("yellow", "red"))(6)) +
+  labs(title = "被试量分布比例") +
+  theme_void()
+
+# 如果有 RT_ms 数据，对其进行统计
+if ("RT_ms" %in% colnames(all_data)) {
+  rt_summary <- summary(all_data$RT_ms)
+  cat("RT_ms 描述统计: \n")
+  print(rt_summary)
+}
+
+rm(all_data,article_data_filtered,article_data)
+```
+
+# GPT3.5
+## v1
+```{r}
+# 加载必要的库
+library(dplyr)
+library(ggplot2)
+
+# 假设 df 是一个包含文章数据的列表，其中每个元素都是一个数据框
+# df 是一个列表，df[[n]] 是第 n 篇文章，里面包含数据
+
+# 定义一些变量来存储统计信息
+all_data <- data.frame()  # 用于存储所有文章的人口统计学和 RT 数据
+gender_count_list <- list()  # 存储每篇文章的性别统计信息
+age_data <- c()  # 存储所有年龄信息
+
+# 遍历每篇文章的数据
+for (i in 1:length(df)) {
+  article_data <- df[[i]]  # 获取每篇文章的数据
+  
+  # 只选择我们关心的列，如 Gender、Age 和 RT_ms，其他的列忽略
+  article_data_filtered <- article_data %>%
+    select(any_of(c("Gender", "Age", "RT_ms")))  # 只选择这些列，如果不存在则忽略
+  
+  # 确保 Gender 列为字符类型，Age 列统一为数值类型
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Gender <- as.character(article_data_filtered$Gender)
+  }
+  
+  if ("Age" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Age <- as.numeric(as.character(article_data_filtered$Age))
+  }
+  
+  # 统计性别
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    current_gender_count <- table(article_data_filtered$Gender)
+    gender_count_list[[i]] <- current_gender_count
+  }
+  
+  # 收集年龄数据
+  if ("Age" %in% colnames(article_data_filtered)) {
+    age_data <- c(age_data, article_data_filtered$Age)
+  }
+  
+  # 将每篇文章的数据合并，只合并过滤后的数据
+  all_data <- bind_rows(all_data, article_data_filtered)
+}
+
+# 合并所有文章的性别统计
+gender_count <- Reduce(`+`, gender_count_list, init = table(factor(levels = unique(unlist(lapply(gender_count_list, names))))))
+
+# 人口统计学描述
+total_subjects <- nrow(all_data)  # 被试总人数
+male_count <- sum(all_data$Gender == "Male", na.rm = TRUE)  # 男性数量
+female_count <- sum(all_data$Gender == "Female", na.rm = TRUE)  # 女性数量
+avg_age <- mean(age_data, na.rm = TRUE)  # 平均年龄
+
+# 输出人口统计学信息
+cat("总被试量: ", total_subjects, "\n")
+cat("男性数量: ", male_count, "\n")
+cat("女性数量: ", female_count, "\n")
+cat("平均年龄: ", avg_age, "\n")
+
+# 对被试量进行分组
+subject_bins <- cut(total_subjects, breaks = c(1, 10, 20, 40, 80, 160, Inf),
+                    labels = c("1-10", "11-20", "21-40", "41-80", "81-160", "160以上"))
+
+# 计算每个区间的被试数量
+subject_distribution <- table(subject_bins)
+
+# 将被试量数据转换为数据框
+subject_df <- as.data.frame(subject_distribution)
+colnames(subject_df) <- c("Range", "Count")
+
+# 画出被试量比例的饼图
+ggplot(subject_df, aes(x = "", y = Count, fill = Range)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  scale_fill_manual(values = colorRampPalette(c("yellow", "red"))(6)) +
+  labs(title = "被试量分布比例") +
+  theme_void()
+
+# 如果有 RT_ms 数据，对其进行统计
+if ("RT_ms" %in% colnames(all_data)) {
+  rt_summary <- summary(all_data$RT_ms)
+  cat("RT_ms 描述统计: \n")
+  print(rt_summary)
+}
+
+
+```
+
+## v2
+```{r}
+# 加载必要的库
+library(dplyr)
+library(ggplot2)
+
+# 假设 df 是一个包含文章数据的列表，其中每个元素都是一个数据框
+# df 是一个列表，df[[n]] 是第 n 篇文章，里面包含数据
+
+# 定义一些变量来存储统计信息
+all_data <- data.frame()  # 用于存储所有文章的人口统计学和 RT 数据
+gender_count_list <- list()  # 存储每篇文章的性别统计信息
+age_data <- c()  # 存储所有年龄信息
+
+# 遍历每篇文章的数据
+for (i in 1:length(df)) {
+  article_data <- df[[i]]  # 获取每篇文章的数据
+  
+  # 只选择我们关心的列，如 Gender、Age 和 RT_ms，其他的列忽略
+  article_data_filtered <- article_data %>%
+    select(any_of(c("Gender", "Age", "RT_ms")))  # 只选择这些列，如果不存在则忽略
+  
+  # 确保 Gender 列为字符类型，Age 列统一为数值类型
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Gender <- as.character(article_data_filtered$Gender)
+  }
+  
+  if ("Age" %in% colnames(article_data_filtered)) {
+    # 尝试将 Age 列转换为数值类型，非数值部分将变为 NA
+    article_data_filtered$Age <- as.numeric(as.character(article_data_filtered$Age))
+  }
+  
+  # 统计性别
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    current_gender_count <- table(article_data_filtered$Gender)
+    gender_count_list[[i]] <- current_gender_count
+  }
+  
+  # 收集年龄数据
+  if ("Age" %in% colnames(article_data_filtered)) {
+    age_data <- c(age_data, article_data_filtered$Age)
+  }
+  
+  # 将每篇文章的数据合并，只合并过滤后的数据
+  all_data <- bind_rows(all_data, article_data_filtered)
+}
+
+# 合并所有文章的性别统计
+if (length(gender_count_list) > 0) {
+  all_genders <- Reduce(function(x, y) merge(as.data.frame(x), as.data.frame(y), by = "Var1", all = TRUE), gender_count_list)
+  all_genders[is.na(all_genders)] <- 0
+  gender_count <- rowSums(all_genders[, -1, drop = FALSE])
+  names(gender_count) <- all_genders$Var1
+} else {
+  gender_count <- table()
+}
+
+# 人口统计学描述
+total_subjects <- nrow(all_data)  # 被试总人数
+male_count <- sum(all_data$Gender == "Male", na.rm = TRUE)  # 男性数量
+female_count <- sum(all_data$Gender == "Female", na.rm = TRUE)  # 女性数量
+avg_age <- mean(age_data, na.rm = TRUE)  # 平均年龄
+
+# 输出人口统计学信息
+cat("总被试量: ", total_subjects, "\n")
+cat("男性数量: ", male_count, "\n")
+cat("女性数量: ", female_count, "\n")
+cat("平均年龄: ", avg_age, "\n")
+
+# 对被试量进行分组
+subject_bins <- cut(total_subjects, breaks = c(1, 10, 20, 40, 80, 160, Inf),
+                    labels = c("1-10", "11-20", "21-40", "41-80", "81-160", "160以上"))
+
+# 计算每个区间的被试数量
+subject_distribution <- table(subject_bins)
+
+# 将被试量数据转换为数据框
+subject_df <- as.data.frame(subject_distribution)
+colnames(subject_df) <- c("Range", "Count")
+
+# 画出被试量比例的饼图
+ggplot(subject_df, aes(x = "", y = Count, fill = Range)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  scale_fill_manual(values = colorRampPalette(c("yellow", "red"))(6)) +
+  labs(title = "被试量分布比例") +
+  theme_void()
+
+# 如果有 RT_ms 数据，对其进行统计
+if ("RT_ms" %in% colnames(all_data)) {
+  rt_summary <- summary(all_data$RT_ms)
+  cat("RT_ms 描述统计: \n")
+  print(rt_summary)
+}
+
+```
+
+
+## v3
+```{r}
+# 加载必要的库
+library(dplyr)
+library(ggplot2)
+
+# 假设 df 是一个包含文章数据的列表，其中每个元素都是一个数据框
+# df 是一个列表，df[[n]] 是第 n 篇文章，里面包含数据
+
+# 定义一些变量来存储统计信息
+all_data <- data.frame()  # 用于存储所有文章的人口统计学和 RT 数据
+gender_count_list <- list()  # 存储每篇文章的性别统计信息
+age_data <- c()  # 存储所有年龄信息
+
+# 遍历每篇文章的数据
+for (i in 1:length(df)) {
+  article_data <- df[[i]]  # 获取每篇文章的数据
+  
+  # 只选择我们关心的列，如 Subject、Gender、Age 和 RT_ms，其他的列忽略
+  article_data_filtered <- article_data %>%
+    select(any_of(c("Subject", "Gender", "Age", "RT_ms")))  # 只选择这些列，如果不存在则忽略
+  
+  # 确保 Subject 列为字符类型，Gender 列为字符类型，Age 列统一为数值类型
+  if ("Subject" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Subject <- as.character(article_data_filtered$Subject)
+  }
+  
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Gender <- as.character(article_data_filtered$Gender)
+  }
+  
+  if ("Age" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Age <- as.numeric(as.character(article_data_filtered$Age))
+  }
+  
+  # 为每篇文章中的被试编号添加文章索引前缀，使每个被试编号在全局范围内唯一
+  article_data_filtered <- article_data_filtered %>%
+    mutate(Subject = paste0("Article", i, "_", Subject))
+  
+  # 统计性别
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    current_gender_count <- table(article_data_filtered$Gender)
+    gender_count_list[[i]] <- current_gender_count
+  }
+  
+  # 收集年龄数据
+  if ("Age" %in% colnames(article_data_filtered)) {
+    age_data <- c(age_data, article_data_filtered$Age)
+  }
+  
+  # 将每篇文章的数据合并，只合并过滤后的数据
+  all_data <- bind_rows(all_data, article_data_filtered)
+}
+
+# 合并所有文章的性别统计
+gender_count <- Reduce(`+`, gender_count_list, init = table(factor(levels = unique(unlist(lapply(gender_count_list, names))))))
+
+# 人口统计学描述
+total_subjects <- nrow(all_data)  # 被试总人数
+male_count <- sum(all_data$Gender == "Male", na.rm = TRUE)  # 男性数量
+female_count <- sum(all_data$Gender == "Female", na.rm = TRUE)  # 女性数量
+avg_age <- mean(age_data, na.rm = TRUE)  # 平均年龄
+
+# 输出人口统计学信息
+cat("总被试量: ", total_subjects, "\n")
+cat("男性数量: ", male_count, "\n")
+cat("女性数量: ", female_count, "\n")
+cat("平均年龄: ", avg_age, "\n")
+
+# 对被试量进行分组
+subject_bins <- cut(total_subjects, breaks = c(1, 10, 20, 40, 80, 160, Inf),
+                    labels = c("1-10", "11-20", "21-40", "41-80", "81-160", "160以上"))
+
+# 计算每个区间的被试数量
+subject_distribution <- table(subject_bins)
+
+# 将被试量数据转换为数据框
+subject_df <- as.data.frame(subject_distribution)
+colnames(subject_df) <- c("Range", "Count")
+
+# 画出被试量比例的饼图
+ggplot(subject_df, aes(x = "", y = Count, fill = Range)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  scale_fill_manual(values = colorRampPalette(c("yellow", "red"))(6)) +
+  labs(title = "被试量分布比例") +
+  theme_void()
+
+# 如果有 RT_ms 数据，对其进行统计
+if ("RT_ms" %in% colnames(all_data)) {
+  rt_summary <- summary(all_data$RT_ms)
+  cat("RT_ms 描述统计: \n")
+  print(rt_summary)
+}
+rm(subject_df,age_data,avg_age,current_gender_count,female_count,gender_count,i,male_count,rt_summary,subject_bins,subject_distribution,total_subjects,all_data,article_data,article_data_filtered,gender_count_list)
+```
+
+
+
+## v4
+```{r}
+# 加载必要的库
+library(dplyr)
+library(ggplot2)
+
+# 假设 df 是一个包含文章数据的列表，其中每个元素都是一个数据框
+# df 是一个列表，df[[n]] 是第 n 篇文章，里面包含数据
+
+# 定义一些变量来存储统计信息
+all_data <- data.frame()  # 用于存储所有文章的人口统计学和 RT 数据
+gender_count_list <- list()  # 存储每篇文章的性别统计信息
+age_data <- c()  # 存储所有年龄信息
+
+# 遍历每篇文章的数据
+for (i in 1:length(df)) {
+  article_data <- df[[i]]  # 获取每篇文章的数据
+  
+  # 只选择我们关心的列，如 Subject、Gender、Age 和 RT_ms，其他的列忽略
+  article_data_filtered <- article_data %>%
+    select(any_of(c("Subject", "Gender", "Age", "RT_ms")))  # 只选择这些列，如果不存在则忽略
+  
+  # 确保 Subject 列为字符类型，Gender 列为字符类型，Age 列统一为数值类型
+  if ("Subject" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Subject <- as.character(article_data_filtered$Subject)
+  }
+  
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Gender <- as.character(article_data_filtered$Gender)
+  }
+  
+  if ("Age" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Age <- as.numeric(as.character(article_data_filtered$Age))
+  }
+  
+  # 为每篇文章中的被试编号添加文章索引前缀，使每个被试编号在全局范围内唯一
+  article_data_filtered <- article_data_filtered %>%
+    mutate(Subject = paste0("Article", i, "_", Subject))
+  
+  # 统计性别
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    current_gender_count <- table(article_data_filtered$Gender)
+    gender_count_list[[i]] <- current_gender_count
+  }
+  
+  # 收集年龄数据
+  if ("Age" %in% colnames(article_data_filtered)) {
+    age_data <- c(age_data, article_data_filtered$Age)
+  }
+  
+  # 将每篇文章的数据合并，只合并过滤后的数据
+  all_data <- bind_rows(all_data, article_data_filtered)
+}
+
+# 合并所有文章的性别统计
+gender_count <- Reduce(`+`, gender_count_list, init = table(factor(levels = unique(unlist(lapply(gender_count_list, names))))))
+
+# 人口统计学描述
+total_subjects <- nrow(all_data)  # 被试总人数
+male_count <- sum(all_data$Gender == "Male", na.rm = TRUE)  # 男性数量
+female_count <- sum(all_data$Gender == "Female", na.rm = TRUE)  # 女性数量
+avg_age <- mean(age_data, na.rm = TRUE)  # 平均年龄
+
+# 输出人口统计学信息
+cat("总被试量: ", total_subjects, "\n")
+cat("男性数量: ", male_count, "\n")
+cat("女性数量: ", female_count, "\n")
+cat("平均年龄: ", avg_age, "\n")
+
+# 分别绘制 Age 和 RT_ms 的散点图
+
+# 绘制 Age 的散点图，X 轴为 Subject，Y 轴为 Age
+ggplot(all_data, aes(x = Subject, y = Age, color = Gender)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Scatter Plot of Age by Subject",
+       x = "Subject",
+       y = "Age",
+       color = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank())  # 隐藏 X 轴的文本
+
+# 绘制 RT_ms 的散点图，X 轴为 Subject，Y 轴为 RT_ms
+ggplot(all_data, aes(x = Subject, y = RT_ms, color = Gender)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Scatter Plot of RT_ms by Subject",
+       x = "Subject",
+       y = "RT_ms",
+       color = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank())  # 隐藏 X 轴的文本
+
+# 如果有 RT_ms 数据，对其进行统计
+if ("RT_ms" %in% colnames(all_data)) {
+  rt_summary <- summary(all_data$RT_ms)
+  cat("RT_ms 描述统计: \n")
+  print(rt_summary)
+}
+
+# 清理环境变量
+rm(subject_df, age_data, avg_age, current_gender_count, female_count, gender_count, i, male_count, rt_summary, subject_bins, subject_distribution, total_subjects, all_data, article_data, article_data_filtered, gender_count_list)
+
+```
+
+
+## v5
+```{r}
+# 加载必要的库
+library(dplyr)
+library(ggplot2)
+
+# 假设 df 是一个包含文章数据的列表，其中每个元素都是一个数据框
+# df 是一个列表，df[[n]] 是第 n 篇文章，里面包含数据
+
+# 定义一些变量来存储统计信息
+all_data <- data.frame()  # 用于存储所有文章的人口统计学和 RT 数据
+gender_count_list <- list()  # 存储每篇文章的性别统计信息
+age_data <- c()  # 存储所有年龄信息
+
+# 性别统一化函数
+standardize_gender <- function(gender) {
+  gender <- tolower(gender)  # 转换为小写
+  if (gender %in% c("1", "m", "M", "Mann", "Hombre", "male", "Male")) {
+    return("Male")
+  } else if (gender %in% c("2", "f", "F", "Frau", "Mujer", "female", "Female")) {
+    return("Female")
+  } else {
+    return("Others")
+  }
+}
+
+# 遍历每篇文章的数据
+for (i in 1:length(df)) {
+  article_data <- df[[i]]  # 获取每篇文章的数据
+  
+  # 只选择我们关心的列，如 Subject、Gender、Age 和 RT_ms，其他的列忽略
+  article_data_filtered <- article_data %>%
+    select(any_of(c("Subject", "Gender", "Age", "RT_ms")))  # 只选择这些列，如果不存在则忽略
+  
+  # 确保 Subject 列为字符类型，Gender 列为字符类型，Age 列统一为数值类型
+  if ("Subject" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Subject <- as.character(article_data_filtered$Subject)
+  }
+  
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Gender <- as.character(article_data_filtered$Gender)
+    article_data_filtered$Gender <- sapply(article_data_filtered$Gender, standardize_gender)  # 统一化性别变量
+  }
+  
+  if ("Age" %in% colnames(article_data_filtered)) {
+    article_data_filtered$Age <- as.numeric(as.character(article_data_filtered$Age))
+  }
+  
+  # 为每篇文章中的被试编号添加文章索引前缀，使每个被试编号在全局范围内唯一
+  article_data_filtered <- article_data_filtered %>%
+    mutate(Subject = paste0("Article", i, "_", Subject))
+  
+  # 统计性别
+  if ("Gender" %in% colnames(article_data_filtered)) {
+    current_gender_count <- table(article_data_filtered$Gender)
+    gender_count_list[[i]] <- current_gender_count
+  }
+  
+  # 收集年龄数据
+  if ("Age" %in% colnames(article_data_filtered)) {
+    age_data <- c(age_data, article_data_filtered$Age)
+  }
+  
+  # 将每篇文章的数据合并，只合并过滤后的数据
+  all_data <- bind_rows(all_data, article_data_filtered)
+}
+
+# 合并所有文章的性别统计
+gender_count <- Reduce(`+`, gender_count_list, init = table(factor(levels = unique(unlist(lapply(gender_count_list, names))))))
+
+# 人口统计学描述
+total_subjects <- nrow(all_data)  # 被试总人数
+male_count <- sum(all_data$Gender == "Male", na.rm = TRUE)  # 男性数量
+female_count <- sum(all_data$Gender == "Female", na.rm = TRUE)  # 女性数量
+avg_age <- mean(age_data, na.rm = TRUE)  # 平均年龄
+
+# 输出人口统计学信息
+cat("总被试量: ", total_subjects, "\n")
+cat("男性数量: ", male_count, "\n")
+cat("女性数量: ", female_count, "\n")
+cat("平均年龄: ", avg_age, "\n")
+
+# 分别绘制 Age 和 RT_ms 的散点图
+
+# 绘制 Age 的散点图，X 轴为 Subject，Y 轴为 Age
+ggplot(all_data, aes(x = Subject, y = Age, color = Gender)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Scatter Plot of Age by Subject",
+       x = "Subject",
+       y = "Age",
+       color = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank())  # 隐藏 X 轴的文本
+
+# 绘制 RT_ms 的散点图，X 轴为 Subject，Y 轴为 RT_ms
+ggplot(all_data, aes(x = Subject, y = RT_ms, color = Gender)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Scatter Plot of RT_ms by Subject",
+       x = "Subject",
+       y = "RT_ms",
+       color = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank())  # 隐藏 X 轴的文本
+
+# 如果有 RT_ms 数据，对其进行统计
+if ("RT_ms" %in% colnames(all_data)) {
+  rt_summary <- summary(all_data$RT_ms)
+  cat("RT_ms 描述统计: \n")
+  print(rt_summary)
+}
+
+# 清理环境变量
+rm(subject_df, age_data, avg_age, current_gender_count, female_count, gender_count, i, male_count, rt_summary, subject_bins, subject_distribution, total_subjects, all_data, article_data, article_data_filtered, gender_count_list)
+
+```
+
+
+
