@@ -41,11 +41,25 @@ The Self-Prioritization Effects Database can be used for a variety of purposes, 
 Below are some example analyses demonstrating the utility of the database.
 
 ### How the Self-prioritization Effect is related to RT on the basis of baseline.
+- 思路：用不同Identity与Self的差值画图
+- 目的：展现出与不同Identity相比的SPE的程度
+- P1(横坐标是RT,纵坐标是Correlation with Cohen's d-Self-Friend in RT. )
+- P2(横坐标是RT,纵坐标是Correlation with Cohen's d-Self-Close in RT. )
+- P3(横坐标是RT,纵坐标是Correlation with Cohen's d-Self-Stranger in RT. )
   
 ### Serial dependence in confidence RT.
 
-### The Nonmatching Condition with SPE.
+- 思路：模仿Confidence Database,看不同的Trial、ACC对SPE的影响
+- 目的：展现出可能会影响SPE的其他影响
+- P4(横坐标是RT/ACC,纵坐标是Cohen's d)
+- P5(横坐标是Number of trials,纵坐标是Cohen's d)
+- P6(横坐标是Average accuracy (%),纵坐标是Cohen's d)
+- P7(横坐标是Median choice RT (s),纵坐标是Cohen's d)
 
+### The Nonmatching Condition with SPE.
+- 思路：探索Nonmatching条件下，是否存在自我优势效应
+- 目的：探索自我优势效应的范围
+- P8(Nonmatching条件下，横坐标是ACC,纵坐标是RT)
 
 
 ## Conclusion
