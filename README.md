@@ -1,11 +1,17 @@
 # SPE Database
-This project is inspired by [Rahnev et al., (2020)](https://doi.org/10.1038/s41562-019-0813-1). We aimed at curating a database that include trial-level data from as many empirical studies that used self-matching task from [Sui, He, & Humphreys (2012)](http://www.ncbi.nlm.nih.gov/pubmed/22963229).
+This project was inspired by [Rahnev et al., (2020)](https://doi.org/10.1038/s41562-019-0813-1). We aimed at curating a database that include trial-level data from as many empirical studies that used self-matching task from [Sui, He, & Humphreys (2012)](http://www.ncbi.nlm.nih.gov/pubmed/22963229).
 
-## Contributors
+This project is in parallel with preregistered meta-analysis (on-going) leading by Zheng Liu, Mengzheng Hu, Jie Sui, and Hu Chuan-Peng, see registry [here](https://osf.io/euqmf).
+
+## Leading contributors
 - Zhenxin Cai (NNU)
+- Xinru Sun (NNU)
 - Wanke Pan (NNU)
 - [Jie Sui, University of Aberdeen](https://www.abdn.ac.uk/people/jie.sui)
-- Hu Chuan-Peng (NNU)
+- Hu Chuan-Peng (NNU, email: hcp4715@hotmail.com)
+
+### Data contributors
+All authors of those studies whose data are included in this database, if permitted, will be listed as contributors.
 
 ## OSF page
 
@@ -14,6 +20,7 @@ This project is inspired by [Rahnev et al., (2020)](https://doi.org/10.1038/s415
 ## Summary of the database
 
 ## Folder structure
+
 ```
 root
 │  .gitignore

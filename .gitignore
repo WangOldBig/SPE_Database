@@ -17,6 +17,7 @@ Datasets/
 
 # Mac OS
 .DS_Store
+._*
 
 # Windows OS
 desktop.ini
