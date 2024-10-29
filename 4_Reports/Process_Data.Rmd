@@ -525,12 +525,12 @@ df[[5]] <- read.csv(
     rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
 ```
 
-# Sarah Schäfer_2019_CP 
+# Sarah Schaefer_2019_CP 
 ## Experiment 1 (Identity = 4)
 "Self", "Mother","none", "Acquaintance"
 ```{r Paper p54 Experiment 1}
 df[[6]] <- read.csv(
-  "../1_Clean_Data/Schäfer_2019_CP/Schäfer_2019_CP_Exp1_Clean.csv"
+  "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp1_Clean.csv"
   ) %>%
   # 添加新的环境变量
   dplyr::mutate(
@@ -603,7 +603,7 @@ df[[6]] <- read.csv(
     print(df_d_prime[[6]])
     
     # 更新列名
-    names(df)[6] <- "Schäfer_2019_CP_Exp1"
+    names(df)[6] <- "Schaefer_2019_CP_Exp1"
 
   ##计算每个被试的d'
     d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
@@ -648,7 +648,7 @@ df[[6]] <- read.csv(
     # 打印df_d_paper[[6]]，包含所有Subject和Identity的d'值
     print(df_d_paper[[6]])
     # 输出到新的CSV文件
-    write.csv(df_d_paper[[6]], "../1_Clean_Data/d_prime/Schäfer_2019_CP_Exp1_d'.csv", row.names = FALSE)
+    write.csv(df_d_paper[[6]], "../1_Clean_Data/d_prime/Schaefer_2019_CP_Exp1_d'.csv", row.names = FALSE)
     # 显示数据总结
     summary(df[[6]]) 
     rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
@@ -658,7 +658,7 @@ df[[6]] <- read.csv(
 "Self", "Mother","none", "Acquaintance"
 ```{r Paper p54 Experiment 2}
 df[[7]] <- read.csv(
-  "../1_Clean_Data/Schäfer_2019_CP/Schäfer_2019_CP_Exp2_Clean.csv"
+  "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp2_Clean.csv"
   ) %>%
   # 添加新的环境变量
   dplyr::mutate(
@@ -677,7 +677,7 @@ df[[7]] <- read.csv(
   dplyr::arrange(
     Subject, Condition
   )
-names(df)[7] <- "Schäfer_2019_CP Exp 2"
+names(df)[7] <- "Schaefer_2019_CP Exp 2"
 summary(df[[7]])
 ```
 
@@ -685,7 +685,7 @@ summary(df[[7]])
 "Self", "Mother", "Acquaintance"
 ```{r Paper p54 Experiment 3}
 df[[8]] <- read.csv(
-  "../1_Clean_Data/Schäfer_2019_CP/Schäfer_2019_CP_Exp3_Clean.csv"
+  "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp3_Clean.csv"
   ) %>%
   # 添加新的环境变量
   dplyr::mutate(
@@ -752,7 +752,7 @@ d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), na
     print(df_d_prime[[8]])
     
     # 更新列名
-    names(df)[8] <- "Schäfer_2019_CP_Exp3"
+    names(df)[8] <- "Schaefer_2019_CP_Exp3"
     
   ##计算每个被试的d'
     d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
@@ -797,7 +797,7 @@ d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), na
     # 打印df_d_paper[[8]]，包含所有Subject和Identity的d'值
     print(df_d_paper[[8]])
     # 输出到新的CSV文件
-    write.csv(df_d_paper[[8]], "../1_Clean_Data/d_prime/Schäfer_2019_CP_Exp3_d'.csv", row.names = FALSE)
+    write.csv(df_d_paper[[8]], "../1_Clean_Data/d_prime/Schaefer_2019_CP_Exp3_d'.csv", row.names = FALSE)
     # 显示数据总结
     summary(df[[8]]) 
     rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
