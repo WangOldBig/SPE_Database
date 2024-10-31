@@ -767,12 +767,12 @@ plot_data <- lapply(df, function(data) {
       mutate(Identity = case_when(
         Identity == "Self" ~ "Self",
         # Identity == "P1" ~ "Self",
-        Identity == "Friend" ~ "Friend",
-        Identity == "Close" ~ "Close",
-        Identity == "Mother" ~ "Close",
-        Identity == "Father" ~ "Close",
-        Identity == "Familiar" ~ "Close",
-        Identity == "Acquaintance" ~ "Close",
+        # Identity == "Friend" ~ "Friend",
+        # Identity == "Close" ~ "Close",
+        # Identity == "Mother" ~ "Close",
+        # Identity == "Father" ~ "Close",
+        # Identity == "Familiar" ~ "Close",
+        # Identity == "Acquaintance" ~ "Close",
         # Identity == "P2" ~ "Close",
         TRUE ~ "Others"
       )) %>%
