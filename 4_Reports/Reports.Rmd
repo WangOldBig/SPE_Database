@@ -22,6 +22,8 @@ Self-Prioritization Effects play an important role in helping us understand how 
 
 Recently, more and more researchers have become interested in how self-relevance influences human actions and thoughts. An elegant experimental paradigm (Sui et al., 2012) shows that when stimuli are related to ourselves, we tend to respond with greater accuracy and speed. For example, when the concept of "me" is associated with a triangle, recognition is faster and more accurate than when the shape is associated with "others". This suggests that the self-concept has priority in early perceptual processing, known as the Self-Prioritization Effect (SPE) in shape-label matching tasks.
 
+The Self-Prioritization Effects Database has been developed to provide a comprehensive resource for researchers interested in this phenomenon. It includes a wide range of experimental data, stimuli, and paradigms that have been used in studies on self-relevance and its impact on cognition and behavior. The database is designed to be user-friendly, allowing researchers to easily search for and access the materials they need for their own experiments. This centralized repository aims to facilitate the replication of studies, enhance the consistency of research findings, and promote collaboration among researchers in the field. By providing a standardized set of tools and data, the database seeks to advance our understanding of how self-prioritization effects influence various aspects of human cognition and behavior.
+
 ## Details of the Database
 
 The Self-Prioritization Effects Database is hosted on the [Open Science Framework (OSF)](https://osf.io/s46pr/) website. Each dataset is represented by two folders: **Raw_Data** and **Clean_Data**.
@@ -47,7 +49,7 @@ Below are some example analyses demonstrating the utility of the database.
 - P2(横坐标是RT,纵坐标是Correlation with Cohen's d-Self-Close in RT. )
 - P3(横坐标是RT,纵坐标是Correlation with Cohen's d-Self-Stranger in RT. )
   
-### Serial dependence in confidence RT.
+### Serial dependence in SPE RT.
 
 - 思路：模仿Confidence Database,看不同的Trial、ACC对SPE的影响
 - 目的：展现出可能会影响SPE的其他影响
