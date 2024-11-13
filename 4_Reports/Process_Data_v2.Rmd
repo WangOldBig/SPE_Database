@@ -21,6 +21,7 @@ df <- list()
 
 df_Self_Stranger <- list()
 df_Self_Familiar <- list()
+df_Self_Mother <- list()
 ```
 
 # Merryn Dale Constable_2020_CE
@@ -54,6 +55,8 @@ df[[1]] <- read.csv(
 df_pocess <- df[[1]] %>%
   dplyr::filter(Identity %in% c("Self", "Stranger"))
 
+df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Stranger"))
+
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
   dplyr::group_by(Subject) %>%
@@ -84,11 +87,10 @@ merged_list <- list(
 # 将合并后的列表存储到 df_Self_Stranger 的第二个元素中
 df_Self_Stranger[[1]] <- merged_list
 
-
 names(df_Self_Stranger)[1] <- "Constable_2020_CE Exp 1"
 names(df)[1] <- "Constable_2020_CE Exp 1"
 
-rm(df_RT,df_ACC,merged_list)
+rm(df_RT,df_ACC,merged_list,df_pocess)
 ```
 
 # Merryn Dale Constable_2020_CE (Dark Light Box)
@@ -126,6 +128,8 @@ df[[2]] <- read.csv(
 df_pocess <- df[[2]] %>%
   dplyr::filter(Identity %in% c("Self", "Stranger"))
 
+df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Stranger"))
+
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
   dplyr::group_by(Subject) %>%
@@ -160,7 +164,7 @@ df_Self_Stranger[[2]] <- merged_list
 names(df_Self_Stranger)[2] <- "Constable_2020_CE Exp 2"
 names(df)[2] <- "Constable_2020_CE Exp 2"
 
-rm(df_RT,df_ACC,merged_list)
+rm(df_RT,df_ACC,merged_list,df_pocess)
 ```
 
 # Haoyue Qian_2019_QJEP 
@@ -187,10 +191,16 @@ df[[3]] <- read.csv(
   dplyr::arrange(
     Subject, Matching, Identity, Session
   )
+```
 
+### Exp1
+"Self", "Stranger"
+```{r}
 # 提取Self和Stranger的反应时间
 df_pocess <- df[[3]] %>%
   dplyr::filter(Identity %in% c("Self", "Stranger"))
+
+df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Stranger"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
@@ -226,12 +236,18 @@ df_Self_Stranger[[3]] <- merged_list
 names(df_Self_Stranger)[3] <- "Qian_2019_QJEP Exp 1"
 names(df)[3] <- "Qian_2019_QJEP Exp 1"
 
-rm(df_RT,df_ACC,merged_list)
+rm(df_RT,df_ACC,merged_list,df_pocess)
 
+```
 
+### Exp1
+"Self", "Familiar"
+```{r}
 # 提取Self和Familiar的反应时间
 df_pocess <- df[[3]] %>%
   dplyr::filter(Identity %in% c("Self", "Familiar"))
+
+df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Familiar"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
@@ -266,7 +282,7 @@ df_Self_Familiar[[1]] <- merged_list
 
 names(df_Self_Familiar)[1] <- "Qian_2019_QJEP Exp 1"
 
-rm(df_RT,df_ACC,merged_list)
+rm(df_RT,df_ACC,merged_list,df_pocess)
 ```
 
 
@@ -299,6 +315,8 @@ df[[4]] <- read.csv(
 df_pocess <- df[[4]] %>%
   dplyr::filter(Identity %in% c("Self", "Familiar"))
 
+df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Familiar"))
+
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
   dplyr::group_by(Subject) %>%
@@ -330,17 +348,17 @@ merged_list <- list(
 df_Self_Familiar[[2]] <- merged_list
 
 
-names(df_Self_Familiar)[2] <- "Qian_2019_QJEP Exp 2"
+names(df_Self_Mother)[2] <- "Qian_2019_QJEP Exp 2"
 
-rm(df_RT,df_ACC,merged_list)
+rm(df_RT,df_ACC,merged_list,df_pocess)
 ```
 
-# Sarah Schäfer_2019_CP 
+# Sarah Schafer_2019_CP 
 ## Experiment 1 (Identity = 4)
 "Self", "Mother","none", "Acquaintance"
 ```{r Paper p54 Experiment 1}
 df[[5]] <- read.csv(
-  "../1_Clean_Data/Schäfer_2019_CP/Schäfer_2019_CP_Exp1_Clean.csv"
+  "../1_Clean_Data/Schafer_2019_CP/Schafer_2019_CP_Exp1_Clean.csv"
   ) %>%
   # 添加新的环境变量
   dplyr::mutate(
@@ -374,8 +392,51 @@ df[[5]] <- read.csv(
   dplyr::arrange(
     Subject, Matching, Identity
   )
+```
+
+## Exp1
+"Self", "Mother"
+```{r}
+# 提取Self和Familiar的反应时间
+df_pocess <- df[[4]] %>%
+  dplyr::filter(Identity %in% c("Self", "Mother"))
+
+df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Mother"))
+
+# 计算每个被试的Cohen's d RT
+df_RT <- df_pocess %>%
+  dplyr::group_by(Subject) %>%
+  dplyr::reframe(
+    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Mother"], na.rm = TRUE)  # 计算RT差值
+  )
 
 
+# 计算每个被试的Cohen's d ACC
+df_ACC <- df_pocess %>%
+  dplyr::group_by(Subject) %>%
+  dplyr::reframe(
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+      mean(ACC[Identity == "Mother" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+  )
+
+# 假设 list_RT 和 list_ACC 包含你需要合并的数据
+merged_list <- list(
+  Subject = df_RT$Subject, 
+  Cohens_d_RT = df_RT$Cohens_d_RT, 
+  deta_RT = df_RT$deta_RT, 
+  Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
+  deta_ACC = df_ACC$deta_ACC
+)
+
+# 将合并后的列表存储到 df_Self_Mother 中
+df_Self_Mother[[3]] <- merged_list
+
+
+names(df_Self_Mother)[3] <- "Schafer_2019_CP Exp1"
+
+rm(df_RT,df_ACC,merged_list,df_pocess)
 ```
 
 
