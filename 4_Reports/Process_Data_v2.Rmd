@@ -728,19 +728,56 @@ names(df_Self_Friend)[1] <- "Wozniak_2018_PLOS Exp1"
 rm(df_RT,df_ACC,merged_list,df_pocess)
 ```
 
+## Exp1
+"Self", "Stranger"
+```{r}
+# 提取Self和Stranger的反应时间
+df_pocess <- df[[7]] %>%
+  dplyr::filter(Identity %in% c("Self", "Stranger"))
+
+df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Stranger"))
+
+# 计算每个被试的Cohen's d RT
+df_RT <- df_pocess %>%
+  dplyr::group_by(Subject) %>%
+  dplyr::reframe(
+    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
+  )
 
 
+# 计算每个被试的Cohen's d ACC
+df_ACC <- df_pocess %>%
+  dplyr::group_by(Subject) %>%
+  dplyr::reframe(
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+      mean(ACC[Identity == "Stranger" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+  )
+
+# 假设 list_RT 和 list_ACC 包含你需要合并的数据
+merged_list <- list(
+  Subject = df_RT$Subject, 
+  Cohens_d_RT = df_RT$Cohens_d_RT, 
+  deta_RT = df_RT$deta_RT, 
+  Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
+  deta_ACC = df_ACC$deta_ACC
+)
+
+# 将合并后的列表存储到 df_Self_Stranger 中
+df_Self_Stranger[[4]] <- merged_list
 
 
+names(df_Self_Stranger)[4] <- "Wozniak_2018_PLOS Exp1"
 
-
-
+rm(df_RT,df_ACC,merged_list,df_pocess)
+```
 
 ## Experiment 2 (Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper p95 Experiment 2}
-df[[10]] <- read.csv(
-  "../1_Clean_Data/Woźniak_2018_PLOS/Woźniak_2018_PLOS_Exp2_Clean.csv"
+df[[8]] <- read.csv(
+  "../1_Clean_Data/Wozniak_2018_PLOS/Wozniak_2018_PLOS_Exp2_Clean.csv"
   ) %>%
    dplyr::mutate(
     ScreenResolution = "24’’ widescreen LED monito", # 屏幕分辨率
@@ -755,95 +792,12 @@ df[[10]] <- read.csv(
   dplyr::arrange(
     Subject, Matching, Identity
   )
-# 为Self, Friend，Stranger分别计算
-  identities <- c("Self","Friend","Stranger")
-  d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
-  ## 计算整篇文章的d'
-  # 创建一个新的d_prime数据框，用于保存d_prime值
-  df_d_prime[[10]] <- data.frame(Identity = character(), d_prime = numeric())
-  
-  # 计算d'
-  for (identity in identities) {
-    # 提取当前Identity的数据
-    subset_data <- df[[10]] %>% filter(Identity == identity)
-    
-    # 计算HR和FAR
-    hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
-    miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
-    false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
-    correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
-    
-    # 计算Hit Rate和False Alarm Rate
-    hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
-    false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
-                               false_alarm / (false_alarm + correct_rejection), 
-                               1 / (2 * (false_alarm + correct_rejection)))
-    
-    # 计算z分数
-    z_hit <- qnorm(hit_rate)
-    z_false_alarm <- qnorm(false_alarm_rate)
-    
-    # 计算d'
-    d_prime <- z_hit - z_false_alarm
-    
-    # 保存计算结果到df_d_prime[[10]]
-    df_d_prime[[10]] <- rbind(df_d_prime[[10]], data.frame(Identity = identity, d_prime = d_prime))
-  }
-  
-  # 打印df_d_prime[[10]]，包含所有Identity的d'值
-  print(df_d_prime[[10]])
-  
   # 更新列名
-  names(df)[10] <- "Woźniak_2018_PLOS_Exp2"
-  
-  ##计算每个被试的d'
-  d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
-  
-  # 创建一个新的d_prime数据框，用于保存d_prime值
-  df_d_paper[[10]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
-  
-  # 计算d'
-  for (identity in identities) {
-    subjects <- unique(df[[10]]$Subject)  # 获取所有被试
-    
-    for (subject in subjects) {
-      # 提取当前Identity和Subject的数据
-      subset_data <- df[[10]] %>% filter(Identity == identity & Subject == subject)
-      
-      # 计算HR和FAR
-      hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
-      miss <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 0)
-      false_alarm <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 0)
-      correct_rejection <- sum(subset_data$Matching == "Nonmatching" & subset_data$ACC == 1)
-      
-      # 计算Hit Rate和False Alarm Rate
-      hit_rate <- ifelse(hit / (hit + miss) < 1, hit / (hit + miss), 1 - 1 / (2 * (hit + miss)))
-      false_alarm_rate <- ifelse(false_alarm / (false_alarm + correct_rejection) > 0, 
-                                 false_alarm / (false_alarm + correct_rejection), 
-                                 1 / (2 * (false_alarm + correct_rejection)))
-      
-      # 计算z分数
-      z_hit <- qnorm(hit_rate)
-      z_false_alarm <- qnorm(false_alarm_rate)
-      
-      # 计算d'
-      d_prime <- z_hit - z_false_alarm
-      
-      # 保存结果
-      d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
-      # 保存计算结果到df_d_paper[[10]]
-      df_d_paper[[10]] <- rbind(df_d_paper[[10]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
-    }
-  }
-  
-  # 打印df_d_paper[[10]]，包含所有Subject和Identity的d'值
-  print(df_d_paper[[10]])
-  # 输出到新的CSV文件
-  write.csv(df_d_paper[[10]], "../1_Clean_Data/d_prime/Woźniak_2018_PLOS_Exp2_d'.csv", row.names = FALSE)
-  # 显示数据总结
-  summary(df[[10]]) 
-  rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+  names(df)[8] <- "Wozniak_2018_PLOS_Exp2"
 ```
+
+
+
 
 # Marius Golubickis_2021_AP 
 ## Experiment 1 (Identity = 3)

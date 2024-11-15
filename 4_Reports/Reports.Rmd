@@ -26,6 +26,7 @@ output:
 
 \ \ \ \ The Self-Prioritization Effects Database has been developed to provide a comprehensive resource for researchers interested in this phenomenon. It includes a wide range of experimental data, stimuli, and some relevant variable that have been used in studies on self-relevance and its impact on cognition and behavior. The database is designed to be user-friendly, allowing researchers to easily search for and access the raw data they need for their own experiments. This  paper aims to facilitate the replication of studies, enhance the consistency of research findings, and promote collaboration among researchers in the field. By providing a standardized set of tools and data, the database seeks to advance our understanding of how self-prioritization effects influence various aspects of human cognition and behavior.
 
+
 ## Details of the Database
 
 The Self-Prioritization Effects Database is hosted on the [Open Science Framework (OSF)](https://osf.io/s46pr/) website. Each dataset is represented by two folders: **Raw_Data** and **Clean_Data**.
