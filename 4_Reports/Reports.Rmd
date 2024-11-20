@@ -27,32 +27,35 @@ output:
 \ \ \ \ The Self-Prioritization Effects Database has been developed to provide a comprehensive resource for researchers interested in this phenomenon. It includes a wide range of experimental data, stimuli, and some relevant variable that have been used in studies on self-relevance and its impact on cognition and behavior. The database is designed to be user-friendly, allowing researchers to easily search for and access the raw data they need for their own experiments. This  paper aims to facilitate the replication of studies, enhance the consistency of research findings, and promote collaboration among researchers in the field. By providing a standardized set of tools and data, the database seeks to advance our understanding of how self-prioritization effects influence various aspects of human cognition and behavior.
 
 
-## Details of the Database
+# Description of the Database
 
-The Self-Prioritization Effects Database is hosted on the [Open Science Framework (OSF)](https://osf.io/s46pr/) website. Each dataset is represented by two folders: **Raw_Data** and **Clean_Data**.
+## Overview
+[how many papers's data was included, how many participants, how many variables, geographical distribution of participants]
+
+## Storage and Access
+The Self-Prioritization Effects Database is hosted on the [Open Science Framework (OSF)](https://osf.io/s46pr/). Each dataset is represented by two folders: **Raw_Data** and **Clean_Data**.
 
 (Basic Pic for Database flod tructure)
 
-
 -   The **Raw_Data** folder contains the original data from the study.
--   The **Clean_Data** folder includes processed data files in `.csv` format and a corresponding codebook in `.xlsx` format.
+-   The **Clean_Data** folder includes minmally preprocessed data files in `.csv` format and a corresponding codebook in `.xlsx` format.
 
-Each study includes a README file, which outlines the authors, citation, participants, procedure, and data files.
+Each study includes a README file (HCP: maybe we shall consider using `.json` file for the meta-data of article), which outlines the authors, citation, participants, procedure, and data files.
 
-## Example Uses of the Database
+# Example Uses of the Database
 
 The Self-Prioritization Effects Database can be used for a variety of purposes, such as: 1. Developing and testing new models of Self-Prioritization Effects. 2. Comparing the effects of different demographic variables on SPE (e.g., gender, nationality, area). 3. Replicating studies to validate findings. 4. Conducting meta-analyses to estimate the size of SPE across different tasks and populations.
 
 Below are some example analyses demonstrating the utility of the database.
 
-### How the Self-prioritization Effect is related to RT on the basis of baseline.
+## The effect size of Self-prioritization Effect is moderated by baseline condition.
 - 思路：用不同Identity与Self的差值画图
 - 目的：展现出与不同Identity相比的SPE的程度
 - P1(横坐标是RT,纵坐标是Correlation with Cohen's d-Self-Friend in RT. )
 - P2(横坐标是RT,纵坐标是Correlation with Cohen's d-Self-Close in RT. )
 - P3(横坐标是RT,纵坐标是Correlation with Cohen's d-Self-Stranger in RT. )
   
-### Serial dependence in SPE RT.
+## Serial dependence effect in SPE.
 
 - 思路：模仿Confidence Database,看不同的Trial、ACC对SPE的影响
 - 目的：展现出可能会影响SPE的其他影响
@@ -61,17 +64,17 @@ Below are some example analyses demonstrating the utility of the database.
 - P6(横坐标是Average accuracy (%),纵坐标是Cohen's d)
 - P7(横坐标是Median choice RT (s),纵坐标是Cohen's d)
 
-### The Nonmatching Condition with SPE.
+## SPE in non-matching condition.
 - 思路：探索Nonmatching条件下，是否存在自我优势效应
 - 目的：探索自我优势效应的范围
 - P8(Nonmatching条件下，横坐标是ACC,纵坐标是RT)
 
 
-## Conclusion
+# Conclusion
 
 The Self-Prioritization Effects Database provides researchers with a wealth of data to explore the cognitive mechanisms underlying self-relevance. By making these datasets publicly available, we hope to facilitate further research and collaboration in this field.
 
-## References
+# References
 
 -   Sui, J., He, X., & Humphreys, G. W. (2012). **Perceptual effects of self-relevance: Evidence from perceptual matching**. *Journal of Experimental Psychology: Human Perception and Performance*, 38(5), 1105-1117. DOI: <https://doi.org/10.1037/a0029792>
 
