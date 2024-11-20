@@ -8,7 +8,7 @@ output: html_document
 ```{r}
 library(ggplot2)
 library(dplyr)
-library(purrr)
+library(purrr) 
 library(car)  # 用于方差分析
 library(emmeans)  # 用于事后检验
 ```
