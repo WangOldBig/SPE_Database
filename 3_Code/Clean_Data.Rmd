@@ -2728,12 +2728,12 @@ summary(df[[43]])
 write.csv(x = df[[43]], file = "../1_Clean_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_Clean.csv")
 ```
 
-# Zhang_2022_NI
+# Zhang_2023_NI
 ## Experiment 1 (Identity = 2)
 "Self","Stranger"
 ```{r Paper t10 Experiment 1}
 df[[44]] <- read.csv(
-"../2_Raw_Data/Zhang_2022_NI/Zhang_2022_NI_Exp1_raw.csv"
+"../2_Raw_Data/Zhang_2023_NI/Zhang_2023_NI_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
     Procedure.Block. == "ProSelf",
@@ -2785,17 +2785,17 @@ df[[44]] <- read.csv(
     Subject, Matching,
   )
 
-names(df)[44] <- "Zhang_2022_NI"
+names(df)[44] <- "Zhang_2023_NI"
 summary(df[[44]])
-write.csv(x = df[[44]], file = "../1_Clean_Data/Zhang_2022_NI/Zhang_2022_NI_Exp1_Clean.csv")
+write.csv(x = df[[44]], file = "../1_Clean_Data/Zhang_2023_NI/Zhang_2023_NI_Exp1_Clean.csv")
 ```
 
-# Zhang_2022_NI
+# Zhang_2023_NI
 ## Experiment 2 (Identity = 2)
 "高兴","中性"
 ```{r Paper t10 Experiment 2}
 df[[45]] <- read.csv(
-"../2_Raw_Data/Zhang_2022_NI/Zhang_2022_NI_Exp1_raw.csv"
+"../2_Raw_Data/Zhang_2023_NI/Zhang_2023_NI_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
     Procedure.Block. == "ProEmotion",
@@ -2843,17 +2843,17 @@ df[[45]] <- read.csv(
     Subject, Matching
   )
 
-names(df)[45] <- "Zhang_2022_NI"
+names(df)[45] <- "Zhang_2023_NI"
 summary(df[[45]])
-write.csv(x = df[[45]], file = "../1_Clean_Data/Zhang_2022_NI/Zhang_2022_NI_Exp2_Clean.csv")
+write.csv(x = df[[45]], file = "../1_Clean_Data/Zhang_2023_NI/Zhang_2023_NI_Exp2_Clean.csv")
 ```
 
-# Zhang_2022_NI
+# Zhang_2023_NI
 ## Experiment 3 (Identity = 2)
 "￥16","￥1"
 ```{r Paper t10 Experiment 3}
 df[[46]] <- read.csv(
-"../2_Raw_Data/Zhang_2022_NI/Zhang_2022_NI_Exp1_raw.csv"
+"../2_Raw_Data/Zhang_2023_NI/Zhang_2023_NI_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
     Procedure.Block. == "ProReward",
@@ -2901,9 +2901,9 @@ df[[46]] <- read.csv(
     Subject, Matching
   )
 
-names(df)[46] <- "Zhang_2022_NI"
+names(df)[46] <- "Zhang_2023_NI"
 summary(df[[46]])
-write.csv(x = df[[46]], file = "../1_Clean_Data/Zhang_2022_NI/Zhang_2022_NI_Exp3_Clean.csv")
+write.csv(x = df[[46]], file = "../1_Clean_Data/Zhang_2023_NI/Zhang_2023_NI_Exp3_Clean.csv")
 ```
 
 # Feldborg_2021_ERPH
