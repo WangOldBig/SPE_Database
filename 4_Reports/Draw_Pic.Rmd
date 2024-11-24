@@ -36,7 +36,7 @@ trial_range_summary <- data %>%
   summarise(Total_Trials = sum(Formal_Trials))
 
 # 5. 定义渐变颜色
-colors <- colorRampPalette(c("lightblue", "blue"))(length(trial_range_summary$Range))
+colors <- colorRampPalette(c("thistle", "thistle4"))(length(trial_range_summary$Range))
 
 # 6. 绘制饼图
 pie(trial_range_summary$Total_Trials, 
@@ -83,7 +83,7 @@ subject_summary <- data %>%
   summarise(Total_Subjects = sum(Sample_Size))
 
 # 5. 定义渐变颜色（保持前面的颜色风格）
-colors <- colorRampPalette(c("lightblue", "blue"))(length(subject_summary$Range))
+colors <- colorRampPalette(c("thistle", "thistle4"))(length(subject_summary$Range))
 
 # 6. 绘制饼图
 pie(subject_summary$Total_Subjects, 
@@ -131,14 +131,22 @@ year_summary <- data %>%
   summarise(Total_Papers = n())
 
 # 5. 定义渐变颜色（保持前面的颜色风格）
-colors <- colorRampPalette(c("lightblue", "blue"))(length(year_summary$Year_Range))
+colors <- colorRampPalette(c("thistle", "thistle4"))(length(year_summary$Year_Range))
 
 # 6. 绘制饼图
-pie(year_summary$Total_Papers, 
-    labels = year_summary$Year_Range, 
-    main = "Publication year",
-    col = colors,  # 使用渐变色
-    border = "white")  # 设置白色边框
+plot(year_summary$Total_Papers, 
+     type = "b",  # 绘制带有标记的线条
+     pch = 19,    # 标记样式
+     col = colors,  # 使用渐变色
+     main = "Publication year",  # 添加标题
+     xlab = "Year Range",  # x轴标签
+     ylab = "Total Papers",  # y轴标签
+     lwd = 2)  # 线条宽度
+
+# labels = year_summary$Year_Range, 
+# main = "Publication year",
+# col = colors,  # 使用渐变色
+# border = "white")  # 设置白色边框
 
 # 添加图例
 legend("topright", 
