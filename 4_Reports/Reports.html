@@ -11,7 +11,7 @@
 
 <meta name="author" content="Author First M. Last" />
 
-<meta name="date" content="2024-11-14" />
+<meta name="date" content="2024-11-25" />
 
 <title>Self-Prioritization Effects Database</title>
 
@@ -1481,7 +1481,7 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">Self-Prioritization Effects Database</h1>
 <h4 class="author">Author First M. Last</h4>
-<h4 class="date">2024-11-14</h4>
+<h4 class="date">2024-11-25</h4>
 
 </div>
 
@@ -1547,26 +1547,49 @@ research findings, and promote collaboration among researchers in the
 field. By providing a standardized set of tools and data, the database
 seeks to advance our understanding of how self-prioritization effects
 influence various aspects of human cognition and behavior.</p>
-<div id="details-of-the-database" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> Details of the
-Database</h2>
-<p>The Self-Prioritization Effects Database is hosted on the <a href="https://osf.io/s46pr/">Open Science Framework (OSF)</a> website.
-Each dataset is represented by two folders: <strong>Raw_Data</strong>
-and <strong>Clean_Data</strong>.</p>
+</div>
+<div id="description-of-the-database" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Description of the
+Database</h1>
+<div id="overview" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Overview</h2>
+<p>   Self-Prioritization Effects Database is hosted on the <a href="https://osf.io/s46pr/">Open Science Framework (OSF)</a>. The
+current Self-Prioritization Effects Database includes 51 experimental
+designs from 30 studies. Within these 51 datasets, there are xxx
+participants, xxx blocks, and xxx experimental trials. The
+Self-Prioritization Effects Database encompasses both lab-collected data
+and online experimental data. It consists of four folders: Raw_Data,
+Clean_Data, Code, and Report. Raw_Data consists of a .csv data file and
+a .md description file, while Clean_Data contains a .csv data file. The
+data files include participants’ demographic information, matching
+conditions, shapes, reaction times, and accuracy rates. The description
+files include author information, citation formats, participant
+information, experimental procedures, and the information of data
+file.</p>
+<p>   Self-Prioritization Effects Database includes behavioral data such
+as reaction times and accuracy rates under different shape-label
+matching tasks (matching vs. non-matching) and target populations (self,
+friends, familiar, strangers, etc.), aiming to verify that the
+self-prioritization effect is a robust phenomenon under various
+conditions. Figure 1 provides an overview of the dataset types included
+in the self-prioritization effect database. Currently, the scale of this
+database is limited, but we anticipate its continuous growth.</p>
 <p>(Basic Pic for Database flod tructure)</p>
 <ul>
 <li>The <strong>Raw_Data</strong> folder contains the original data from
 the study.</li>
-<li>The <strong>Clean_Data</strong> folder includes processed data files
-in <code>.csv</code> format and a corresponding codebook in
-<code>.xlsx</code> format.</li>
+<li>The <strong>Clean_Data</strong> folder includes minmally
+preprocessed data files in <code>.csv</code> format and a corresponding
+codebook in <code>.xlsx</code> format.</li>
 </ul>
-<p>Each study includes a README file, which outlines the authors,
-citation, participants, procedure, and data files.</p>
+<p>Each study includes a README file (HCP: maybe we shall consider using
+<code>.json</code> file for the meta-data of article), which outlines
+the authors, citation, participants, procedure, and data files.</p>
 </div>
-<div id="example-uses-of-the-database" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> Example Uses of the
-Database</h2>
+</div>
+<div id="example-uses-of-the-database" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Example Uses of the
+Database</h1>
 <p>The Self-Prioritization Effects Database can be used for a variety of
 purposes, such as: 1. Developing and testing new models of
 Self-Prioritization Effects. 2. Comparing the effects of different
@@ -1575,10 +1598,9 @@ Replicating studies to validate findings. 4. Conducting meta-analyses to
 estimate the size of SPE across different tasks and populations.</p>
 <p>Below are some example analyses demonstrating the utility of the
 database.</p>
-<div id="how-the-self-prioritization-effect-is-related-to-rt-on-the-basis-of-baseline." class="section level3" number="2.2.1">
-<h3><span class="header-section-number">2.2.1</span> How the
-Self-prioritization Effect is related to RT on the basis of
-baseline.</h3>
+<div id="the-effect-size-of-self-prioritization-effect-is-moderated-by-baseline-condition." class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> The effect size of
+Self-prioritization Effect is moderated by baseline condition.</h2>
 <ul>
 <li>思路：用不同Identity与Self的差值画图</li>
 <li>目的：展现出与不同Identity相比的SPE的程度</li>
@@ -1590,9 +1612,9 @@ baseline.</h3>
 RT. )</li>
 </ul>
 </div>
-<div id="serial-dependence-in-spe-rt." class="section level3" number="2.2.2">
-<h3><span class="header-section-number">2.2.2</span> Serial dependence
-in SPE RT.</h3>
+<div id="serial-dependence-effect-in-spe." class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Serial dependence
+effect in SPE.</h2>
 <ul>
 <li>思路：模仿Confidence Database,看不同的Trial、ACC对SPE的影响</li>
 <li>目的：展现出可能会影响SPE的其他影响</li>
@@ -1602,9 +1624,9 @@ in SPE RT.</h3>
 <li>P7(横坐标是Median choice RT (s),纵坐标是Cohen’s d)</li>
 </ul>
 </div>
-<div id="the-nonmatching-condition-with-spe." class="section level3" number="2.2.3">
-<h3><span class="header-section-number">2.2.3</span> The Nonmatching
-Condition with SPE.</h3>
+<div id="spe-in-non-matching-condition." class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> SPE in non-matching
+condition.</h2>
 <ul>
 <li>思路：探索Nonmatching条件下，是否存在自我优势效应</li>
 <li>目的：探索自我优势效应的范围</li>
@@ -1612,15 +1634,15 @@ Condition with SPE.</h3>
 </ul>
 </div>
 </div>
-<div id="conclusion" class="section level2" number="2.3">
-<h2><span class="header-section-number">2.3</span> Conclusion</h2>
+<div id="conclusion" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Conclusion</h1>
 <p>The Self-Prioritization Effects Database provides researchers with a
 wealth of data to explore the cognitive mechanisms underlying
 self-relevance. By making these datasets publicly available, we hope to
 facilitate further research and collaboration in this field.</p>
 </div>
-<div id="references" class="section level2" number="2.4">
-<h2><span class="header-section-number">2.4</span> References</h2>
+<div id="references" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> References</h1>
 <ul>
 <li><p>Sui, J., He, X., &amp; Humphreys, G. W. (2012).
 <strong>Perceptual effects of self-relevance: Evidence from perceptual
@@ -1641,7 +1663,6 @@ self-association.</strong>.<em>Cerebral Cortex.</em></p></li>
 <strong>Self-reference in action: arm-movement responses are enhanced in
 perceptual matching.</strong>.<em>Acta Psychologica.</em></p></li>
 </ul>
-</div>
 </div>
 
 

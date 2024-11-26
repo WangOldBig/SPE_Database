@@ -4,7 +4,7 @@ This project was inspired by [Rahnev et al., (2020)](https://doi.org/10.1038/s41
 This project is in parallel with preregistered meta-analysis (on-going) leading by Zheng Liu, Mengzheng Hu, Jie Sui, and Hu Chuan-Peng, see registry [here](https://osf.io/euqmf).
 
 ## Leading contributors
-- Zhenxin Cai (NNU)
+- Zhenxin Cai (NNU,email:czx@nnu.edu.cn)
 - Xinru Sun (NNU)
 - Wanke Pan (NNU)
 - Mengzheng Hu (NNU)

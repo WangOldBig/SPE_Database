@@ -296,39 +296,9 @@ posthoc_result
 ```
 
 
-```{r}
-# 加载必要的包
 
 
-# 确保数据类型正确
-df_combined <- df_combined %>%
-  mutate(
-    Condition = factor(Condition)  # 将Condition转为因子变量
-    # Identity 列未在提供的数据中，如果有需要补充，请确认
-  )
-
-# 方差分析（ANOVA）：RT作为自变量
-# 在没有明确的Identity列时，假设使用Condition作为因变量
-anova_model <- aov(deta_RT ~ Condition, data = df_combined)
-
-# 输出方差分析结果
-summary(anova_model)
-
-# 进行事后检验（Bonferroni校正）
-posthoc_results <- emmeans(anova_model, pairwise ~ Condition, adjust = "bonferroni")
-
-# 输出事后检验结果
-summary(posthoc_results)
-rm(anova_model,posthoc_results)
-```
-
-
-
-
-
-
-
-# Cohens d
+# Cohens d (Independent T Test)
 ```{r}
 # 画 Cohen's d for RT
 ggplot(df_combined, aes(x = Condition, y = Cohens_d_RT, color = Condition)) +
