@@ -11,7 +11,13 @@ library(dplyr)
 library(purrr) 
 library(car)  # 用于方差分析
 library(emmeans)  # 用于事后检验
+library(patchwork)
 ```
+
+```{r setup, include=FALSE}
+source("R_rainclouds.R")
+```
+
 
 ## 人口统计学数据读取
 ```{r Pic1}
@@ -294,7 +300,34 @@ posthoc_result <- pairwise.t.test(df_raw_Total$RT_ms, df_raw_Total$Identity, p.a
 posthoc_result
 
 ```
+# Test 01
+```{r}
+# 画 Cohen's d for RT（使用 geom_flat_violin，按 Matching 分组）
+p1 <- ggplot(df_combined, aes(x = Condition, y = Cohens_d_RT, color = Condition)) +
+  geom_jitter(width = 0.1, size = 2, shape = 16, color = "darkblue") +  # 散点图
+  geom_boxplot(aes(x = Condition, y = Cohens_d_RT), outlier.shape = NA, alpha = 0.5, width = .1, colour = "BLACK") +  # 箱型图
+  geom_flat_violin(trim = FALSE, fill = "lightblue", alpha = 0.6, position = position_nudge(x = .2, y = 0)) +  # 扁平小提琴图
+  facet_wrap(~ Matching) +  # 按 Matching 条件分面
+  theme_minimal() +
+  labs(title = "Cohen's d for RT", y = "Cohen's d", x = "Condition") +
+  theme(legend.position = "none") +
+  theme(plot.title = element_text(hjust = 0.5))
 
+# 画 Cohen's d for ACC（使用 geom_flat_violin，按 Matching 分组）
+p2 <- ggplot(df_combined, aes(x = Condition, y = Cohens_d_ACC, color = Condition)) +
+  geom_jitter(width = 0.1, size = 2, shape = 16, color = "darkgreen") +  # 散点图
+  geom_boxplot(aes(x = Condition, y = Cohens_d_ACC), outlier.shape = NA, alpha = 0.5, width = .1, colour = "BLACK") +  # 箱型图
+  geom_flat_violin(trim = FALSE, fill = "lightgreen", alpha = 0.6, position = position_nudge(x = .2, y = 0)) +  # 扁平小提琴图
+  facet_wrap(~ Matching) +  # 按 Matching 条件分面
+  theme_minimal() +
+  labs(title = "Cohen's d for ACC", y = "Cohen's d", x = "Condition") +
+  theme(legend.position = "none") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# 使用 patchwork 将图组合
+(p1 + p2)
+
+```
 
 
 

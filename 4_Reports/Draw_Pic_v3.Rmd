@@ -1,0 +1,73 @@
+---
+title: "Draw_Pic_v3"
+author: "czx"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(purrr) 
+library(car)  # 用于方差分析
+library(emmeans)  # 用于事后检验
+```
+
+```{r}
+# 将列表转换为数据框并添加Condition列
+df_combined <- bind_rows(
+  map_dfr(df_Self_Stranger, ~{
+    df_temp <- as.data.frame(.x)  # 将列表转换为数据框
+    mutate(df_temp, Condition = "Self-Stranger")  # 添加Condition列
+  }),
+  
+  map_dfr(df_Self_Familiar, ~{
+    df_temp <- as.data.frame(.x)  # 将列表转换为数据框
+    mutate(df_temp, Condition = "Self-Familiar")  # 添加Condition列
+  }),
+  
+  map_dfr(df_Self_Mother, ~{
+    df_temp <- as.data.frame(.x)  # 将列表转换为数据框
+    mutate(df_temp, Condition = "Self-Mother")  # 添加Condition列
+  }),
+  
+  map_dfr(df_Self_Acquaintance, ~{
+    df_temp <- as.data.frame(.x)  # 将列表转换为数据框
+    mutate(df_temp, Condition = "Self-Acquaintance")  # 添加Condition列
+  }),
+  
+  # map_dfr(df_Self_Others, ~{
+  #   df_temp <- as.data.frame(.x)  # 将列表转换为数据框
+  #   mutate(df_temp, Condition = "Self-Others")  # 添加Condition列
+  # }),
+  
+  map_dfr(df_Self_Friend, ~{
+    df_temp <- as.data.frame(.x)  # 将列表转换为数据框
+    mutate(df_temp, Condition = "Self-Friend")  # 添加Condition列
+  })
+)
+
+# 查看合并后的数据框
+head(df_combined)
+# 输出到新的CSV文件
+write.csv(df_combined, "../1_Clean_Data/d_prime/df_combined.csv", row.names = FALSE)
+```
+
+
+
+
+
+```{r}
+# 使用 facets 进一步区分 Matching 条件
+ggplot(df_combined, aes(x = Condition, y = Cohens_d_RT)) +
+  geom_violin(trim = FALSE, fill = "lightblue", alpha = 0.6) +
+  geom_jitter(width = 0.1, size = 2, shape = 16, color = "darkblue") +
+  theme_minimal() +
+  labs(title = "Cohen's d for RT", y = "Cohen's d", x = "Condition") +
+  facet_wrap(~Matching) +  # 按 Matching 条件分面
+  theme(legend.position = "none") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+```
+

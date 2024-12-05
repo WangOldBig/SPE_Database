@@ -62,16 +62,24 @@ df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Stranger"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+  dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
+    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - 
+      mean(RT_ms[Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
   )
 
+df_RT <- df_pocess %>%
+  dplyr::group_by(Subject, Matching) %>%  # 添加Matching作为分组变量
+  dplyr::reframe(
+    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - 
+              mean(RT_ms[Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
+  )
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+  dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
     deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
@@ -84,7 +92,8 @@ merged_list <- list(
   Cohens_d_RT = df_RT$Cohens_d_RT, 
   deta_RT = df_RT$deta_RT, 
   Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
-  deta_ACC = df_ACC$deta_ACC
+  deta_ACC = df_ACC$deta_ACC,
+  Matching = df_ACC$Matching
 )
 
 # 将合并后的列表存储到 df_Self_Stranger 的第二个元素中
@@ -135,7 +144,7 @@ df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Stranger"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
     deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
@@ -144,7 +153,7 @@ df_RT <- df_pocess %>%
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
     deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
@@ -157,7 +166,8 @@ merged_list <- list(
   Cohens_d_RT = df_RT$Cohens_d_RT, 
   deta_RT = df_RT$deta_RT, 
   Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
-  deta_ACC = df_ACC$deta_ACC
+  deta_ACC = df_ACC$deta_ACC,
+  Matching = df_ACC$Matching
 )
 
 # 将合并后的列表存储到 df_Self_Stranger 的第二个元素中
@@ -208,7 +218,7 @@ df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Stranger"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
     deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
@@ -217,7 +227,7 @@ df_RT <- df_pocess %>%
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
     deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
@@ -230,7 +240,8 @@ merged_list <- list(
   Cohens_d_RT = df_RT$Cohens_d_RT, 
   deta_RT = df_RT$deta_RT, 
   Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
-  deta_ACC = df_ACC$deta_ACC
+  deta_ACC = df_ACC$deta_ACC,
+  Matching = df_ACC$Matching
 )
 
 # 将合并后的列表存储到 df_Self_Stranger 的第二个元素中
@@ -255,7 +266,7 @@ df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Familiar"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
     deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Familiar"], na.rm = TRUE)  # 计算RT差值
@@ -264,7 +275,7 @@ df_RT <- df_pocess %>%
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
     deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
@@ -277,7 +288,8 @@ merged_list <- list(
   Cohens_d_RT = df_RT$Cohens_d_RT, 
   deta_RT = df_RT$deta_RT, 
   Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
-  deta_ACC = df_ACC$deta_ACC
+  deta_ACC = df_ACC$deta_ACC,
+  Matching = df_ACC$Matching
 )
 
 # 将合并后的列表存储到 df_Self_Stranger 的第二个元素中
@@ -323,7 +335,7 @@ df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Familiar"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
     deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Familiar"], na.rm = TRUE)  # 计算RT差值
@@ -332,7 +344,7 @@ df_RT <- df_pocess %>%
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
     deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
@@ -410,7 +422,7 @@ df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Mother"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
     deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Mother"], na.rm = TRUE)  # 计算RT差值
@@ -419,7 +431,7 @@ df_RT <- df_pocess %>%
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
     deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
@@ -455,7 +467,7 @@ df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "none"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
     deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "none"], na.rm = TRUE)  # 计算RT差值
@@ -464,7 +476,7 @@ df_RT <- df_pocess %>%
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
     deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
@@ -500,7 +512,7 @@ df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Acquaintanc
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
     deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Acquaintance"], na.rm = TRUE)  # 计算RT差值
@@ -509,7 +521,7 @@ df_RT <- df_pocess %>%
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
     deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
@@ -580,7 +592,7 @@ df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Mother"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
     deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Mother"], na.rm = TRUE)  # 计算RT差值
@@ -589,7 +601,7 @@ df_RT <- df_pocess %>%
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
     deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
@@ -625,7 +637,7 @@ df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Acquaintanc
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
     deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Acquaintance"], na.rm = TRUE)  # 计算RT差值
@@ -634,7 +646,7 @@ df_RT <- df_pocess %>%
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
     deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
@@ -694,7 +706,7 @@ df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Friend"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
     deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Friend"], na.rm = TRUE)  # 计算RT差值
@@ -703,7 +715,7 @@ df_RT <- df_pocess %>%
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
     deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
@@ -739,7 +751,7 @@ df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Stranger"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
     deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
@@ -748,7 +760,7 @@ df_RT <- df_pocess %>%
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
-  dplyr::group_by(Subject) %>%
+   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
     Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
     deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
