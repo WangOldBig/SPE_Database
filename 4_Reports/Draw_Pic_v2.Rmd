@@ -94,10 +94,10 @@ df_combined <- bind_rows(
     mutate(df_temp, Condition = "Self-Acquaintance")  # 添加Condition列
   }),
   
-  # map_dfr(df_Self_Others, ~{
-  #   df_temp <- as.data.frame(.x)  # 将列表转换为数据框
-  #   mutate(df_temp, Condition = "Self-Others")  # 添加Condition列
-  # }),
+  map_dfr(df_Self_Others, ~{
+    df_temp <- as.data.frame(.x)  # 将列表转换为数据框
+    mutate(df_temp, Condition = "Self-Others")  # 添加Condition列
+  }),
   
   map_dfr(df_Self_Friend, ~{
     df_temp <- as.data.frame(.x)  # 将列表转换为数据框
@@ -309,8 +309,99 @@ p1 <- ggplot(df_combined, aes(x = Condition, y = Cohens_d_RT, color = Condition)
   geom_flat_violin(trim = FALSE, fill = "lightblue", alpha = 0.6, position = position_nudge(x = .2, y = 0)) +  # 扁平小提琴图
   facet_wrap(~ Matching) +  # 按 Matching 条件分面
   theme_minimal() +
-  labs(title = "Cohen's d for RT", y = "Cohen's d", x = "Condition") +
+  labs(title = "Cohen's d for RT", y = "Cohen's d") +
+  scale_x_discrete(labels = NULL) +
   theme(legend.position = "none") +
+  theme(plot.title = element_text(hjust = 0.5))
+  
+
+# 画 Cohen's d for ACC（使用 geom_flat_violin，按 Matching 分组）
+p2 <- ggplot(df_combined, aes(x = Condition, y = Cohens_d_ACC, color = Condition)) +
+  geom_jitter(width = 0.1, size = 2, shape = 16, color = "darkgreen") +  # 散点图
+  geom_boxplot(aes(x = Condition, y = Cohens_d_ACC), outlier.shape = NA, alpha = 0.5, width = .1, colour = "BLACK") +  # 箱型图
+  geom_flat_violin(trim = FALSE, fill = "lightgreen", alpha = 0.6, position = position_nudge(x = .2, y = 0)) +  # 扁平小提琴图
+  facet_wrap(~ Matching) +  # 按 Matching 条件分面
+  theme_minimal() +
+  labs(title = "Cohen's d for ACC", y = "Cohen's d") +
+  scale_x_discrete(labels = NULL) +
+  theme(legend.position = "none") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# 使用 patchwork 将图组合
+(p1 + p2)
+print(p1)
+print(p2)
+rm(p1,p2)
+
+```
+
+#Test 02
+
+```{r}
+# 画 Cohen's d for RT（使用 geom_flat_violin，按 Matching 分组，Condition 用颜色区分）
+p1 <- ggplot(df_combined, aes(x = Condition, y = Cohens_d_RT, color = Condition, fill = Condition)) +
+  geom_jitter(width = 0.1, size = 2, shape = 16, alpha = 0.7) +  # 散点图，颜色表示 Condition
+  geom_boxplot(aes(x = Condition, y = Cohens_d_RT), outlier.shape = NA, alpha = 0.5, width = .1, colour = "BLACK") +  # 箱型图
+  geom_flat_violin(trim = FALSE, alpha = 0.6, position = position_nudge(x = .2, y = 0)) +  # 扁平小提琴图
+  facet_wrap(~ Matching) +  # 按 Matching 条件分面
+  scale_fill_brewer(palette = "Set3") +  # 设置 Condition 的填充颜色
+  scale_color_brewer(palette = "Set3") +  # 设置 Condition 的边框颜色
+  scale_x_discrete(labels = NULL) +  # 移除横坐标的 Condition 标签
+  labs(title = "Cohen's d for Reaction Time (RT)", 
+       y = "Cohen's d", x = "Condition") +
+  theme(
+    legend.position = "right",  # 将图例放到右边
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),  # 图标题居中，字号 14，粗体
+    panel.grid = element_blank(),  # 删除网格线
+    panel.background = element_blank(),  # 背景白色
+    strip.background = element_blank(),  # 分面标题背景
+    strip.text = element_text(face = "bold"),  # 分面标题粗体
+  )
+
+# 画 Cohen's d for ACC（使用 geom_flat_violin，按 Matching 分组，Condition 用颜色区分）
+p2 <- ggplot(df_combined, aes(x = Condition, y = Cohens_d_ACC, color = Condition, fill = Condition)) +
+  geom_jitter(width = 0.1, size = 2, shape = 16, alpha = 0.7) +  # 散点图，颜色表示 Condition
+  geom_boxplot(aes(x = Condition, y = Cohens_d_ACC), outlier.shape = NA, alpha = 0.5, width = .1, colour = "BLACK") +  # 箱型图
+  geom_flat_violin(trim = FALSE, alpha = 0.6, position = position_nudge(x = .2, y = 0)) +  # 扁平小提琴图
+  facet_wrap(~ Matching) +  # 按 Matching 条件分面
+  scale_fill_brewer(palette = "Set3") +  # 设置 Condition 的填充颜色
+  scale_color_brewer(palette = "Set3") +  # 设置 Condition 的边框颜色
+  scale_x_discrete(labels = NULL) +  # 移除横坐标的 Condition 标签
+  labs(title = "Cohen's d for Accuracy (ACC)", 
+       y = "Cohen's d", x = "Condition") +
+  theme(
+    legend.position = "right",  # 将图例放到右边
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),  # 图标题居中，字号 14，粗体
+    axis.text = element_text(size = 12),  # 轴文本大小 12
+    panel.grid = element_blank(),  # 删除网格线
+    panel.background = element_blank(),  # 背景白色
+    strip.background = element_blank(),  # 分面标题背景
+    strip.text = element_text(face = "bold"),  # 分面标题粗体
+    
+  )
+
+# 使用 patchwork 将图组合
+(p1 + p2)
+
+print(p1)
+print(p2)
+# rm(p1,p2)
+```
+
+# Test 03
+```{r}
+# 画 Cohen's d for RT（使用 geom_flat_violin，按 Matching 分组）
+p1 <- ggplot(df_combined, aes(x = Condition, y = Cohens_d_RT, color = Condition)) +
+  geom_jitter(width = 0.1, size = 2, shape = 16, color = "darkblue") +  # 散点图
+  geom_boxplot(aes(x = Condition, y = Cohens_d_RT), outlier.shape = NA, alpha = 0.5, width = .1, colour = "BLACK") +  # 箱型图
+  geom_flat_violin(trim = FALSE, fill = "lightblue", alpha = 0.6, position = position_nudge(x = .2, y = 0)) +  # 扁平小提琴图
+  facet_wrap(~ Matching) +  # 按 Matching 条件分面
+  theme_minimal() +
+  labs(title = "Cohen's d for RT", y = "Cohen's d") +
+  scale_x_discrete(labels = NULL) +
+  theme(legend.position = "right",
+        panel.grid = element_blank(),  # 删除网格线
+        panel.background = element_blank())  # 背景白色) 
   theme(plot.title = element_text(hjust = 0.5))
 
 # 画 Cohen's d for ACC（使用 geom_flat_violin，按 Matching 分组）
@@ -320,14 +411,78 @@ p2 <- ggplot(df_combined, aes(x = Condition, y = Cohens_d_ACC, color = Condition
   geom_flat_violin(trim = FALSE, fill = "lightgreen", alpha = 0.6, position = position_nudge(x = .2, y = 0)) +  # 扁平小提琴图
   facet_wrap(~ Matching) +  # 按 Matching 条件分面
   theme_minimal() +
-  labs(title = "Cohen's d for ACC", y = "Cohen's d", x = "Condition") +
-  theme(legend.position = "none") +
+  labs(title = "Cohen's d for ACC", y = "Cohen's d") +
+  scale_x_discrete(labels = NULL) +
+  theme(legend.position = "right",
+        panel.grid = element_blank(),  # 删除网格线
+        panel.background = element_blank())  # 背景白色) 
   theme(plot.title = element_text(hjust = 0.5))
 
 # 使用 patchwork 将图组合
 (p1 + p2)
-
+print(p1)
+print(p2)
+rm(p1,p2)
 ```
+
+# Test 04 (Good)
+```{r}
+# 画 Cohen's d for RT（使用 geom_flat_violin，按 Matching 分组，Condition 用颜色区分）
+p1 <- ggplot(df_combined, aes(x = Condition, y = Cohens_d_RT, color = Condition, fill = Condition)) +
+  geom_jitter(width = 0.1, size = 2, shape = 16, alpha = 0.7) +  # 散点图，颜色表示 Condition
+  geom_boxplot(aes(x = Condition, y = Cohens_d_RT), outlier.shape = NA, alpha = 0.5, width = .1, colour = "BLACK") +  # 箱型图
+  geom_flat_violin(trim = FALSE, alpha = 0.6, position = position_nudge(x = .2, y = 0)) +  # 扁平小提琴图
+  facet_wrap(~ Matching) +  # 按 Matching 条件分面
+  scale_fill_brewer(palette = "Set3") +  # 设置 Condition 的填充颜色
+  scale_color_brewer(palette = "Set3") +  # 设置 Condition 的边框颜色
+  scale_x_discrete(labels = NULL) +  # 移除横坐标的 Condition 标签
+  theme_minimal(base_size = 12, base_family = "Segoe UI") +  # 使用 Segoe UI 字体，字号 12
+  labs(title = "Cohen's d for Reaction Time (RT)", 
+       y = "Cohen's d", x = "Condition") +
+  theme(
+    legend.position = "right",  # 将图例放到右边
+    plot.title = element_text(hjust = 0.5, size = 10, face = "bold"),  # 图标题居中，字号 14，粗体
+    axis.title = element_text(face = "bold"),  # 轴标签粗体
+    axis.text = element_text(size = 12),  # 轴文本大小 12
+    panel.grid = element_blank(),  # 删除网格线
+    panel.background = element_blank(),  # 背景白色
+    strip.background = element_blank(),  # 分面标题背景
+    strip.text = element_text(face = "bold"),  # 分面标题粗体
+    axis.text.x = element_text(angle = 45, hjust = 1)  # 旋转横坐标标签，45度
+  )
+
+# 画 Cohen's d for ACC（使用 geom_flat_violin，按 Matching 分组，Condition 用颜色区分）
+p2 <- ggplot(df_combined, aes(x = Condition, y = Cohens_d_ACC, color = Condition, fill = Condition)) +
+  geom_jitter(width = 0.1, size = 2, shape = 16, alpha = 0.7) +  # 散点图，颜色表示 Condition
+  geom_boxplot(aes(x = Condition, y = Cohens_d_ACC), outlier.shape = NA, alpha = 0.5, width = .1, colour = "BLACK") +  # 箱型图
+  geom_flat_violin(trim = FALSE, alpha = 0.6, position = position_nudge(x = .2, y = 0)) +  # 扁平小提琴图
+  facet_wrap(~ Matching) +  # 按 Matching 条件分面
+  scale_fill_brewer(palette = "Set3") +  # 设置 Condition 的填充颜色
+  scale_color_brewer(palette = "Set3") +  # 设置 Condition 的边框颜色
+  scale_x_discrete(labels = NULL) +  # 移除横坐标的 Condition 标签
+  theme_minimal(base_size = 12, base_family = "Segoe UI") +  # 使用 Segoe UI 字体，字号 12
+  labs(title = "Cohen's d for Accuracy (ACC)", 
+       y = "Cohen's d", x = "Condition") +
+  theme(
+    legend.position = "right",  # 将图例放到右边
+    plot.title = element_text(hjust = 0.5, size = 10, face = "bold"),  # 图标题居中，字号 14，粗体
+    axis.title = element_text(face = "bold"),  # 轴标签粗体
+    axis.text = element_text(size = 12),  # 轴文本大小 12
+    panel.grid = element_blank(),  # 删除网格线
+    panel.background = element_blank(),  # 背景白色
+    strip.background = element_blank(),  # 分面标题背景
+    strip.text = element_text(face = "bold"),  # 分面标题粗体
+    axis.text.x = element_text(angle = 45, hjust = 1)  # 旋转横坐标标签，45度
+  )
+
+# 使用 patchwork 将图组合
+(p1 + p2)
+print(p1)
+print(p2)
+rm(p1,p2)
+```
+
+
 
 
 

@@ -357,7 +357,8 @@ merged_list <- list(
   Cohens_d_RT = df_RT$Cohens_d_RT, 
   deta_RT = df_RT$deta_RT, 
   Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
-  deta_ACC = df_ACC$deta_ACC
+  deta_ACC = df_ACC$deta_ACC,
+  Matching = df_ACC$Matching
 )
 
 # 将合并后的列表存储到 df_Self_Stranger 的第二个元素中
@@ -444,7 +445,8 @@ merged_list <- list(
   Cohens_d_RT = df_RT$Cohens_d_RT, 
   deta_RT = df_RT$deta_RT, 
   Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
-  deta_ACC = df_ACC$deta_ACC
+  deta_ACC = df_ACC$deta_ACC,
+  Matching = df_ACC$Matching
 )
 
 # 将合并后的列表存储到 df_Self_Mother 中
@@ -489,7 +491,8 @@ merged_list <- list(
   Cohens_d_RT = df_RT$Cohens_d_RT, 
   deta_RT = df_RT$deta_RT, 
   Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
-  deta_ACC = df_ACC$deta_ACC
+  deta_ACC = df_ACC$deta_ACC,
+  Matching = df_ACC$Matching
 )
 
 # 将合并后的列表存储到 df_Self_none 中
@@ -534,7 +537,8 @@ merged_list <- list(
   Cohens_d_RT = df_RT$Cohens_d_RT, 
   deta_RT = df_RT$deta_RT, 
   Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
-  deta_ACC = df_ACC$deta_ACC
+  deta_ACC = df_ACC$deta_ACC,
+  Matching = df_ACC$Matching
 )
 
 # 将合并后的列表存储到 df_Self_Acquaintance 中
@@ -614,7 +618,8 @@ merged_list <- list(
   Cohens_d_RT = df_RT$Cohens_d_RT, 
   deta_RT = df_RT$deta_RT, 
   Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
-  deta_ACC = df_ACC$deta_ACC
+  deta_ACC = df_ACC$deta_ACC,
+  Matching = df_ACC$Matching
 )
 
 # 将合并后的列表存储到 df_Self_Mother 中
@@ -659,7 +664,8 @@ merged_list <- list(
   Cohens_d_RT = df_RT$Cohens_d_RT, 
   deta_RT = df_RT$deta_RT, 
   Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
-  deta_ACC = df_ACC$deta_ACC
+  deta_ACC = df_ACC$deta_ACC,
+  Matching = df_ACC$Matching
 )
 
 # 将合并后的列表存储到 df_Self_Acquaintance 中
