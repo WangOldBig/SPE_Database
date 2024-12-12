@@ -142,7 +142,7 @@ df[[1]] <- read.csv(
     Age_Participant1 = Participant.1.Age,
     Age_Participant2 = Participant.2.Age,
     Shape = Shape,
-    Identity = Label,
+    Origin_Identity = Label,
     ShapeLoc = ShapeLoc,
     StrangerShape = StrangerShape,
     P1Shape = P1Shape,
@@ -172,7 +172,7 @@ df[[1]] <- read.csv(
   dplyr::select(
     Subject, Age_Participant1, Age_Participant2, 
     StrangerShape, P1Shape, P2Shape, 
-    Shape, Matching, Identity, ShapeLoc, 
+    Shape, Matching, Origin_Identity, ShapeLoc, 
     Response, RT_ms, RT_sec, ACC, Phase
   ) %>%
   dplyr::arrange(
@@ -199,7 +199,8 @@ df[[2]] <- read.csv(
     Gender = X2..Gender..M.F.,
     First_Lanugage = X5..First.Lanugage,
     Shape = Shape,
-    Identity = Label,
+    Origin_Identity = Label,
+    English_Identity = Label,
     Matching = Condition,
     Response = resp,
     Colour = Colour,
@@ -217,6 +218,10 @@ df[[2]] <- read.csv(
       Matching == "Mismatch" ~ "Nonmatching"),
     RT_sec = as.numeric(RT_sec),
     RT_ms = RT_sec * 1000,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Stranger" ~ "Stranger"
+    ),
   ) %>%
   # 统一变量的属性
   dplyr::mutate(
@@ -230,7 +235,7 @@ df[[2]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage,
-    Shape, Matching, Identity, Response, ShapeLoc, Colour,
+    Shape, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Standardized_Idnetity,Response, ShapeLoc, Colour,
     ShapeColour, textColour,Stimuli_Type, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -260,7 +265,8 @@ df[[3]] <- read.csv(
     Gender = X2..Gender,
     First_Lanugage = X5..First.Language,
     Shape = Shape,
-    Identity = Label,
+    Origin_Identity = Label,
+    English_Identity = Label,
     Matching = Condition,
     FaceIdentity = FaceIdentity,
     Stimulus = Stimulus,
@@ -289,10 +295,14 @@ df[[3]] <- read.csv(
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Stranger" ~ "Stranger"
+    ),
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage,
-    Shape, Matching, Identity, Response, ShapeLoc, FaceIdentity, Stimulus,
+    Shape, Matching, Origin_Identity, English_Identity, Standardized_Idnetity,Response, ShapeLoc, FaceIdentity, Stimulus,
     Strength, textColour, Stimuli_Type, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -339,6 +349,12 @@ df[[4]] <- read.csv(
     ACC = as.numeric(respond3.ACC),
     Arouse = Arouse.RESP,
     Valence = Valence.RESP,
+    Origin_Identity = Identity,
+    English_Identity = Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Stranger" ~ "Stranger"
+    ),
   ) %>%
   dplyr::mutate(
     Subjcet = as.numeric(Subject),
@@ -352,7 +368,7 @@ df[[4]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Gender, Age, 
-    Matching, Identity, Mood, Arouse, Valence, Session,  
+    Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Mood, Arouse, Valence, Session,  
     RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -360,7 +376,7 @@ df[[4]] <- read.csv(
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Origin_Identity, Session
   )
 
 names(df)[4] <- "Qian_2019_QJEP Exp 1"
@@ -407,16 +423,22 @@ df[[5]] <- read.csv(
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    Origin_Identity = Identity,
+    English_Identity = Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Familiar" ~ "Close"
+    ),
   ) %>%
   dplyr::select(
-    Subject, Gender, Matching, Identity, Cue, RT_ms, RT_sec, ACC,
+    Subject, Gender, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Cue, RT_ms, RT_sec, ACC,
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[5] <- "Qian_2019_QJEP Exp 2"
@@ -440,7 +462,7 @@ df[[6]] <- read.csv(
       FLbed == "comp" ~ "Matching",
       FLbed == "incomp" ~ "Nonmatching"
     ),
-    Identity = flanker,
+    Origin_Identity = flanker,
     Shape = FLform,
     Age = Age,
     Handedness = hand,
@@ -454,20 +476,32 @@ df[[6]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
+    English_Identity = case_when(
+      Origin_Identity == "Ich" ~ "Self",
+      Origin_Identity == "Mutter" ~ "Mother",
+      Origin_Identity == "Bekannter" ~ "Acquaintance",
+      Origin_Identity == "none" ~ "none"
+      ),
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Mother" ~ "Close",
+      English_Identity == "Acquaintance" ~ "Close",
+      English_Identity == "none" ~ "NonPerson",
+    ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness,
-    Matching, Identity, RT_ms, RT_sec, ACC
+    Matching, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[6] <- "Schaefer_2019_CP Exp 1"
@@ -530,7 +564,7 @@ df[[8]] <- read.csv(
     Age = Age,
     Handedness = Handedness,
     Matching = Match,
-    Identity = Identity,
+    Origin_Identity = Identity,
     Shape = target,
     RT_ms = RT,
     RT_sec = RT / 1000,
@@ -541,17 +575,27 @@ df[[8]] <- read.csv(
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    English_Identity = case_when(
+      Origin_Identity == "Ich" ~ "Self",
+      Origin_Identity == "Mutter" ~ "Mother",
+      Origin_Identity == "Bekannter" ~ "Acquaintance",
+      ),
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Mother" ~ "Close",
+      English_Identity == "Acquaintance" ~ "Close",
+    ),
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, 
-    Matching, Identity, RT_ms, RT_sec, ACC
+    Matching, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity,
+    Subject, Matching, Origin_Identity, English_Identity, Standardized_Idnetity,
   )
 names(df)[8] <- "Schaefer_2019_CP Exp 3"
 summary(df[[8]])
@@ -585,7 +629,7 @@ df[[9]] <- read.csv(
       is.na(Shape) ~ NA_character_,
       TRUE ~ Shape
     ),
-    Identity = case_when(
+    Origin_Identity = case_when(
       Identity == "You" ~ "Self",
       Identity == "Friend" ~ "Friend",
       Identity == "Stranger" ~ "Stranger",
@@ -605,8 +649,14 @@ df[[9]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "Stranger")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend", "Stranger")
+    ),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
     ),
     Face_Gender = as.factor(Face_Gender),
     RT_ms = as.numeric(RT_ms),
@@ -614,14 +664,14 @@ df[[9]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, RT_ms, RT_sec, ACC, Face_Gender
+    Subject, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC, Face_Gender
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[9] <- "Wozniak_2018_PLOS Exp 1"
@@ -655,18 +705,23 @@ df[[10]] <- read.csv(
       is.na(Shape) ~ NA_character_,
       TRUE ~ Shape
     ),
-    Identity = case_when(
+    Origin_Identity = case_when(
       Identity == "You" ~ "Self",
       Identity == "Friend" ~ "Friend",
       Identity == "Stranger" ~ "Stranger",
       is.na(Identity) ~ NA_character_,
       TRUE ~ Identity
     ),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
     Matching = case_when(
       Shape == Identity ~ "Matching",
       Shape != Identity ~ "Nonmatching"
     ),
-    Identity = Shape,
     Face_Gender = Face_Gender,
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000
@@ -676,23 +731,20 @@ df[[10]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "Stranger")
-    ),
     Face_Gender = as.factor(Face_Gender),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, RT_ms, RT_sec, ACC, Face_Gender
+    Subject, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC, Face_Gender
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[10] <- "Wozniak_2018_PLOS Exp 2"
@@ -714,7 +766,7 @@ df[[11]] <- read.csv(
       type == "nonmatch" ~ "Nonmatching"
     ),
     blocktype = blocktype,
-    Identity = as.character(shape),
+    Origin_Identity = label,
     RT_ms = as.numeric(latency),
     RT_sec = RT_ms / 1000,
     ACC = as.numeric(correct)
@@ -724,22 +776,25 @@ df[[11]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "Stranger")
-    ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, RT_ms, RT_sec, ACC, blocktype
+    Subject, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC, blocktype
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[11] <- "Golubickis_2021_AP Exp 1"
@@ -760,7 +815,7 @@ df[[12]] <- read.csv(
       type == "nonmatch" ~ "Nonmatching"
     ),
     blocktype = blocktype,
-    Identity = as.character(shape),
+    Origin_Identity = label,
     RT_ms = as.numeric(latency),
     RT_sec = RT_ms / 1000,
     ACC = as.numeric(correct)
@@ -773,16 +828,22 @@ df[[12]] <- read.csv(
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, RT_ms, RT_sec, ACC, blocktype
+    Subject, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC, blocktype
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[12] <- "Golubickis_2021_AP Exp 2"
@@ -817,15 +878,15 @@ df[[13]] <- read.csv(
   ) %>%
   dplyr::mutate(
     # 需要先生成Identity(Shape)，然后在判断是否Shape == Label
-    Identity = case_when(
+    Origin_Identity = case_when(
       Shape == CloseShape ~ "Self",
       Shape == MediumShape ~ "Friend",
       Shape == FarShape ~ "Stranger",
       TRUE ~ Shape # 存在NA
     ),
     Matching = case_when(
-      Identity == Label ~ "Matching",
-      Identity != Label ~ "Nonmatching",
+      Origin_Identity == Label ~ "Matching",
+      Origin_Identity != Label ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT),
     RT_sec = RT_ms / 1000,
@@ -836,19 +897,22 @@ df[[13]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "Stranger")
-    ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage,
-    Shape, Label, Matching, Identity, Response, RT_ms, RT_sec, ACC
+    Shape, Label, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[13] <- "Mayan Navon_2021 Exp 1"
@@ -883,9 +947,9 @@ df[[14]] <- read.csv(
   ) %>%
   dplyr::mutate(
     # 需要先生成Identity(Shape)，然后在判断是否Shape == Label
-    Identity = case_when(
-      Shape == CloseShape ~ "Self",
-      Shape == MediumShape ~ "Friend",
+    Origin_Identity = case_when(
+      Shape == CloseShape ~ "Father",
+      Shape == MediumShape ~ "Close",
       Shape == FarShape ~ "Stranger",
       TRUE ~ Shape # 存在NA
     ),
@@ -904,17 +968,23 @@ df[[14]] <- read.csv(
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Father" ~ "Close",
+      English_Identity == "Close" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage, 
-    Shape, Identity, Matching, Response, RT_ms, RT_sec, ACC
+    Shape, Origin_Identity, English_Identity, Standardized_Idnetity, Matching, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange( 
-    Subject, Identity, Matching
+    Subject, Origin_Identity, English_Identity, Standardized_Idnetity, Matching
   )
 
 names(df)[14] <- "Mayan Navon_2021 Exp 2"
@@ -948,14 +1018,14 @@ df[[15]] <- read.csv(
     ACC = Target.ACC
   ) %>%
   dplyr::mutate(
-    Identity = case_when(
+    Origin_Identity = case_when(
       Shape == CloseShape ~ "Self",
       Shape == MediumShape ~ "Father",
       Shape == FarShape ~ "Stranger",
       TRUE ~ Shape),
     Matching = case_when(
-      Identity == Label ~ "Matching",
-      Identity != Label ~ "Nonmatching",
+      Origin_Identity == Label ~ "Matching",
+      Origin_Identity != Label ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT),
     RT_sec = RT_ms / 1000,
@@ -966,23 +1036,26 @@ df[[15]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Father", "Stranger")
-    ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Father" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage, 
-    Matching, Identity, Response, RT_ms, RT_sec, ACC
+    Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[15] <- "Mayan Navon_2021 Exp 3"
@@ -1013,15 +1086,15 @@ df[[16]] <- read.csv(
     Response = Target.RESP
     ) %>%
   dplyr::mutate(
-    Identity = case_when(
+    Origin_Identity = case_when(
       Shape == CloseShape ~ "Self",
       Shape == MediumShape ~ "Friend",
       Shape == FarShape ~ "Stranger",
       TRUE ~ Shape
       ),
     Matching = case_when(
-      Identity == Word ~ "Matching",
-      Identity != Word ~ "Nonmatching",
+      Origin_Identity == Word ~ "Matching",
+      Origin_Identity != Word ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT),
     RT_sec = RT_ms / 1000,
@@ -1032,23 +1105,26 @@ df[[16]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
       ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "Stranger")
-      ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
     ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage, 
-    Shape, Word, Matching, Identity, Response, RT_ms, RT_sec, ACC
+    Shape, Word, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Response, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[16] <- "Mayan Navon_2021 Exp 4"
@@ -1068,7 +1144,7 @@ df[[17]] <- read.csv(
     Matching = Trial.Type,
     Word = Target.Label,
     Shape = Shape.Association,
-    Identity = Shape.Association,
+    Origin_Identity = Shape.Association,
     RT_ms = Reponse.Time,
     ACC = Target.Accuracy
     ) %>%
@@ -1081,22 +1157,24 @@ df[[17]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
       ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend")
-      ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+    ),
     ) %>%
   dplyr::select(
-    Subject, Word, Shape, Matching, Identity, RT_ms, RT_sec, ACC
+    Subject, Word, Shape, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[17] <- "Saga L. Svensson_2021_PR Exp 1"
@@ -1114,9 +1192,9 @@ df[[18]] <- read.csv(
   dplyr::select(
     Subject = Participant,
     Matching = Trial.Type,
-    Word = Expectancy,
+    Label = Expectancy,
     Shape = Shape.Association,
-    Identity = Shape.Association,
+    Origin_Identity = Shape.Association,
     RT_ms = Response.Time,
     ACC = Target.Accuracy
     ) %>%
@@ -1129,22 +1207,24 @@ df[[18]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
       ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend")
-      ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+    ),
     ) %>%
   dplyr::select(
-    Subject, Word, Matching, Identity, RT_ms, RT_sec, ACC
+    Subject, Label, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[18] <- "Saga L. Svensson_2021_PR Exp 2"
@@ -1162,9 +1242,9 @@ df[[19]] <- read.csv(
   dplyr::select(
     Subject = Participant,
     Matching = Trial.Type,
-    Word = Expectancy,
+    Label = Expectancy,
     Shape = Shape.Association,
-    Identity = Shape.Association,
+    Origin_Identity = Shape.Association,
     RT_ms = Response.Time,
     ACC = Target.Accuracy
     ) %>%
@@ -1177,22 +1257,24 @@ df[[19]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
       ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend")
-      ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+    ),
     ) %>%
   dplyr::select(
-    Subject, Word, Shape, Matching, Identity, RT_ms, RT_sec, ACC
+    Subject, Label, Shape, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[19] <- "Saga L. Svensson_2021_PR Exp 3"
@@ -1211,9 +1293,9 @@ df[[20]] <- read.csv(
     Subject = Subject,
     Gender = Sex,
     Shape = Shape,
-    Word = Label,
+    Label = Label,
     Matching = Correctanswer,
-    Identity = Shape,
+    Origin_Identity = Label,
     Group = Group,
     RT_ms = iti.RT,
     ACC = iti.ACC,
@@ -1230,23 +1312,25 @@ df[[20]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
       ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "Stranger")
-      ),
     Group = as.factor(Group),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+    ),
     ) %>%
   dplyr::select(
-    Subject, Shape, Word, Matching, Identity, Group, RT_ms, RT_sec, ACC
+    Subject, Shape, Word, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Group, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Group
+    Subject, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Group
     )
 
 names(df)[20] <- "Yang Xu_2021_CP Exp 1"
@@ -1303,7 +1387,7 @@ df[[21]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness, 
-    Shape, Label, Matching, Identity,RT_ms, RT_sec, ACC
+    Shape, Label, Matching, Origin_Identity, English_Identity, Standardized_Idnetity,RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1547,7 +1631,7 @@ df[[26]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Age, Handedness, Gender, Response, Symmetry, Matching, Identity, RT_ms, RT_sec, ACC
+    Subject, Age, Handedness, Gender, Response, Symmetry, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1637,7 +1721,7 @@ df[[27]] <- temp %>%
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Age, Handedness, Gender, Response, Symmetry, Matching, Identity, RT_ms, RT_sec, ACC
+    Subject, Age, Handedness, Gender, Response, Symmetry, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1691,7 +1775,7 @@ df[[28]] <- read.csv(
     ) %>%
   dplyr::select(
     Subject, Phase, Shape, Label, Response, SelfShape, FriendShape,
-    StrangerShape, Matching, Identity, RT_ms, RT_sec, ACC
+    StrangerShape, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1746,7 +1830,7 @@ df[[29]] <- read.csv(
     ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label,  Matching, Identity, Morality,
+    Shape, Label,  Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Morality,
     Response, Bin, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
@@ -1754,7 +1838,7 @@ df[[29]] <- read.csv(
     RT_ms = round(RT_ms, 0)
     ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Morality
+    Subject, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Morality
     )
 
 names(df)[29] <- "Hu_2020_CP"
@@ -1834,7 +1918,7 @@ df[[30]] <- read.csv("../2_Raw_Data/Wozniak_2022_PR/Wozniak_2022_PR_Exp1_raw.csv
   ) %>%
   dplyr::select(
     Subject, Gender, 
-    Shape, Label1, Label2, Label3, Identity,  
+    Shape, Label1, Label2, Label3, Origin_Identity, English_Identity, Standardized_Idnetity,  
     Matching, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -1922,7 +2006,7 @@ df[[31]] <- read.csv("../2_Raw_Data/Wozniak_2022_PR/Wozniak_2022_PR_Exp2_raw.csv
   ) %>%
   dplyr::select(
     Subject, Gender, 
-    Shape, Label1, Label2, Label3, Identity,  
+    Shape, Label1, Label2, Label3, Origin_Identity, English_Identity, Standardized_Idnetity,  
     Matching, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -2010,7 +2094,7 @@ df[[32]] <- read.csv("../2_Raw_Data/Wozniak_2022_PR/Wozniak_2022_PR_Exp3_raw.csv
   ) %>%
   dplyr::select(
     Subject, Gender, 
-    Shape, Label1, Label2, Label3, Identity,  
+    Shape, Label1, Label2, Label3, Origin_Identity, English_Identity, Standardized_Idnetity,  
     Matching, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -2068,7 +2152,7 @@ df[[33]] <- read.csv(
     ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label,  Matching, Identity,
+    Shape, Label,  Matching, Origin_Identity, English_Identity, Standardized_Idnetity,
     Response, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
@@ -2118,7 +2202,7 @@ df[[34]] <- read.csv(
     ) %>%
   dplyr::select(
     Subject,
-    Stim,  Matching, Identity,
+    Stim,  Matching, Origin_Identity, English_Identity, Standardized_Idnetity,
     Response, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
@@ -2204,7 +2288,7 @@ df[[35]] <- temp %>%
   dplyr::select(
     Subject, Age, Gender, Ethnicity, Employment_Status, Education,Depression,
     Treatment,
-    Shape, Matching, Identity, RT_ms, RT_sec, ACC
+    Shape, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -2271,7 +2355,7 @@ df[[36]] <- read.csv(
   dplyr::select(
     Subject, Age, Gender, Handedness,
     Happyshapeother, Happyshapeself, Neutralshapeother, Neutralshapeself,
-    Sadshapeother, Sadshapeself, Othershape, Selfshape, Label, Identity,
+    Sadshapeother, Sadshapeself, Othershape, Selfshape, Label, Origin_Identity, English_Identity, Standardized_Idnetity,
     Matching, Response, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
@@ -2333,7 +2417,7 @@ df[[37]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, 
-    Shape, Matching, Identity, Response, Phase, RT_ms, RT_sec, ACC
+    Shape, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Response, Phase, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -2469,7 +2553,7 @@ df[[39]] <- df_Ps1_E1 %>%
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Label, Response, Identity, RT_ms, RT_sec, ACC
+    Subject, Matching, Label, Response, Origin_Identity, English_Identity, Standardized_Idnetity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -2712,7 +2796,7 @@ df[[43]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject,  
-    Shape, Label, Matching, Identity,
+    Shape, Label, Matching, Origin_Identity, English_Identity, Standardized_Idnetity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -2774,7 +2858,7 @@ df[[44]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label, Matching, Identity,
+    Shape, Label, Matching, Origin_Identity, English_Identity, Standardized_Idnetity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -2832,7 +2916,7 @@ df[[45]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label, Matching, Identity,
+    Shape, Label, Matching, Origin_Identity, English_Identity, Standardized_Idnetity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -2890,7 +2974,7 @@ df[[46]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label, Matching, Identity,
+    Shape, Label, Matching, Origin_Identity, English_Identity, Standardized_Idnetity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -2947,7 +3031,7 @@ df[[47]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Ethnicity, Handedness, Group,
-    Shape, Label, Matching, Identity,
+    Shape, Label, Matching, Origin_Identity, English_Identity, Standardized_Idnetity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -3046,7 +3130,7 @@ df[[49]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label, Identity, Matching, 
+    Shape, Label, Origin_Identity, English_Identity, Standardized_Idnetity, Matching, 
     Response, RT_ms, RT_sec, ACC,
   ) %>%
   dplyr::arrange(
@@ -3101,14 +3185,14 @@ df[[50]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender,  
-    Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Session, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Session
   )
 
 names(df)[50] <- "Sui_2014"
@@ -3171,14 +3255,14 @@ df[[51]] <- read.mat(
     Gender = sex,
   ) %>%
   dplyr::select(
-    Subject, Age, Gender, Handedness, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Age, Gender, Handedness, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Session, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Session
   )
 
 rm(list_mat_e1, mat_data)
@@ -3242,14 +3326,14 @@ df[[52]] <- read.mat(list = list_mat_e2) %>%
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness, 
-    Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Session, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Origin_Identity, English_Identity, Standardized_Idnetity, Session
   )
 
 rm(list_mat_e2, mat_data)

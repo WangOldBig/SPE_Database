@@ -1,4 +1,4 @@
-"","Subject","Age_Participant1","Age_Participant2","StrangerShape","P1Shape","P2Shape","Shape","Matching","Identity","ShapeLoc","Response","RT_ms","RT_sec","ACC","Phase"
+"","Subject","Age_Participant1","Age_Participant2","StrangerShape","P1Shape","P2Shape","Shape","Matching","Origin_Identity","ShapeLoc","Response","RT_ms","RT_sec","ACC","Phase"
 "1",1,23,21,"STAR","TRIANGLE","PENTAGON","Stranger","Matching","Stranger","Bottom","w",833.512501,0.833512501,1,1
 "2",1,23,21,"STAR","TRIANGLE","PENTAGON","P2","Matching","P2","Bottom","w",566.810909,0.566810909,1,1
 "3",1,23,21,"STAR","TRIANGLE","PENTAGON","P1","Matching","P1","Bottom","w",500.430911,0.500430911,1,1
