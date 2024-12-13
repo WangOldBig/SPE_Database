@@ -122,17 +122,17 @@ df_combined <- bind_rows(
   
   map_dfr(df_Self_Familiar, ~{
     df_temp <- as.data.frame(.x)  # 将列表转换为数据框
-    mutate(df_temp, Condition = "Self-Familiar")  # 添加Condition列
+    mutate(df_temp, Condition = "Self-Close")  # 添加Condition列
   }),
   
   map_dfr(df_Self_Mother, ~{
     df_temp <- as.data.frame(.x)  # 将列表转换为数据框
-    mutate(df_temp, Condition = "Self-Familiar")  # 添加Condition列
+    mutate(df_temp, Condition = "Self-Close")  # 添加Condition列
   }),
   
   map_dfr(df_Self_Acquaintance, ~{
     df_temp <- as.data.frame(.x)  # 将列表转换为数据框
-    mutate(df_temp, Condition = "Self-Familiar")  # 添加Condition列
+    mutate(df_temp, Condition = "Self-Close")  # 添加Condition列
   }),
   
   # map_dfr(df_Self_Others, ~{
@@ -142,7 +142,7 @@ df_combined <- bind_rows(
   
   map_dfr(df_Self_Friend, ~{
     df_temp <- as.data.frame(.x)  # 将列表转换为数据框
-    mutate(df_temp, Condition = "Self-Familiar")  # 添加Condition列
+    mutate(df_temp, Condition = "Self-Close")  # 添加Condition列
   })
 )
 

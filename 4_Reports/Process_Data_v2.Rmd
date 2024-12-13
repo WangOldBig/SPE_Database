@@ -28,7 +28,7 @@ df_Self_Friend <- list()
 ```
 
 # Merryn Dale Constable_2020_CE
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self", "Stranger"
 ```{r Paper p46 Experiment 1}
 df[[1]] <- read.csv(
@@ -56,34 +56,34 @@ df[[1]] <- read.csv(
 
 # 提取Self和Stranger的反应时间
 df_pocess <- df[[1]] %>%
-  dplyr::filter(Identity %in% c("Self", "Stranger"))
+  dplyr::filter(Origin_Identity %in% c("Self", "Stranger"))
 
-df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Stranger"))
+df_pocess$Origin_Identity <- factor(df_pocess$Origin_Identity, levels = c("Self", "Stranger"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - 
-      mean(RT_ms[Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - 
+      mean(RT_ms[Origin_Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
   )
 
 df_RT <- df_pocess %>%
   dplyr::group_by(Subject, Matching) %>%  # 添加Matching作为分组变量
   dplyr::reframe(
-    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - 
-              mean(RT_ms[Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - 
+              mean(RT_ms[Origin_Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
   )
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
   dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
-    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
-               mean(ACC[Identity == "Stranger" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Origin_Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Origin_Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+               mean(ACC[Origin_Identity == "Stranger" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
   )
 
 ## 合并数据框
@@ -106,7 +106,7 @@ rm(df_RT,df_ACC,merged_list,df_pocess)
 ```
 
 # Merryn Dale Constable_2020_CE (Dark Light Box)
-## Experiment 2 (Identity = 2)
+## Experiment 2 (Origin_Identity = 2)
 "Self", "Stranger"
 ```{r Paper p46 Experiment 2}
 df[[2]] <- read.csv(
@@ -138,16 +138,16 @@ df[[2]] <- read.csv(
   
 # 提取Self和Stranger的反应时间
 df_pocess <- df[[2]] %>%
-  dplyr::filter(Identity %in% c("Self", "Stranger"))
+  dplyr::filter(Origin_Identity %in% c("Self", "Stranger"))
 
-df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Stranger"))
+df_pocess$Origin_Identity <- factor(df_pocess$Origin_Identity, levels = c("Self", "Stranger"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Origin_Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
   )
 
 
@@ -155,9 +155,9 @@ df_RT <- df_pocess %>%
 df_ACC <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
-    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
-               mean(ACC[Identity == "Stranger" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Origin_Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Origin_Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+               mean(ACC[Origin_Identity == "Stranger" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
   )
 
 # 假设 list_RT 和 list_ACC 包含你需要合并的数据
@@ -181,7 +181,7 @@ rm(df_RT,df_ACC,merged_list,df_pocess)
 ```
 
 # Haoyue Qian_2019_QJEP 
-## Experiment 1 (Identity = 3)
+## Experiment 1 (Origin_Identity = 3)
 "Self", "Familiar", "Stranger"
 ```{r Paper p51 Experiment 1}
 df[[3]] <- read.csv(
@@ -202,7 +202,7 @@ df[[3]] <- read.csv(
       ),
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Origin_Identity, Session
   )
 names(df)[3] <- "Qian_2019_QJEP Exp 1"
 ```
@@ -212,16 +212,16 @@ names(df)[3] <- "Qian_2019_QJEP Exp 1"
 ```{r Paper p51 Experiment 1}
 # 提取Self和Stranger的反应时间
 df_pocess <- df[[3]] %>%
-  dplyr::filter(Identity %in% c("Self", "Stranger"))
+  dplyr::filter(Origin_Identity %in% c("Self", "Stranger"))
 
-df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Stranger"))
+df_pocess$Origin_Identity <- factor(df_pocess$Origin_Identity, levels = c("Self", "Stranger"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Origin_Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
   )
 
 
@@ -229,9 +229,9 @@ df_RT <- df_pocess %>%
 df_ACC <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
-    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
-      mean(ACC[Identity == "Stranger" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Origin_Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Origin_Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+      mean(ACC[Origin_Identity == "Stranger" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
   )
 
 # 假设 list_RT 和 list_ACC 包含你需要合并的数据
@@ -260,16 +260,16 @@ rm(df_RT,df_ACC,merged_list,df_pocess)
 ```{r Paper p51 Experiment 1}
 # 提取Self和Familiar的反应时间
 df_pocess <- df[[3]] %>%
-  dplyr::filter(Identity %in% c("Self", "Familiar"))
+  dplyr::filter(Origin_Identity %in% c("Self", "Familiar"))
 
-df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Familiar"))
+df_pocess$Origin_Identity <- factor(df_pocess$Origin_Identity, levels = c("Self", "Familiar"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Familiar"], na.rm = TRUE)  # 计算RT差值
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Origin_Identity == "Familiar"], na.rm = TRUE)  # 计算RT差值
   )
 
 
@@ -277,9 +277,9 @@ df_RT <- df_pocess %>%
 df_ACC <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
-    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
-      mean(ACC[Identity == "Familiar" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Origin_Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Origin_Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+      mean(ACC[Origin_Identity == "Familiar" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
   )
 
 # 假设 list_RT 和 list_ACC 包含你需要合并的数据
@@ -301,7 +301,7 @@ names(df_Self_Familiar)[1] <- "Qian_2019_QJEP Exp 1"
 rm(df_RT,df_ACC,merged_list,df_pocess)
 ```
 
-## Experiment 2 (Identity = 2)
+## Experiment 2 (Origin_Identity = 2)
 "Self", "Familiar"
 ```{r Paper p51 Experiment 2}
 df[[4]] <- read.csv(
@@ -323,22 +323,22 @@ df[[4]] <- read.csv(
       ),
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 names(df)[4] <- "Qian_2019_QJEP Exp 2"
 
 # 提取Self和Familiar的反应时间
 df_pocess <- df[[4]] %>%
-  dplyr::filter(Identity %in% c("Self", "Familiar"))
+  dplyr::filter(Origin_Identity %in% c("Self", "Familiar"))
 
-df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Familiar"))
+df_pocess$Origin_Identity <- factor(df_pocess$Origin_Identity, levels = c("Self", "Familiar"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Familiar"], na.rm = TRUE)  # 计算RT差值
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Origin_Identity == "Familiar"], na.rm = TRUE)  # 计算RT差值
   )
 
 
@@ -346,9 +346,9 @@ df_RT <- df_pocess %>%
 df_ACC <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
-    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
-      mean(ACC[Identity == "Familiar" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Origin_Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Origin_Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+      mean(ACC[Origin_Identity == "Familiar" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
   )
 
 # 假设 list_RT 和 list_ACC 包含你需要合并的数据
@@ -371,7 +371,7 @@ rm(df_RT,df_ACC,merged_list,df_pocess)
 ```
 
 # Sarah Schafer_2019_CP 
-## Experiment 1 (Identity = 4)
+## Experiment 1 (Origin_Identity = 4)
 "Self", "Mother","none", "Acquaintance"
 ```{r Paper p54 Experiment 1}
 df[[5]] <- read.csv(
@@ -387,11 +387,11 @@ df[[5]] <- read.csv(
     Color = NA, # 文档中未提及具体颜色
     Contrast = NA, # 文档中未提及对比度
     Formal_Trials = 144,
-    Identity = case_when(
-      Identity == "Ich" ~ "Self",
-      Identity == "Mutter" ~ "Mother",
-      Identity == "Bekannter" ~ "Acquaintance",
-      Identity == "none" ~ "none"
+    Origin_Identity = case_when(
+      Origin_Identity == "Ich" ~ "Self",
+      Origin_Identity == "Mutter" ~ "Mother",
+      Origin_Identity == "Bekannter" ~ "Acquaintance",
+      Origin_Identity == "none" ~ "none"
       ),
     Gender = case_when(
       Gender == "female" ~ "Female",
@@ -400,14 +400,14 @@ df[[5]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness,
-    Matching, Identity, RT_ms, RT_sec, ACC
+    Matching, Origin_Identity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 names(df)[5] <- "Schaefer_2019_CP Exp1"
 ```
@@ -417,16 +417,16 @@ names(df)[5] <- "Schaefer_2019_CP Exp1"
 ```{r}
 # 提取Self和Mother的反应时间
 df_pocess <- df[[4]] %>%
-  dplyr::filter(Identity %in% c("Self", "Mother"))
+  dplyr::filter(Origin_Identity %in% c("Self", "Mother"))
 
-df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Mother"))
+df_pocess$Origin_Identity <- factor(df_pocess$Origin_Identity, levels = c("Self", "Mother"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Mother"], na.rm = TRUE)  # 计算RT差值
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Origin_Identity == "Mother"], na.rm = TRUE)  # 计算RT差值
   )
 
 
@@ -434,9 +434,9 @@ df_RT <- df_pocess %>%
 df_ACC <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
-    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
-      mean(ACC[Identity == "Mother" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Origin_Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Origin_Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+      mean(ACC[Origin_Identity == "Mother" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
   )
 
 # 假设 list_RT 和 list_ACC 包含你需要合并的数据
@@ -463,16 +463,16 @@ rm(df_RT,df_ACC,merged_list,df_pocess)
 ```{r}
 # 提取Self和none的反应时间
 df_pocess <- df[[4]] %>%
-  dplyr::filter(Identity %in% c("Self", "none"))
+  dplyr::filter(Origin_Identity %in% c("Self", "none"))
 
-df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "none"))
+df_pocess$Origin_Identity <- factor(df_pocess$Origin_Identity, levels = c("Self", "none"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "none"], na.rm = TRUE)  # 计算RT差值
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Origin_Identity == "none"], na.rm = TRUE)  # 计算RT差值
   )
 
 
@@ -480,9 +480,9 @@ df_RT <- df_pocess %>%
 df_ACC <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
-    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
-      mean(ACC[Identity == "none" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Origin_Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Origin_Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+      mean(ACC[Origin_Identity == "none" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
   )
 
 # 假设 list_RT 和 list_ACC 包含你需要合并的数据
@@ -509,16 +509,16 @@ rm(df_RT,df_ACC,merged_list,df_pocess)
 ```{r}
 # 提取Self和Acquaintance的反应时间
 df_pocess <- df[[4]] %>%
-  dplyr::filter(Identity %in% c("Self", "Acquaintance"))
+  dplyr::filter(Origin_Identity %in% c("Self", "Acquaintance"))
 
-df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Acquaintance"))
+df_pocess$Origin_Identity <- factor(df_pocess$Origin_Identity, levels = c("Self", "Acquaintance"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Acquaintance"], na.rm = TRUE)  # 计算RT差值
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Origin_Identity == "Acquaintance"], na.rm = TRUE)  # 计算RT差值
   )
 
 
@@ -526,9 +526,9 @@ df_RT <- df_pocess %>%
 df_ACC <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
-    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
-      mean(ACC[Identity == "Acquaintance" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Origin_Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Origin_Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+      mean(ACC[Origin_Identity == "Acquaintance" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
   )
 
 # 假设 list_RT 和 list_ACC 包含你需要合并的数据
@@ -550,7 +550,7 @@ names(df_Self_Acquaintance)[1] <- "Schaefer_2019_CP Exp1"
 rm(df_RT,df_ACC,merged_list,df_pocess)
 ```
 
-## Experiment 3 (Identity = 3)
+## Experiment 3 (Origin_Identity = 3)
 "Self", "Mother", "Acquaintance"
 ```{r Paper p54 Experiment 3}
 df[[6]] <- read.csv(
@@ -565,10 +565,10 @@ df[[6]] <- read.csv(
     VisualAngle = "60cm", # 视觉角度，根据文档中提供的信息
     Color = NA, # 文档中未提及具体颜色
     Contrast = NA, # 文档中未提及对比度
-    Identity = case_when(
-      Identity == "Ich" ~ "Self",
-      Identity == "Mutter" ~ "Mother",
-      Identity == "Bekannter" ~ "Acquaintance",
+    Origin_Identity = case_when(
+      Origin_Identity == "Ich" ~ "Self",
+      Origin_Identity == "Mutter" ~ "Mother",
+      Origin_Identity == "Bekannter" ~ "Acquaintance",
       ),
     Gender = case_when(
       Gender == "female" ~ "Female",
@@ -580,7 +580,7 @@ df[[6]] <- read.csv(
       ),
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity,
+    Subject, Matching, Origin_Identity,
   )
 names(df)[6] <- "Schaefer_2019_CP Exp 3"
 ```
@@ -590,16 +590,16 @@ names(df)[6] <- "Schaefer_2019_CP Exp 3"
 ```{r}
 # 提取Self和Mother的反应时间
 df_pocess <- df[[6]] %>%
-  dplyr::filter(Identity %in% c("Self", "Mother"))
+  dplyr::filter(Origin_Identity %in% c("Self", "Mother"))
 
-df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Mother"))
+df_pocess$Origin_Identity <- factor(df_pocess$Origin_Identity, levels = c("Self", "Mother"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Mother"], na.rm = TRUE)  # 计算RT差值
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Origin_Identity == "Mother"], na.rm = TRUE)  # 计算RT差值
   )
 
 
@@ -607,9 +607,9 @@ df_RT <- df_pocess %>%
 df_ACC <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
-    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
-      mean(ACC[Identity == "Mother" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Origin_Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Origin_Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+      mean(ACC[Origin_Identity == "Mother" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
   )
 
 # 假设 list_RT 和 list_ACC 包含你需要合并的数据
@@ -636,16 +636,16 @@ rm(df_RT,df_ACC,merged_list,df_pocess)
 ```{r}
 # 提取Self和Acquaintance的反应时间
 df_pocess <- df[[6]] %>%
-  dplyr::filter(Identity %in% c("Self", "Acquaintance"))
+  dplyr::filter(Origin_Identity %in% c("Self", "Acquaintance"))
 
-df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Acquaintance"))
+df_pocess$Origin_Identity <- factor(df_pocess$Origin_Identity, levels = c("Self", "Acquaintance"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Acquaintance"], na.rm = TRUE)  # 计算RT差值
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Origin_Identity == "Acquaintance"], na.rm = TRUE)  # 计算RT差值
   )
 
 
@@ -653,9 +653,9 @@ df_RT <- df_pocess %>%
 df_ACC <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
-    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
-      mean(ACC[Identity == "Acquaintance" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Origin_Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Origin_Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+      mean(ACC[Origin_Identity == "Acquaintance" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
   )
 
 # 假设 list_RT 和 list_ACC 包含你需要合并的数据
@@ -678,7 +678,7 @@ rm(df_RT,df_ACC,merged_list,df_pocess)
 ```
 
 # Mateusz Woźniak_2018_PLOS (Face)
-## Experiment 1 (Identity = 3)
+## Experiment 1 (Origin_Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper p95 Experiment 1}
 df[[7]] <- read.csv(
@@ -695,7 +695,7 @@ df[[7]] <- read.csv(
     Formal_Trials = 672,
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
   # 更新列名
   names(df)[7] <- "Wozniak_2018_PLOS_Exp1"
@@ -706,26 +706,26 @@ df[[7]] <- read.csv(
 ```{r}
 # 提取Self和Friend的反应时间
 df_pocess <- df[[7]] %>%
-  dplyr::filter(Identity %in% c("Self", "Friend"))
+  dplyr::filter(Origin_Identity %in% c("Self", "Friend"))
 
-df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Friend"))
+df_pocess$Origin_Identity <- factor(df_pocess$Origin_Identity, levels = c("Self", "Friend"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
-   dplyr::group_by(Subject, Matching) %>%
+  dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Friend"], na.rm = TRUE)  # 计算RT差值
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Origin_Identity == "Friend"], na.rm = TRUE)  # 计算RT差值
   )
 
 
 # 计算每个被试的Cohen's d ACC
 df_ACC <- df_pocess %>%
-   dplyr::group_by(Subject, Matching) %>%
+  dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
-    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
-      mean(ACC[Identity == "Friend" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Origin_Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Origin_Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+      mean(ACC[Origin_Identity == "Friend" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
   )
 
 # 假设 list_RT 和 list_ACC 包含你需要合并的数据
@@ -734,7 +734,8 @@ merged_list <- list(
   Cohens_d_RT = df_RT$Cohens_d_RT, 
   deta_RT = df_RT$deta_RT, 
   Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
-  deta_ACC = df_ACC$deta_ACC
+  deta_ACC = df_ACC$deta_ACC,
+  Matching = df_ACC$Matching
 )
 
 # 将合并后的列表存储到 df_Self_Friend 中
@@ -751,16 +752,16 @@ rm(df_RT,df_ACC,merged_list,df_pocess)
 ```{r}
 # 提取Self和Stranger的反应时间
 df_pocess <- df[[7]] %>%
-  dplyr::filter(Identity %in% c("Self", "Stranger"))
+  dplyr::filter(Origin_Identity %in% c("Self", "Stranger"))
 
-df_pocess$Identity <- factor(df_pocess$Identity, levels = c("Self", "Stranger"))
+df_pocess$Origin_Identity <- factor(df_pocess$Origin_Identity, levels = c("Self", "Stranger"))
 
 # 计算每个被试的Cohen's d RT
 df_RT <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_RT = cohen.d(RT_ms ~ Identity)$estimate,  # 计算Cohen's d
-    deta_RT = mean(RT_ms[Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Origin_Identity == "Stranger"], na.rm = TRUE)  # 计算RT差值
   )
 
 
@@ -768,9 +769,9 @@ df_RT <- df_pocess %>%
 df_ACC <- df_pocess %>%
    dplyr::group_by(Subject, Matching) %>%
   dplyr::reframe(
-    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
-    deta_ACC = mean(ACC[Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
-      mean(ACC[Identity == "Stranger" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Origin_Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Origin_Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+      mean(ACC[Origin_Identity == "Stranger" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
   )
 
 # 假设 list_RT 和 list_ACC 包含你需要合并的数据
@@ -779,7 +780,8 @@ merged_list <- list(
   Cohens_d_RT = df_RT$Cohens_d_RT, 
   deta_RT = df_RT$deta_RT, 
   Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
-  deta_ACC = df_ACC$deta_ACC
+  deta_ACC = df_ACC$deta_ACC,
+  Matching = df_ACC$Matching
 )
 
 # 将合并后的列表存储到 df_Self_Stranger 中
@@ -791,7 +793,7 @@ names(df_Self_Stranger)[4] <- "Wozniak_2018_PLOS Exp1"
 rm(df_RT,df_ACC,merged_list,df_pocess)
 ```
 
-## Experiment 2 (Identity = 3)
+## Experiment 2 (Origin_Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper p95 Experiment 2}
 df[[8]] <- read.csv(
@@ -808,17 +810,61 @@ df[[8]] <- read.csv(
     Formal_Trials = 672,
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
   # 更新列名
   names(df)[8] <- "Wozniak_2018_PLOS_Exp2"
 ```
 
 
+# Self、Friend
+```{r}
+df_pocess <- df[[8]] %>%
+  dplyr::filter(Origin_Identity %in% c("Self", "Friend"))
+
+df_pocess$Origin_Identity <- factor(df_pocess$Origin_Identity, levels = c("Self", "Friend"))
+
+# 计算每个被试的Cohen's d RT
+df_RT <- df_pocess %>%
+   dplyr::group_by(Subject, Matching) %>%
+  dplyr::reframe(
+    Cohens_d_RT = cohen.d(RT_ms ~ Origin_Identity)$estimate,  # 计算Cohen's d
+    deta_RT = mean(RT_ms[Origin_Identity == "Self"], na.rm = TRUE) - mean(RT_ms[Origin_Identity == "Friend"], na.rm = TRUE)  # 计算RT差值
+  )
+
+
+# 计算每个被试的Cohen's d ACC
+df_ACC <- df_pocess %>%
+   dplyr::group_by(Subject, Matching) %>%
+  dplyr::reframe(
+    Cohens_d_ACC = cohen.d(ACC[ACC %in% c(0, 1)] ~ Origin_Identity[ACC %in% c(0, 1)])$estimate,  # 计算Cohen's d，只考虑0和1
+    deta_ACC = mean(ACC[Origin_Identity == "Self" & ACC %in% c(0, 1)], na.rm = TRUE) - 
+      mean(ACC[Origin_Identity == "Friend" & ACC %in% c(0, 1)], na.rm = TRUE)  # 计算ACC差值，忽略3和NA
+  )
+
+# 假设 list_RT 和 list_ACC 包含你需要合并的数据
+merged_list <- list(
+  Subject = df_RT$Subject, 
+  Cohens_d_RT = df_RT$Cohens_d_RT, 
+  deta_RT = df_RT$deta_RT, 
+  Cohens_d_ACC = df_ACC$Cohens_d_ACC, 
+  deta_ACC = df_ACC$deta_ACC,
+  Matching = df_ACC$Matching
+)
+
+# 将合并后的列表存储到 df_Self_Friend 中
+df_Self_Friend[[2]] <- merged_list
+
+
+names(df_Self_Friend)[2] <- "Wozniak_2018_PLOS Exp2"
+
+rm(df_RT,df_ACC,merged_list,df_pocess)
+```
+
 
 
 # Marius Golubickis_2021_AP 
-## Experiment 1 (Identity = 3)
+## Experiment 1 (Origin_Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n4 Experiment 1}
 df[[11]] <- read.csv(
@@ -835,19 +881,19 @@ df[[11]] <- read.csv(
     
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 # 为Self, Friend，Stranger分别计算
 identities <- c("Self","Friend","Stranger")
-d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+d_primes <- setNames(data.frame(Origin_Identity = character(), d_prime = numeric()), names(identities))
 ## 计算整篇文章的d'
 # 创建一个新的d_prime数据框，用于保存d_prime值
-df_d_prime[[11]] <- data.frame(Identity = character(), d_prime = numeric())
+df_d_prime[[11]] <- data.frame(Origin_Identity = character(), d_prime = numeric())
 
 # 计算d'
-for (identity in identities) {
-  # 提取当前Identity的数据
-  subset_data <- df[[11]] %>% filter(Identity == identity)
+for (Origin_Identity in identities) {
+  # 提取当前Origin_Identity的数据
+  subset_data <- df[[11]] %>% filter(Origin_Identity == Origin_Identity)
   
   # 计算HR和FAR
   hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
@@ -869,28 +915,28 @@ for (identity in identities) {
   d_prime <- z_hit - z_false_alarm
   
   # 保存计算结果到df_d_prime[[11]]
-  df_d_prime[[11]] <- rbind(df_d_prime[[11]], data.frame(Identity = identity, d_prime = d_prime))
+  df_d_prime[[11]] <- rbind(df_d_prime[[11]], data.frame(Origin_Identity = Origin_Identity, d_prime = d_prime))
 }
 
-# 打印df_d_prime[[11]]，包含所有Identity的d'值
+# 打印df_d_prime[[11]]，包含所有Origin_Identity的d'值
 print(df_d_prime[[11]])
 
 # 更新列名
 names(df)[11] <- "Golubickis_2021_AP_Exp1"
 
 ##计算每个被试的d'
-d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+d_primes <- setNames(data.frame(Subject = character(), Origin_Identity = character(), d_prime = numeric()), c("Subject", "Origin_Identity", "d_prime"))
 
 # 创建一个新的d_prime数据框，用于保存d_prime值
-df_d_paper[[11]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+df_d_paper[[11]] <- data.frame(Subject = character(), Origin_Identity = character(), d_prime = numeric())
 
 # 计算d'
-for (identity in identities) {
+for (Origin_Identity in identities) {
   subjects <- unique(df[[11]]$Subject)  # 获取所有被试
   
   for (subject in subjects) {
-    # 提取当前Identity和Subject的数据
-    subset_data <- df[[11]] %>% filter(Identity == identity & Subject == subject)
+    # 提取当前Origin_Identity和Subject的数据
+    subset_data <- df[[11]] %>% filter(Origin_Identity == Origin_Identity & Subject == subject)
     
     # 计算HR和FAR
     hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
@@ -912,22 +958,22 @@ for (identity in identities) {
     d_prime <- z_hit - z_false_alarm
     
     # 保存结果
-    d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    d_primes <- rbind(d_primes, data.frame(Subject = subject, Origin_Identity = Origin_Identity, d_prime = d_prime))
     # 保存计算结果到df_d_paper[[11]]
-    df_d_paper[[11]] <- rbind(df_d_paper[[11]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    df_d_paper[[11]] <- rbind(df_d_paper[[11]], data.frame(Subject = subject, Origin_Identity = Origin_Identity, d_prime = d_prime))
   }
 }
 
-# 打印df_d_paper[[11]]，包含所有Subject和Identity的d'值
+# 打印df_d_paper[[11]]，包含所有Subject和Origin_Identity的d'值
 print(df_d_paper[[11]])
 # 输出到新的CSV文件
 write.csv(df_d_paper[[11]], "../1_Clean_Data/d_prime/Golubickis_2021_AP_Exp1_d'.csv", row.names = FALSE)
 # 显示数据总结
 summary(df[[11]]) 
-rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,Origin_Identity,miss,z_false_alarm,z_hit,subject,subjects)
 ```
 
-## Experiment 2 (Identity = 3)
+## Experiment 2 (Origin_Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n4 Experiment 2}
 df[[12]] <- read.csv(
@@ -941,26 +987,26 @@ df[[12]] <- read.csv(
     Color = NA, # 文档中未提及颜色
     VisualAngle = NA, # 文档中未提及视觉角度
     Contrast = NA, # 文档中未提及对比度
-    Identity = case_when(
-      Identity == "self" ~ "Self",
-      Identity == "friend" ~ "Friend",
-      Identity == "stranger" ~ "Stranger",
+    Origin_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "friend" ~ "Friend",
+      Origin_Identity == "stranger" ~ "Stranger",
       ),
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 # 为Self, Friend，Stranger分别计算
 identities <- c("Self","Friend","Stranger")
-d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+d_primes <- setNames(data.frame(Origin_Identity = character(), d_prime = numeric()), names(identities))
 ## 计算整篇文章的d'
 # 创建一个新的d_prime数据框，用于保存d_prime值
-df_d_prime[[12]] <- data.frame(Identity = character(), d_prime = numeric())
+df_d_prime[[12]] <- data.frame(Origin_Identity = character(), d_prime = numeric())
 
 # 计算d'
-for (identity in identities) {
-  # 提取当前Identity的数据
-  subset_data <- df[[12]] %>% filter(Identity == identity)
+for (Origin_Identity in identities) {
+  # 提取当前Origin_Identity的数据
+  subset_data <- df[[12]] %>% filter(Origin_Identity == Origin_Identity)
   
   # 计算HR和FAR
   hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
@@ -982,28 +1028,28 @@ for (identity in identities) {
   d_prime <- z_hit - z_false_alarm
   
   # 保存计算结果到df_d_prime[[12]]
-  df_d_prime[[12]] <- rbind(df_d_prime[[12]], data.frame(Identity = identity, d_prime = d_prime))
+  df_d_prime[[12]] <- rbind(df_d_prime[[12]], data.frame(Origin_Identity = Origin_Identity, d_prime = d_prime))
 }
 
-# 打印df_d_prime[[12]]，包含所有Identity的d'值
+# 打印df_d_prime[[12]]，包含所有Origin_Identity的d'值
 print(df_d_prime[[12]])
 
 # 更新列名
 names(df)[12] <- "Golubickis_2021_AP_Exp2"
 
 ##计算每个被试的d'
-d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+d_primes <- setNames(data.frame(Subject = character(), Origin_Identity = character(), d_prime = numeric()), c("Subject", "Origin_Identity", "d_prime"))
 
 # 创建一个新的d_prime数据框，用于保存d_prime值
-df_d_paper[[12]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+df_d_paper[[12]] <- data.frame(Subject = character(), Origin_Identity = character(), d_prime = numeric())
 
 # 计算d'
-for (identity in identities) {
+for (Origin_Identity in identities) {
   subjects <- unique(df[[12]]$Subject)  # 获取所有被试
   
   for (subject in subjects) {
-    # 提取当前Identity和Subject的数据
-    subset_data <- df[[12]] %>% filter(Identity == identity & Subject == subject)
+    # 提取当前Origin_Identity和Subject的数据
+    subset_data <- df[[12]] %>% filter(Origin_Identity == Origin_Identity & Subject == subject)
     
     # 计算HR和FAR
     hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
@@ -1025,23 +1071,23 @@ for (identity in identities) {
     d_prime <- z_hit - z_false_alarm
     
     # 保存结果
-    d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    d_primes <- rbind(d_primes, data.frame(Subject = subject, Origin_Identity = Origin_Identity, d_prime = d_prime))
     # 保存计算结果到df_d_paper[[12]]
-    df_d_paper[[12]] <- rbind(df_d_paper[[12]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    df_d_paper[[12]] <- rbind(df_d_paper[[12]], data.frame(Subject = subject, Origin_Identity = Origin_Identity, d_prime = d_prime))
   }
 }
 
-# 打印df_d_paper[[12]]，包含所有Subject和Identity的d'值
+# 打印df_d_paper[[12]]，包含所有Subject和Origin_Identity的d'值
 print(df_d_paper[[12]])
 # 输出到新的CSV文件
 write.csv(df_d_paper[[12]], "../1_Clean_Data/d_prime/Golubickis_2021_AP_Exp2_d'.csv", row.names = FALSE)
 # 显示数据总结
 summary(df[[12]]) 
-rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,Origin_Identity,miss,z_false_alarm,z_hit,subject,subjects)
 ```
 
 # Mayan Navon_2021
-## Experiment 1 (Identity = 3)
+## Experiment 1 (Origin_Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n13 Experiment 1}
 df[[13]] <- read.csv(
@@ -1061,19 +1107,19 @@ df[[13]] <- read.csv(
       ),
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 # 为Self, Friend，Stranger分别计算
 identities <- c("Self","Friend","Stranger")
-d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+d_primes <- setNames(data.frame(Origin_Identity = character(), d_prime = numeric()), names(identities))
 ## 计算整篇文章的d'
 # 创建一个新的d_prime数据框，用于保存d_prime值
-df_d_prime[[13]] <- data.frame(Identity = character(), d_prime = numeric())
+df_d_prime[[13]] <- data.frame(Origin_Identity = character(), d_prime = numeric())
 
 # 计算d'
-for (identity in identities) {
-  # 提取当前Identity的数据
-  subset_data <- df[[13]] %>% filter(Identity == identity)
+for (Origin_Identity in identities) {
+  # 提取当前Origin_Identity的数据
+  subset_data <- df[[13]] %>% filter(Origin_Identity == Origin_Identity)
   
   # 计算HR和FAR
   hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
@@ -1095,28 +1141,28 @@ for (identity in identities) {
   d_prime <- z_hit - z_false_alarm
   
   # 保存计算结果到df_d_prime[[13]]
-  df_d_prime[[13]] <- rbind(df_d_prime[[13]], data.frame(Identity = identity, d_prime = d_prime))
+  df_d_prime[[13]] <- rbind(df_d_prime[[13]], data.frame(Origin_Identity = Origin_Identity, d_prime = d_prime))
 }
 
-# 打印df_d_prime[[13]]，包含所有Identity的d'值
+# 打印df_d_prime[[13]]，包含所有Origin_Identity的d'值
 print(df_d_prime[[13]])
 
 # 更新列名
 names(df)[13] <- "Navon_2021_Exp1"
 
 ##计算每个被试的d'
-d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+d_primes <- setNames(data.frame(Subject = character(), Origin_Identity = character(), d_prime = numeric()), c("Subject", "Origin_Identity", "d_prime"))
 
 # 创建一个新的d_prime数据框，用于保存d_prime值
-df_d_paper[[13]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+df_d_paper[[13]] <- data.frame(Subject = character(), Origin_Identity = character(), d_prime = numeric())
 
 # 计算d'
-for (identity in identities) {
+for (Origin_Identity in identities) {
   subjects <- unique(df[[13]]$Subject)  # 获取所有被试
   
   for (subject in subjects) {
-    # 提取当前Identity和Subject的数据
-    subset_data <- df[[13]] %>% filter(Identity == identity & Subject == subject)
+    # 提取当前Origin_Identity和Subject的数据
+    subset_data <- df[[13]] %>% filter(Origin_Identity == Origin_Identity & Subject == subject)
     
 
     # 计算HR和FAR
@@ -1140,22 +1186,22 @@ for (identity in identities) {
     
     
     # 保存结果
-    d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    d_primes <- rbind(d_primes, data.frame(Subject = subject, Origin_Identity = Origin_Identity, d_prime = d_prime))
     # 保存计算结果到df_d_paper[[13]]
-    df_d_paper[[13]] <- rbind(df_d_paper[[13]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    df_d_paper[[13]] <- rbind(df_d_paper[[13]], data.frame(Subject = subject, Origin_Identity = Origin_Identity, d_prime = d_prime))
   }
 }
 
-# 打印df_d_paper[[13]]，包含所有Subject和Identity的d'值
+# 打印df_d_paper[[13]]，包含所有Subject和Origin_Identity的d'值
 print(df_d_paper[[13]])
 # 输出到新的CSV文件
 write.csv(df_d_paper[[13]], "../1_Clean_Data/d_prime/Navon_2021_Exp1_d'.csv", row.names = FALSE)
 # 显示数据总结
 summary(df[[13]]) 
-rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,Origin_Identity,miss,z_false_alarm,z_hit,subject,subjects)
 ```
 
-## Experiment 2 (Identity = 3)
+## Experiment 2 (Origin_Identity = 3)
 "Father", "Close", "Stranger"
 ```{r Paper n13 Experiment 2}
 df[[14]] <- read.csv(
@@ -1175,20 +1221,20 @@ df[[14]] <- read.csv(
       ),
   ) %>%
   dplyr::arrange( 
-    Subject, Identity, Matching
+    Subject, Origin_Identity, Matching
   )
 
 # 为Self, Friend，Stranger分别计算
 identities <- c("Father", "Close", "Stranger")
-d_primes <- setNames(data.frame(Identity = character(), d_prime = numeric()), names(identities))
+d_primes <- setNames(data.frame(Origin_Identity = character(), d_prime = numeric()), names(identities))
 ## 计算整篇文章的d'
 # 创建一个新的d_prime数据框，用于保存d_prime值
-df_d_prime[[14]] <- data.frame(Identity = character(), d_prime = numeric())
+df_d_prime[[14]] <- data.frame(Origin_Identity = character(), d_prime = numeric())
 
 # 计算d'
-for (identity in identities) {
-  # 提取当前Identity的数据
-  subset_data <- df[[14]] %>% filter(Identity == identity)
+for (Origin_Identity in identities) {
+  # 提取当前Origin_Identity的数据
+  subset_data <- df[[14]] %>% filter(Origin_Identity == Origin_Identity)
   
   # 计算HR和FAR
   hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
@@ -1210,28 +1256,28 @@ for (identity in identities) {
   d_prime <- z_hit - z_false_alarm
   
   # 保存计算结果到df_d_prime[[14]]
-  df_d_prime[[14]] <- rbind(df_d_prime[[14]], data.frame(Identity = identity, d_prime = d_prime))
+  df_d_prime[[14]] <- rbind(df_d_prime[[14]], data.frame(Origin_Identity = Origin_Identity, d_prime = d_prime))
 }
 
-# 打印df_d_prime[[14]]，包含所有Identity的d'值
+# 打印df_d_prime[[14]]，包含所有Origin_Identity的d'值
 print(df_d_prime[[14]])
 
 # 更新列名
 names(df)[14] <- "Navon_2021_Exp2"
 
 ##计算每个被试的d'
-d_primes <- setNames(data.frame(Subject = character(), Identity = character(), d_prime = numeric()), c("Subject", "Identity", "d_prime"))
+d_primes <- setNames(data.frame(Subject = character(), Origin_Identity = character(), d_prime = numeric()), c("Subject", "Origin_Identity", "d_prime"))
 
 # 创建一个新的d_prime数据框，用于保存d_prime值
-df_d_paper[[14]] <- data.frame(Subject = character(), Identity = character(), d_prime = numeric())
+df_d_paper[[14]] <- data.frame(Subject = character(), Origin_Identity = character(), d_prime = numeric())
 
 # 计算d'
-for (identity in identities) {
+for (Origin_Identity in identities) {
   subjects <- unique(df[[14]]$Subject)  # 获取所有被试
   
   for (subject in subjects) {
-    # 提取当前Identity和Subject的数据
-    subset_data <- df[[14]] %>% filter(Identity == identity & Subject == subject)
+    # 提取当前Origin_Identity和Subject的数据
+    subset_data <- df[[14]] %>% filter(Origin_Identity == Origin_Identity & Subject == subject)
     
     # 计算HR和FAR
     hit <- sum(subset_data$Matching == "Matching" & subset_data$ACC == 1)
@@ -1253,22 +1299,22 @@ for (identity in identities) {
     d_prime <- z_hit - z_false_alarm
     
     # 保存结果
-    d_primes <- rbind(d_primes, data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    d_primes <- rbind(d_primes, data.frame(Subject = subject, Origin_Identity = Origin_Identity, d_prime = d_prime))
     # 保存计算结果到df_d_paper[[14]]
-    df_d_paper[[14]] <- rbind(df_d_paper[[14]], data.frame(Subject = subject, Identity = identity, d_prime = d_prime))
+    df_d_paper[[14]] <- rbind(df_d_paper[[14]], data.frame(Subject = subject, Origin_Identity = Origin_Identity, d_prime = d_prime))
   }
 }
 
-# 打印df_d_paper[[14]]，包含所有Subject和Identity的d'值
+# 打印df_d_paper[[14]]，包含所有Subject和Origin_Identity的d'值
 print(df_d_paper[[14]])
 # 输出到新的CSV文件
 write.csv(df_d_paper[[14]], "../1_Clean_Data/d_prime/Navon_2021_Exp2_d'.csv", row.names = FALSE)
 # 显示数据总结
 summary(df[[14]]) 
-rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,identity,miss,z_false_alarm,z_hit,subject,subjects)
+rm(d_primes,subset_data,correct_rejection,d_prime,false_alarm,false_alarm_rate,hit,hit_rate,identities,Origin_Identity,miss,z_false_alarm,z_hit,subject,subjects)
 ```
 
-## Experiment 3 (Identity = 3) 
+## Experiment 3 (Origin_Identity = 3) 
 "Self", "Father", "Stranger"
 ```{r Paper n13 Experiment 3}
 df[[15]] <- read.csv(
@@ -1293,14 +1339,14 @@ df[[15]] <- read.csv(
     ACC = Target.ACC
   ) %>%
   dplyr::mutate(
-    Identity = case_when(
+    Origin_Identity = case_when(
       Shape == CloseShape ~ "Self",
       Shape == MediumShape ~ "Father",
       Shape == FarShape ~ "Stranger",
       TRUE ~ Shape),
     Matching = case_when(
-      Identity == Label ~ "Matching",
-      Identity != Label ~ "Nonmatching",
+      Origin_Identity == Label ~ "Matching",
+      Origin_Identity != Label ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT),
     RT_sec = RT_ms / 1000,
@@ -1311,8 +1357,8 @@ df[[15]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Father", "Stranger")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Father", "Stranger")
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
@@ -1320,7 +1366,7 @@ df[[15]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage, 
-    Matching, Identity, Response, RT_ms, RT_sec, ACC
+    Matching, Origin_Identity, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1336,14 +1382,14 @@ df[[15]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[15] <- "Mayan Navon_2021 Exp 3"
 summary(df[[15]])
 ```
 
-## Experiment 4 (Identity = 3)
+## Experiment 4 (Origin_Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n13 Experiment 4}
 df[[16]] <- read.csv(
@@ -1365,15 +1411,15 @@ df[[16]] <- read.csv(
     Response = Target.RESP
     ) %>%
   dplyr::mutate(
-    Identity = case_when(
+    Origin_Identity = case_when(
       Shape == CloseShape ~ "Self",
       Shape == MediumShape ~ "Friend",
       Shape == FarShape ~ "Stranger",
       TRUE ~ Shape
       ),
     Matching = case_when(
-      Identity == Word ~ "Matching",
-      Identity != Word ~ "Nonmatching",
+      Origin_Identity == Word ~ "Matching",
+      Origin_Identity != Word ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT),
     RT_sec = RT_ms / 1000,
@@ -1384,8 +1430,8 @@ df[[16]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
       ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "Stranger")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend", "Stranger")
       ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
@@ -1393,7 +1439,7 @@ df[[16]] <- read.csv(
     ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage, 
-    Shape, Word, Matching, Identity, Response, RT_ms, RT_sec, ACC
+    Shape, Word, Matching, Origin_Identity, Response, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1409,7 +1455,7 @@ df[[16]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[16] <- "Mayan Navon_2021 Exp 4"
@@ -1417,7 +1463,7 @@ summary(df[[16]])
 ```
 
 # Saga L. Svensson_2021_PR
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self", "Friend"
 ```{r Paper n16 Experiment 1}
 df[[17]] <- read.csv(
@@ -1428,7 +1474,7 @@ df[[17]] <- read.csv(
     Matching = Trial.Type,
     Word = Target.Label,
     Shape = Shape.Association,
-    Identity = Shape.Association,
+    Origin_Identity = Shape.Association,
     RT_ms = Reponse.Time,
     ACC = Target.Accuracy
     ) %>%
@@ -1441,15 +1487,15 @@ df[[17]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
       ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend")
       ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
     ) %>%
   dplyr::select(
-    Subject, Word, Shape, Matching, Identity, RT_ms, RT_sec, ACC
+    Subject, Word, Shape, Matching, Origin_Identity, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1465,14 +1511,14 @@ df[[17]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[17] <- "Saga L. Svensson_2021_PR Exp 1"
 summary(df[[17]])
 ```
 
-## Experiment 2 (Identity = 2)
+## Experiment 2 (Origin_Identity = 2)
 "Self", "Friend"
 ```{r Paper n16 Experiment 2}
 df[[18]] <- read.csv(
@@ -1483,7 +1529,7 @@ df[[18]] <- read.csv(
     Matching = Trial.Type,
     Word = Expectancy,
     Shape = Shape.Association,
-    Identity = Shape.Association,
+    Origin_Identity = Shape.Association,
     RT_ms = Response.Time,
     ACC = Target.Accuracy
     ) %>%
@@ -1496,15 +1542,15 @@ df[[18]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
       ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend")
       ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
     ) %>%
   dplyr::select(
-    Subject, Word, Matching, Identity, RT_ms, RT_sec, ACC
+    Subject, Word, Matching, Origin_Identity, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1520,14 +1566,14 @@ df[[18]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[18] <- "Saga L. Svensson_2021_PR Exp 2"
 summary(df[[18]])
 ```
 
-## Experiment 3 (Identity = 2)
+## Experiment 3 (Origin_Identity = 2)
 "Self", "Friend"
 ```{r Paper n16 Experiment 3}
 df[[19]] <- read.csv(
@@ -1538,7 +1584,7 @@ df[[19]] <- read.csv(
     Matching = Trial.Type,
     Word = Expectancy,
     Shape = Shape.Association,
-    Identity = Shape.Association,
+    Origin_Identity = Shape.Association,
     RT_ms = Response.Time,
     ACC = Target.Accuracy
     ) %>%
@@ -1551,15 +1597,15 @@ df[[19]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
       ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend")
       ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
     ) %>%
   dplyr::select(
-    Subject, Word, Shape, Matching, Identity, RT_ms, RT_sec, ACC
+    Subject, Word, Shape, Matching, Origin_Identity, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1575,7 +1621,7 @@ df[[19]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[19] <- "Saga L. Svensson_2021_PR Exp 3"
@@ -1583,7 +1629,7 @@ summary(df[[19]])
 ```
 
 # Yang Xu_2021_CP
-## Experiment 1 (Identity = 3)
+## Experiment 1 (Origin_Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper n23 Experiment 1}
 df[[20]] <- read.csv(
@@ -1595,7 +1641,7 @@ df[[20]] <- read.csv(
     Shape = Shape,
     Word = Label,
     Matching = Correctanswer,
-    Identity = Shape,
+    Origin_Identity = Shape,
     Group = Group,
     RT_ms = iti.RT,
     ACC = iti.ACC,
@@ -1612,8 +1658,8 @@ df[[20]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
       ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "Stranger")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend", "Stranger")
       ),
     Group = as.factor(Group),
     RT_ms = as.numeric(RT_ms),
@@ -1621,7 +1667,7 @@ df[[20]] <- read.csv(
     ACC = as.numeric(ACC),
     ) %>%
   dplyr::select(
-    Subject, Shape, Word, Matching, Identity, Group, RT_ms, RT_sec, ACC
+    Subject, Shape, Word, Matching, Origin_Identity, Group, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1637,7 +1683,7 @@ df[[20]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Group
+    Subject, Matching, Origin_Identity, Group
     )
 
 names(df)[20] <- "Yang Xu_2021_CP Exp 1"
@@ -1645,7 +1691,7 @@ summary(df[[20]])
 ```
 
 # Hu_2023_PA-  
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self", "Stranger"
 ```{r Paper s2 Experiment 1}
 df[[21]] <- read.csv(
@@ -1658,7 +1704,7 @@ df[[21]] <- read.csv(
   dplyr::select(
     Subject = Subject,
     Matching = CorrectAnswer,
-    Identity = identity,
+    Origin_Identity = Origin_Identity,
     RT = Target.RT,
     ACC = Target.ACC
   ) %>%
@@ -1667,9 +1713,9 @@ df[[21]] <- read.csv(
       Matching == "m" ~ "Matching",
       Matching == "k" ~ "Nonmatching"
     ),
-    Identity = case_when(
-      Identity == "self" ~ "Self",
-      Identity == "other" ~ "Stranger"
+    Origin_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "other" ~ "Stranger"
     ),
     RT_ms = as.numeric(RT),
     RT_sec = RT_ms / 1000,
@@ -1679,15 +1725,15 @@ df[[21]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Stranger")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Stranger")
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity,RT_ms, RT_sec, ACC
+    Subject, Matching, Origin_Identity,RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1703,7 +1749,7 @@ df[[21]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[21] <- "Hu_2023_PA_Exp1"
@@ -1711,7 +1757,7 @@ summary(df[[21]])
 ```
 
 # Constable_2019_EPHPP
-## Experiment 1 (Identity = 4)
+## Experiment 1 (Origin_Identity = 4)
 "Self", "We", "They","Alone"
 ```{r Paper p5 Experiment 1}
 df[[22]] <- read.csv(
@@ -1728,7 +1774,7 @@ df[[22]] <- read.csv(
     Handedness = Handedness,
     First_Language = First.Language,
     Matching = Condition,
-    Identity = Shape,
+    Origin_Identity = Shape,
     Phase = Training.Experiment,
     Shape = Shape,
     Label = Label, 
@@ -1761,13 +1807,13 @@ df[[22]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 names(df)[22] <- "Constable_2019_EPHPP_Exp1"
 summary(df[[22]])
 ```
 # Constable_2019_EPHPP
-## Experiment 2 (Identity = 4)
+## Experiment 2 (Origin_Identity = 4)
 "Self", "We", "They","Alone"
 ```{r Paper p5 Experiment 2}
 df[[23]] <- read.csv(
@@ -1784,7 +1830,7 @@ df[[23]] <- read.csv(
     Handedness = Handedness,
     First_Language = First.Language,
     Matching = Condition,
-    Identity = Shape,
+    Origin_Identity = Shape,
     Phase = Training.Experiment,
     Shape = Shape,
     Label = Label, 
@@ -1817,14 +1863,14 @@ df[[23]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[23] <- "Constable_2019_EPHPP_Exp2"
 summary(df[[23]])
 ```
 # Constable_2019_EPHPP
-## Experiment 3 (Identity = 4)
+## Experiment 3 (Origin_Identity = 4)
 "Self", "We", "They","Alone"
 ```{r Paper p5 Experiment 3}
 df[[24]] <- read.csv(
@@ -1841,7 +1887,7 @@ df[[24]] <- read.csv(
     Handedness = Handedness,
     First_Language = First.Language,
     Matching = Condition,
-    Identity = Shape,
+    Origin_Identity = Shape,
     Phase = Training.Experiment,
     Shape = Shape,
     Label = Label, 
@@ -1874,14 +1920,14 @@ df[[24]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[24] <- "Constable_2019_EPHPP_Exp3"
 summary(df[[24]])
 ```
 # Constable_2019_EPHPP
-## Experiment 4 (Identity = 5)
+## Experiment 4 (Origin_Identity = 5)
 "Self", "We", "They","Alone"
 ```{r Paper p5 Experiment 4}
 df[[25]] <- read.csv(
@@ -1895,7 +1941,7 @@ df[[25]] <- read.csv(
     P1Age = P1Age,
     P2Age = P2Age,
     Matching = Condition,
-    Identity = Shape,
+    Origin_Identity = Shape,
     Shape = Shape,
     Label = Label, 
     ShapeLoc = ShapeLoc,
@@ -1923,7 +1969,7 @@ df[[25]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[25] <- "Constable_2019_EPHPP_Exp4"
@@ -1931,7 +1977,7 @@ summary(df[[25]])
 ```
 
 # Vicovaro_2022_EPHPP
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self", "Stranger"
 ```{r Paper t6 Experiment 1}
 df[[26]] <- read.csv(
@@ -1945,7 +1991,7 @@ df[[26]] <- read.csv(
     Response = responseKey,
     Symmetry = block,
     Matching = match,
-    Identity = shape,
+    Origin_Identity = shape,
     RT_sec = respRt,
     ACC = respCorr,
   ) %>%
@@ -1954,9 +2000,9 @@ df[[26]] <- read.csv(
       Symmetry == "selfS" ~ "Symmetry",
       Symmetry == "selfA" ~ "Asymmetry"
     ),
-    Identity = case_when(
-      Identity == "self-related" ~ "Self",
-      Identity == "stranger-related" ~ "Stranger"
+    Origin_Identity = case_when(
+      Origin_Identity == "self-related" ~ "Self",
+      Origin_Identity == "stranger-related" ~ "Stranger"
     ),
     Matching = case_when(
       Matching == "yes" ~ "Matching",
@@ -1975,15 +2021,15 @@ df[[26]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Stranger")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Stranger")
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Age, Handedness, Gender, Response, Symmetry, Matching, Identity, RT_ms, RT_sec, ACC
+    Subject, Age, Handedness, Gender, Response, Symmetry, Matching, Origin_Identity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1999,14 +2045,14 @@ df[[26]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[26] <- "Vicovaro_2022_Exp1"
 summary(df[[26]])
 ```
 # Vicovaro_2022_EPHPP
-## Experiment 2 (Identity = 2)
+## Experiment 2 (Origin_Identity = 2)
 "Self", "Stranger"
 ```{r Paper t6 Experiment 2}
 temp <- read.csv(
@@ -2021,7 +2067,7 @@ temp <- read.csv(
     Response = responseKey,
     Symmetry = block,
     Matching = match,
-    Identity = shape,
+    Origin_Identity = shape,
     RT_sec = respRt,
     ACC = respCorr,
   ) %>%
@@ -2030,9 +2076,9 @@ temp <- read.csv(
       Symmetry == "selfS" ~ "Symmetry",
       Symmetry == "selfA" ~ "Asymmetry"
     ),
-    Identity = case_when(
-      Identity == "self-related" ~ "Self",
-      Identity == "stranger-related" ~ "Stranger"
+    Origin_Identity = case_when(
+      Origin_Identity == "self-related" ~ "Self",
+      Origin_Identity == "stranger-related" ~ "Stranger"
     ),
     Matching = case_when(
       Matching == "yes" ~ "Matching",
@@ -2072,15 +2118,15 @@ df[[27]] <- temp %>%
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Stranger")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Stranger")
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Age, Handedness, Gender, Response, Symmetry, Matching, Identity, RT_ms, RT_sec, ACC
+    Subject, Age, Handedness, Gender, Response, Symmetry, Matching, Origin_Identity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -2096,14 +2142,14 @@ df[[27]] <- temp %>%
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 names(df)[27] <- "Vicovaro_2022_Exp2"
 summary(df[[27]])
 rm(Subject_ID,temp)
 ```
 # Perrykkad_2022_BMC
-## Experiment 1 (Identity = 3)
+## Experiment 1 (Origin_Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper t7 Experiment 1}
 df[[28]] <- read.csv(
@@ -2111,7 +2157,7 @@ df[[28]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject = Subject,
-    Identity = shapeCategory,
+    Origin_Identity = shapeCategory,
     Shape = shapeImage,
     Label = text,
     Phase = phase,
@@ -2141,7 +2187,7 @@ df[[28]] <- read.csv(
     ) %>%
   dplyr::select(
     Subject, Phase, Shape, Label, Response, SelfShape, FriendShape,
-    StrangerShape, Matching, Identity, RT_ms, RT_sec, ACC
+    StrangerShape, Matching, Origin_Identity, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -2157,14 +2203,14 @@ df[[28]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Phase, Matching, Identity
+    Subject, Phase, Matching, Origin_Identity
     )
 
 names(df)[28] <- "Perrykkad_2022_BMC_Exp 1"
 summary(df[[28]])
 ```
 # Hu_2020_CP
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self", "Other"
 ```{r Paper p20 Experiment 1}
 df[[29]] <- read.csv(
@@ -2175,7 +2221,7 @@ df[[29]] <- read.csv(
     Age = Age,
     Gender = Sex,
     Handedness = Hand,
-    Identity = Identity,
+    Origin_Identity = Origin_Identity,
     Morality = Morality,
     Shape = Shape,
     Label = Label,
@@ -2203,7 +2249,7 @@ df[[29]] <- read.csv(
     ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label,  Matching, Identity, Morality,
+    Shape, Label,  Matching, Origin_Identity, Morality,
     Response, Bin, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
@@ -2220,7 +2266,7 @@ df[[29]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Morality
+    Subject, Matching, Origin_Identity, Morality
     )
 
 names(df)[29] <- "Hu_2020_CP"
@@ -2228,7 +2274,7 @@ summary(df[[29]])
 ```
 
 # Hu_2023_PA
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self", "Other"
 ```{r Paper s2 Experiment 1}
 df[[30]] <- read.csv(
@@ -2240,7 +2286,7 @@ df[[30]] <- read.csv(
     Age = Age,
     Gender = Sex,
     Handedness = Handedness,
-    Identity = identity,
+    Origin_Identity = Origin_Identity,
     Morality = morality,
     Shape = Shape,
     Label = Label,
@@ -2264,7 +2310,7 @@ df[[30]] <- read.csv(
     ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label,  Matching, Identity, Morality,
+    Shape, Label,  Matching, Origin_Identity, Morality,
     Response, Target, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
@@ -2281,7 +2327,7 @@ df[[30]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Morality
+    Subject, Matching, Origin_Identity, Morality
     )
 
 names(df)[30] <- "Hu_2023_PA"
@@ -2289,7 +2335,7 @@ summary(df[[30]])
 ```
 
 # Woźniak_2022_PR
-## Experiment 1 (Identity = 3)
+## Experiment 1 (Origin_Identity = 3)
 "Self", "Friend", "None"
 ```{r Paper t9 Experiment 1}
 ###############################Save Clean Data####################################
@@ -2329,7 +2375,7 @@ df[[31]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp1_Cle
       Shape == "shape2.jpg" ~ Label2,
       Shape == "shape3.jpg" ~ Label3,
     ),
-    Identity = case_when(
+    Origin_Identity = case_when(
       Shape == "You" ~ "Self",
       Shape == "none" ~ "None",
       TRUE ~ "Friend"
@@ -2345,8 +2391,8 @@ df[[31]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp1_Cle
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "None")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend", "None")
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
@@ -2354,7 +2400,7 @@ df[[31]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp1_Cle
   ) %>%
   dplyr::select(
     Subject, Gender, 
-    Shape, Label1, Label2, Label3, Identity,  
+    Shape, Label1, Label2, Label3, Origin_Identity,  
     Matching, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -2371,14 +2417,14 @@ df[[31]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp1_Cle
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[31] <- "Woźniak_2022_PR_Exp 1"
 summary(df[[31]])
 ```
 # Woźniak_2022_PR
-## Experiment 2 (Identity = 3)
+## Experiment 2 (Origin_Identity = 3)
 "Self", "Friend", "None"
 ```{r Paper t9 Experiment 2}
 ###############################Save Clean Data####################################
@@ -2418,7 +2464,7 @@ df[[32]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp2_Cle
       Shape == "shape2.jpg" ~ Label2,
       Shape == "shape3.jpg" ~ Label3,
     ),
-    Identity = case_when(
+    Origin_Identity = case_when(
       Shape == "You" ~ "Self",
       Shape == "none" ~ "None",
       TRUE ~ "Friend"
@@ -2434,8 +2480,8 @@ df[[32]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp2_Cle
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "None")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend", "None")
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
@@ -2443,7 +2489,7 @@ df[[32]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp2_Cle
   ) %>%
   dplyr::select(
     Subject, Gender, 
-    Shape, Label1, Label2, Label3, Identity,  
+    Shape, Label1, Label2, Label3, Origin_Identity,  
     Matching, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -2460,7 +2506,7 @@ df[[32]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp2_Cle
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[32] <- "Woźniak_2022_PR_Exp 2"
@@ -2468,7 +2514,7 @@ summary(df[[32]])
 ```
 
 # Woźniak_2022_PR
-## Experiment 3 (Identity = 3)
+## Experiment 3 (Origin_Identity = 3)
 "Self", "Friend", "None"
 ```{r Paper t9 Experiment 3}
 ###############################Save Clean Data####################################
@@ -2508,7 +2554,7 @@ df[[33]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp3_Cle
       Shape == "shape2.jpg" ~ Label2,
       Shape == "shape3.jpg" ~ Label3,
     ),
-    Identity = case_when(
+    Origin_Identity = case_when(
       Shape == "You" ~ "Self",
       Shape == "none" ~ "None",
       TRUE ~ "Friend"
@@ -2524,8 +2570,8 @@ df[[33]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp3_Cle
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "None")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend", "None")
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
@@ -2533,7 +2579,7 @@ df[[33]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp3_Cle
   ) %>%
   dplyr::select(
     Subject, Gender, 
-    Shape, Label1, Label2, Label3, Identity,  
+    Shape, Label1, Label2, Label3, Origin_Identity,  
     Matching, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -2550,14 +2596,14 @@ df[[33]] <- read.csv("../1_Clean_Data/Woźniak_2022_PR/Woźniak_2022_PR_Exp3_Cle
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[33] <- "Woźniak_2022_PR_Exp 3"
 summary(df[[33]])
 ```
 # Haciahmet_2023_Psychophysiology 
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self", "Stranger"
 ```{r Paper t1 Experiment 1}
 df[[34]] <- read.csv(
@@ -2570,7 +2616,7 @@ df[[34]] <- read.csv(
     Age = Alter,
     Gender = Geschlecht,
     Handedness = Hand,
-    Identity = Target,
+    Origin_Identity = Target,
     Shape = TargetImage,
     Label = LabelText,
     Matching = Condition,
@@ -2587,9 +2633,9 @@ df[[34]] <- read.csv(
       Matching == 1 ~ "Matching",
       Matching == 2 ~ "Nonmatching"
     ),
-    Identity = case_when(
-      Identity == 1 ~ "self",
-      Identity == 2 ~ "stranger"
+    Origin_Identity = case_when(
+      Origin_Identity == 1 ~ "self",
+      Origin_Identity == 2 ~ "stranger"
     ),
     ) %>%
   dplyr::mutate(
@@ -2598,7 +2644,7 @@ df[[34]] <- read.csv(
     ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label,  Matching, Identity,
+    Shape, Label,  Matching, Origin_Identity,
     Response, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
@@ -2615,7 +2661,7 @@ df[[34]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[34] <- "Haciahmet_2023_Psy"
@@ -2623,7 +2669,7 @@ summary(df[[34]])
 ```
 
 # Sui_2023_CC
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self", "Other"
 ```{r Paper t18 Experiment 1}
 df[[35]] <- read.csv(
@@ -2631,7 +2677,7 @@ df[[35]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject = subj_idx,
-    Identity = person,
+    Origin_Identity = person,
     Stim = stim,
     Response = response,
     Matching = match,
@@ -2656,7 +2702,7 @@ df[[35]] <- read.csv(
     ) %>%
   dplyr::select(
     Subject,
-    Stim,  Matching, Identity,
+    Stim,  Matching, Origin_Identity,
     Response, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
@@ -2673,7 +2719,7 @@ df[[35]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[35] <- "Sui_2023_CC"
@@ -2681,7 +2727,7 @@ summary(df[[35]])
 ```
 
 # Hobbs_2023_PM 
-## Experiment 1 (Identity = 3)
+## Experiment 1 (Origin_Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper t2 Experiment 1}
 temp <- read.csv(
@@ -2701,7 +2747,7 @@ temp <- read.csv(
     Treatment = treatment,
     Shape = Shape,
     Matching = Matching,
-    Identity = stimuli,
+    Origin_Identity = stimuli,
     RT_ms = mean_rt_mult,
     RT_sec = trial_resp.rt,
     ACC = acc,
@@ -2740,8 +2786,8 @@ df[[36]] <- temp %>%
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "Stranger")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend", "Stranger")
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
@@ -2750,7 +2796,7 @@ df[[36]] <- temp %>%
   dplyr::select(
     Subject, Age, Gender, Ethnicity, Employment_Status, Education,Depression,
     Treatment,
-    Shape, Matching, Identity, RT_ms, RT_sec, ACC
+    Shape, Matching, Origin_Identity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -2766,7 +2812,7 @@ df[[36]] <- temp %>%
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 rm(temp, Subject_ID)
@@ -2776,7 +2822,7 @@ summary(df[[36]])
 ```
 
 # Mcivor_2020_EJN 
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self", "Other"
 ```{r Paper p45 Experiment 1}
 df[[37]] <- read.csv(
@@ -2799,7 +2845,7 @@ df[[37]] <- read.csv(
     Othershape = Othershape,
     Selfshape = Selfshape,
     Label = CellLabel,
-    Identity = Label2,
+    Origin_Identity = Label2,
     Response = ITI2.RESP,
     Matching = CellLabel,
     RT_ms = ITI2.RT,
@@ -2825,7 +2871,7 @@ df[[37]] <- read.csv(
   dplyr::select(
     Subject, Age, Gender, Handedness,
     Happyshapeother, Happyshapeself, Neutralshapeother, Neutralshapeself,
-    Sadshapeother, Sadshapeself, Othershape, Selfshape, Label, Identity,
+    Sadshapeother, Sadshapeself, Othershape, Selfshape, Label, Origin_Identity,
     Matching, Response, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::mutate(
@@ -2842,7 +2888,7 @@ df[[37]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[37] <- "Mcivor_2020_EJN"
@@ -2850,7 +2896,7 @@ summary(df[[37]])
 ```
 
 # Liang_2021_HBM
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self", "Friend", "Stranger"
 ```{r Paper t3 Experiment 1}
 df[[38]] <- read.csv(
@@ -2862,17 +2908,17 @@ df[[38]] <- read.csv(
     Gender = gender,
     Shape = shape,
     Matching = match,
-    Identity = shape,
+    Origin_Identity = shape,
     Response = response,
     Phase = session,
     RT_sec = rt,
     ACC = acc,
   ) %>%
   dplyr::mutate(
-    Identity = case_when(
-      Identity == "self" ~ "Self",
-      Identity == "friend" ~ "Friend",
-      Identity == "stranger" ~ "Stranger",
+    Origin_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "friend" ~ "Friend",
+      Origin_Identity == "stranger" ~ "Stranger",
     ),
     Matching = case_when(
       Matching == 1 ~ "Matching",
@@ -2886,8 +2932,8 @@ df[[38]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend", "Stranger")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend", "Stranger")
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
@@ -2895,7 +2941,7 @@ df[[38]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, 
-    Shape, Matching, Identity, Response, Phase, RT_ms, RT_sec, ACC
+    Shape, Matching, Origin_Identity, Response, Phase, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -2911,7 +2957,7 @@ df[[38]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 names(df)[38] <- "Liang_2021_HBM"
@@ -2919,7 +2965,7 @@ summary(df[[38]])
 ```
 
 # Kolvoort_2020_HBM 
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self", "Friend", "Stranger"
 ```{r Paper p34 Experiment 1}
 df[[39]] <- read.csv(
@@ -2983,7 +3029,7 @@ summary(df[[39]])
 ```
 
 # Liu_2023_CP
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self", "Stranger"
 ```{r Paper s1 Experiment 1}
 df_Ps1_E1 <- read.csv(
@@ -2993,7 +3039,7 @@ df_Ps1_E1 <- read.csv(
     Subject = Participant.Public.ID,
     Match = P_Orginal,
     Label = Label,
-    Identity = P_Group,
+    Origin_Identity = P_Group,
     Response = Response,
     RT_ms = Reaction.Time,
     ACC = Correct,
@@ -3003,9 +3049,9 @@ df_Ps1_E1 <- read.csv(
       Match == "JA" ~ "Matching",
       Match == "NEIN" ~ "Nonmatching"
     ),
-    Identity = case_when(
-      Identity == "User" ~ "Self",
-      Identity == "Other" ~ "Stranger"
+    Origin_Identity = case_when(
+      Origin_Identity == "User" ~ "Self",
+      Origin_Identity == "Other" ~ "Stranger"
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
@@ -3039,15 +3085,15 @@ df[[40]] <- df_Ps1_E1 %>%
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Stranger")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Stranger")
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Label, Response, Identity, RT_ms, RT_sec, ACC
+    Subject, Matching, Label, Response, Origin_Identity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -3063,7 +3109,7 @@ df[[40]] <- df_Ps1_E1 %>%
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
   )
 
 rm(df_Subject_ID, df_Ps1_E1)
@@ -3073,7 +3119,7 @@ summary(df[[40]])
 ```
 
 # Orellana-Corrales_2021_EP
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self", "Stranger"
 ```{r Paper n14 Experiment 1}
 df[[41]] <- read.csv(
@@ -3093,8 +3139,8 @@ df[[41]] <- read.csv(
     Label = label,    
     Shape1 = S1,
     Shape2 = S2,
-    Identity1 = ID1,
-    Identity2 = ID2,
+    Origin_Identity1 = ID1,
+    Origin_Identity2 = ID2,
     Response = match03.RESP,
     RT_ms = match03.RT,
     ACC = match03.ACC,
@@ -3118,7 +3164,7 @@ df[[41]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness, 
-    Shape, Label, Shape1, Shape2, Matching, Identity1, Identity2, 
+    Shape, Label, Shape1, Shape2, Matching, Origin_Identity1, Origin_Identity2, 
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -3143,7 +3189,7 @@ summary(df[[41]])
 ```
 
 # Orellana-Corrales_2021_EP
-## Experiment 2 (Identity = 2)
+## Experiment 2 (Origin_Identity = 2)
 "Self", "Stranger"
 ```{r Paper n14 Experiment 2}
 df[[42]] <- read.csv(
@@ -3163,8 +3209,8 @@ df[[42]] <- read.csv(
     Label = label,
     Shape1 = S1,
     Shape2 = S2,
-    Identity1 = ID1,
-    Identity2 = ID2,
+    Origin_Identity1 = ID1,
+    Origin_Identity2 = ID2,
     Response = match03.RESP,
     RT_ms = match03.RT,
     ACC = match03.ACC,
@@ -3188,7 +3234,7 @@ df[[42]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness, 
-    Shape, Label, Matching, Shape1, Shape2, Identity1, Identity2, 
+    Shape, Label, Matching, Shape1, Shape2, Origin_Identity1, Origin_Identity2, 
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -3213,7 +3259,7 @@ summary(df[[42]])
 ```
 
 # Orellana-Corrales_2021_EP
-## Experiment 3 (Identity = 2)
+## Experiment 3 (Origin_Identity = 2)
 "Self", "Stranger"
 ```{r Paper n14 Experiment 3}
 df[[43]] <- read.csv(
@@ -3233,8 +3279,8 @@ df[[43]] <- read.csv(
     Label = label,
     Shape1 = S1,
     Shape2 = S2,
-    Identity1 = ID1,
-    Identity2 = ID2,
+    Origin_Identity1 = ID1,
+    Origin_Identity2 = ID2,
     Response = match03.RESP,
     RT_ms = match03.RT,
     ACC = match03.ACC,
@@ -3258,7 +3304,7 @@ df[[43]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness, 
-    Shape, Label, Matching, Shape1, Shape2, Identity1, Identity2, 
+    Shape, Label, Matching, Shape1, Shape2, Origin_Identity1, Origin_Identity2, 
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -3283,7 +3329,7 @@ summary(df[[43]])
 ```
 
 # Amodeo_2024_CABN
-## Experiment 1 (Identity = 3)
+## Experiment 1 (Origin_Identity = 3)
 "Self","Friend","Stranger"
 ```{r Paper t28 Experiment 1}
 df[[44]] <- read.csv(
@@ -3294,7 +3340,7 @@ df[[44]] <- read.csv(
     Matching = Label,
     Shape = Target,
     Label = Label,
-    Identity = Shape,
+    Origin_Identity = Shape,
     Response = Target.RESP,
     RT_ms = Target.RT,
     ACC = Target.ACC,
@@ -3306,8 +3352,8 @@ df[[44]] <- read.csv(
       Matching == "Vreemde" ~ "Stranger"
     ),
     Matching = case_when(
-      Matching == Identity ~ "Matching",
-      Matching != Identity ~ "Nonmatching"),
+      Matching == Origin_Identity ~ "Matching",
+      Matching != Origin_Identity ~ "Nonmatching"),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000
   ) %>%
@@ -3322,7 +3368,7 @@ df[[44]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject,  
-    Shape, Label, Matching, Identity,
+    Shape, Label, Matching, Origin_Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -3347,7 +3393,7 @@ summary(df[[44]])
 ```
 
 # Zhang_2022_NI
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Origin_Identity = 2)
 "Self","Stranger"
 ```{r Paper t10 Experiment 1}
 df[[45]] <- read.csv(
@@ -3363,7 +3409,7 @@ df[[45]] <- read.csv(
     Gender = Sex,
     Shape = Stimulus,
     Label = Label,
-    Identity = Shape,
+    Origin_Identity = Shape,
     Matching = Match,
     Response = TargetS.RESP,
     RT_ms = TargetS.RT,
@@ -3374,9 +3420,9 @@ df[[45]] <- read.csv(
       Matching == "Matched" ~ "Matching",
       Matching == "Mismatched" ~ "Nonmatching"
     ),
-    Identity = case_when(
-      Identity == "你" ~ "Self",
-      Identity == "生人" ~ "Stranger"
+    Origin_Identity = case_when(
+      Origin_Identity == "你" ~ "Self",
+      Origin_Identity == "生人" ~ "Stranger"
     ),    
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000
@@ -3392,7 +3438,7 @@ df[[45]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label, Matching, Identity,
+    Shape, Label, Matching, Origin_Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -3417,7 +3463,7 @@ summary(df[[45]])
 ```
 
 # Zhang_2022_NI
-## Experiment 2 (Identity = 2)
+## Experiment 2 (Origin_Identity = 2)
 "高兴","中性"
 ```{r Paper t10 Experiment 2}
 df[[46]] <- read.csv(
@@ -3433,7 +3479,7 @@ df[[46]] <- read.csv(
     Gender = Sex,
     Shape = Stimulus,
     Label = Label,
-    Identity = Shape,
+    Origin_Identity = Shape,
     Matching = Match,
     Response = TargetE.RESP,
     RT_ms = TargetE.RT,
@@ -3458,7 +3504,7 @@ df[[46]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label, Matching, Identity,
+    Shape, Label, Matching, Origin_Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -3483,7 +3529,7 @@ summary(df[[46]])
 ```
 
 # Zhang_2022_NI
-## Experiment 3 (Identity = 2)
+## Experiment 3 (Origin_Identity = 2)
 "￥16","￥1"
 ```{r Paper t10 Experiment 3}
 df[[47]] <- read.csv(
@@ -3499,7 +3545,7 @@ df[[47]] <- read.csv(
     Gender = Sex,
     Shape = Stimulus,
     Label = Label,
-    Identity = Shape,
+    Origin_Identity = Shape,
     Matching = Match,
     Response = Target.RESP,
     RT_ms = Target.RT,
@@ -3524,7 +3570,7 @@ df[[47]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label, Matching, Identity,
+    Shape, Label, Matching, Origin_Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -3549,7 +3595,7 @@ summary(df[[47]])
 ```
 
 # Feldborg_2021_ERPH
-## Experiment 1 (Identity = 3)
+## Experiment 1 (Origin_Identity = 3)
 "Self","Friend","Stranger"
 ```{r Paper t13 Experiment 1}
 df[[48]] <- read.csv(
@@ -3565,7 +3611,7 @@ df[[48]] <- read.csv(
     Matching = Con_match,
     Shape = fill,
     Label = Con_label,
-    Identity = Con_shape,
+    Origin_Identity = Con_shape,
     Response = response,
     RT_ms = latency,
     ACC = correct,
@@ -3589,7 +3635,7 @@ df[[48]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Ethnicity, Handedness, Group,
-    Shape, Label, Matching, Identity,
+    Shape, Label, Matching, Origin_Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -3614,7 +3660,7 @@ summary(df[[48]])
 ```
 
 # Martínez-Pérez_2024_CC
-## Experiment 2 (Identity = 3)
+## Experiment 2 (Origin_Identity = 3)
 "self", "best friend","stranger"
 ```{r Paper t27 Experiment 2}
 df[[49]] <- read.csv(
@@ -3629,7 +3675,7 @@ df[[49]] <- read.csv(
     Gender = Sexo,
     Handedness = Mano,
     Shape = Figura,
-    Identity = Etiqueta,
+    Origin_Identity = Etiqueta,
     Matching = TipoEnsayo,
     Response = Blanco1.RESP,
     RT_ms = Blanco1.RT,
@@ -3659,7 +3705,7 @@ df[[49]] <- read.csv(
     Contrast = NA # 文档中未提及对比度
   ) %>%
   dplyr::arrange(
-    Subject, Identity
+    Subject, Origin_Identity
     )
 
 names(df)[49] <- "Martínez-Pérez_2024_CC"
@@ -3701,7 +3747,7 @@ combine_data <- function(data_list) {
   # 循环遍历数据列表中的每个数据框
   for (i in seq_along(data_list)) {
     # 提取关键列
-    key_columns <- data_list[[i]][c("Subject", "Matching", "Identity", "RT_ms", "RT_sec", "ACC")]
+    key_columns <- data_list[[i]][c("Subject", "Matching", "Origin_Identity", "RT_ms", "RT_sec", "ACC")]
     
     # 添加 Paper 列
     key_columns$Paper <- paste0("df_", i)
@@ -3800,7 +3846,7 @@ Unpublished
 
 
 # Paper s3
-## Experiment 1 (Identity = 3)
+## Experiment 1 (Origin_Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper s3 Experiment 1}
 df[[22]] <- read.csv(
@@ -3823,15 +3869,15 @@ df[[22]] <- read.csv(
       Shape == Label ~ "Matching",
       Shape != Label ~ "Nonmatching"),
     RT_sec = RT_ms / 1000,
-    Identity = Shape
+    Origin_Identity = Shape
   ) %>%
   dplyr::mutate(
     Subjcet = as.numeric(Subject),
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend","Stranger")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend","Stranger")
     ),
     Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
@@ -3839,7 +3885,7 @@ df[[22]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Origin_Identity, Session, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -3850,7 +3896,7 @@ df[[22]] <- read.csv(
     ACC == 1 | ACC == 0
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Origin_Identity, Session
   )
 
 names(df)[22] <- "Paper s3 Exp 1"
@@ -3859,7 +3905,7 @@ write.csv(x = df[[22]], file = "../4_Data_Extraction/4_2_Open_Data/Paper_s3/Ps3_
 ```
 
 # Paper s4
-## Experiment 1 (Identity = 3)
+## Experiment 1 (Origin_Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper s4 Experiment 1}
 # 获取文件夹内所有满足条件的文件名
@@ -3887,7 +3933,7 @@ df[[23]] <- read.mat(
     Matching = case_when(
       Shape == Label ~ "Matching",
       Shape != Label ~ "Nonmatching"),
-    Identity = case_when(
+    Origin_Identity = case_when(
       Shape == 1 ~ "Self",
       Shape == 2 ~ "Friend",
       Shape == 3 ~ "Stranger"
@@ -3900,8 +3946,8 @@ df[[23]] <- read.mat(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend","Stranger")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend","Stranger")
     ),
     Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
@@ -3909,7 +3955,7 @@ df[[23]] <- read.mat(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Origin_Identity, Session, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -3920,7 +3966,7 @@ df[[23]] <- read.mat(
     ACC == 1 | ACC == 0
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Origin_Identity, Session
   )
 
 rm(list_mat_e1)
@@ -3931,7 +3977,7 @@ write.csv(x = df[[23]], file = "../4_Data_Extraction/4_2_Open_Data/Paper_s4/Ps4_
 ```
 
 # Paper s4
-## Experiment 2 (Identity = 3)
+## Experiment 2 (Origin_Identity = 3)
 "Self", "Friend", "Stranger"
 ```{r Paper s4 Experiment 2}
 # 获取文件夹内所有满足条件的文件名
@@ -3958,7 +4004,7 @@ df[[24]] <- read.mat(list = list_mat_e2) %>%
       Shape == Label ~ "Matching",
       Shape != Label ~ "Nonmatching"
     ),
-    Identity = case_when(
+    Origin_Identity = case_when(
       Shape == 1 ~ "Self",
       Shape == 2 ~ "Friend",
       Shape == 3 ~ "Stranger"
@@ -3971,8 +4017,8 @@ df[[24]] <- read.mat(list = list_mat_e2) %>%
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend","Stranger")
+    Origin_Identity = factor(
+      Origin_Identity, levels = c("Self", "Friend","Stranger")
     ),
     Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
@@ -3980,7 +4026,7 @@ df[[24]] <- read.mat(list = list_mat_e2) %>%
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Matching, Origin_Identity, Session, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -3991,7 +4037,7 @@ df[[24]] <- read.mat(list = list_mat_e2) %>%
     ACC == 1 | ACC == 0
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity, Session
+    Subject, Matching, Origin_Identity, Session
   )
 
 rm(list_mat_e2)
@@ -4002,7 +4048,7 @@ write.csv(x = df[[24]], file = "../4_Data_Extraction/4_2_Open_Data/Paper_s4/Ps4_
 ```
 
 # Constable_2019_EPHPP
-## Experiment 2 (Identity = 4)
+## Experiment 2 (Origin_Identity = 4)
 "Self", "We", "They","Alone"
 ```{r Paper p5 Experiment 2}
 df[[23]] <- read.csv(
@@ -4014,7 +4060,7 @@ df[[23]] <- read.csv(
     Age = Age,
     Handedness = Handedness,
     First_Language = First.Language,
-    Identity = Shape,
+    Origin_Identity = Shape,
     Shape = Shape,
     WeShape = WeShape,
     Wekey = wekey,
@@ -4039,7 +4085,7 @@ df[[23]] <- read.csv(
     RT_ms = round(RT_ms, 0)
     ) %>%
   dplyr::arrange(
-    Subject, Identity
+    Subject, Origin_Identity
     )
 
 names(df)[23] <- "Constable_2019_EPHPP"
@@ -4048,7 +4094,7 @@ write.csv(x = df[[23]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp2/Consta
 ```
 
 # Feldborg_2021_ERPH
-## Experiment 2 (Identity = 3)
+## Experiment 2 (Origin_Identity = 3)
 "Self","Friend","Stranger"
 ```{r Paper t13 Experiment 1a}
 df[[49]] <- read.csv(
@@ -4063,7 +4109,7 @@ df[[49]] <- read.csv(
     Matching = Con_match,
     Shape = fill,
     Label = Con_label,
-    Identity = Con_shape,
+    Origin_Identity = Con_shape,
     Response = response,
     RT_ms = latency,
     ACC = correct,
@@ -4087,7 +4133,7 @@ df[[49]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Ethnicity, Handedness,
-    Shape, Label, Matching, Identity,
+    Shape, Label, Matching, Origin_Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -4104,7 +4150,7 @@ write.csv(x = df[[49]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021
 ```
 
 # Feldborg_2021_ERPH
-## Experiment 3 (Identity = 3)
+## Experiment 3 (Origin_Identity = 3)
 "Self","Friend","Stranger"
 ```{r Paper t13 Experiment 1b}
 df[[50]] <- read.csv(
@@ -4119,7 +4165,7 @@ df[[50]] <- read.csv(
     Matching = Con_match,
     Shape = fill,
     Label = Con_label,
-    Identity = Con_shape,
+    Origin_Identity = Con_shape,
     Response = response,
     RT_ms = latency,
     ACC = correct,
@@ -4143,7 +4189,7 @@ df[[50]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Ethnicity, Handedness,
-    Shape, Label, Matching, Identity,
+    Shape, Label, Matching, Origin_Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
@@ -4181,7 +4227,7 @@ colors <- c("Cognitive" = "#FF0000", "Memory" = "#FF7F00", "Motor" = "#FFFF00",
 
 # 创建饼图
 ggplot(data, aes(x = "", y = n, fill = Category)) +
-  geom_bar(width = 1, stat = "identity") +
+  geom_bar(width = 1, stat = "Origin_Identity") +
   coord_polar("y", start = 0) +
   scale_fill_manual(values = colors) + # 使用自定义颜色
   theme_void() + # 使用主题void来隐藏轴和背景
@@ -4259,7 +4305,7 @@ colnames(subject_df) <- c("Range", "Count")
 
 # 画出被试量比例的饼图
 ggplot(subject_df, aes(x = "", y = Count, fill = Range)) +
-  geom_bar(stat = "identity", width = 1) +
+  geom_bar(stat = "Origin_Identity", width = 1) +
   coord_polar("y", start = 0) +
   scale_fill_manual(values = colorRampPalette(c("yellow", "red"))(6)) +
   labs(title = "被试量分布比例") +
@@ -4350,7 +4396,7 @@ colnames(subject_df) <- c("Range", "Count")
 
 # 画出被试量比例的饼图
 ggplot(subject_df, aes(x = "", y = Count, fill = Range)) +
-  geom_bar(stat = "identity", width = 1) +
+  geom_bar(stat = "Origin_Identity", width = 1) +
   coord_polar("y", start = 0) +
   scale_fill_manual(values = colorRampPalette(c("yellow", "red"))(6)) +
   labs(title = "被试量分布比例") +
@@ -4448,7 +4494,7 @@ colnames(subject_df) <- c("Range", "Count")
 
 # 画出被试量比例的饼图
 ggplot(subject_df, aes(x = "", y = Count, fill = Range)) +
-  geom_bar(stat = "identity", width = 1) +
+  geom_bar(stat = "Origin_Identity", width = 1) +
   coord_polar("y", start = 0) +
   scale_fill_manual(values = colorRampPalette(c("yellow", "red"))(6)) +
   labs(title = "被试量分布比例") +
@@ -4546,7 +4592,7 @@ colnames(subject_df) <- c("Range", "Count")
 
 # 画出被试量比例的饼图
 ggplot(subject_df, aes(x = "", y = Count, fill = Range)) +
-  geom_bar(stat = "identity", width = 1) +
+  geom_bar(stat = "Origin_Identity", width = 1) +
   coord_polar("y", start = 0) +
   scale_fill_manual(values = colorRampPalette(c("yellow", "red"))(6)) +
   labs(title = "被试量分布比例") +
