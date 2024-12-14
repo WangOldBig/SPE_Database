@@ -1408,7 +1408,7 @@ write.csv(x = df[[21]], file = "../1_Clean_Data/Hu_2023_PA/Hu_2023_PA_Exp1_Clean
 
 # Constable_2019_EPHPP
 ## Experiment 1 (Identity = 4)
-"Self", "We", "They","Alone"
+"Self", "We", "They","You"
 ```{r Paper p5 Experiment 1}
 df[[22]] <- read.csv(
   "../2_Raw_Data/Constable_2019_EPHPP/Exp1/Constable_2019_EPHPP_Exp1_raw.csv"
@@ -1460,7 +1460,7 @@ write.csv(x = df[[22]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp1/Consta
 
 # Constable_2019_EPHPP
 ## Experiment 2 (Identity = 4)
-"Self", "We", "They","Alone"
+"Self", "We", "They","You"
 ```{r Paper p5 Experiment 2}
 df[[23]] <- read.csv(
   "../2_Raw_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_raw.csv"
@@ -1490,6 +1490,13 @@ df[[23]] <- read.csv(
     RT_sec = as.numeric(RT_sec),
     RT_ms = RT_sec * 1000,
     RT_ms = as.numeric(RT_ms),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "We" ~ "Self",
+      English_Identity == "They" ~ "Close",
+      English_Identity == "You" ~ "Close",
+    ),
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
@@ -1518,7 +1525,7 @@ df[[24]] <- read.csv(
     Handedness = Handedness,
     First_Language = First.Language,
     Matching = Condition,
-    Identity = Shape,
+    Origin_Identity = Label,
     Phase = Training.Experiment,
     Shape = Shape,
     Label = Label, 
@@ -1536,13 +1543,20 @@ df[[24]] <- read.csv(
     RT_sec = as.numeric(RT_sec),
     RT_ms = RT_sec * 1000,
     RT_ms = as.numeric(RT_ms),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "We" ~ "Self",
+      English_Identity == "They" ~ "Close",
+      English_Identity == "You" ~ "Close",
+    ),
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
     ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[24] <- "Constable_2019_EPHPP_Exp3"
@@ -1562,7 +1576,7 @@ df[[25]] <- read.csv(
     P1Age = P1Age,
     P2Age = P2Age,
     Matching = Condition,
-    Identity = Shape,
+    Origin_Identity = Label,
     Shape = Shape,
     Label = Label, 
     ShapeLoc = ShapeLoc,
@@ -1575,13 +1589,20 @@ df[[25]] <- read.csv(
     RT_sec = as.numeric(RT_sec),
     RT_ms = RT_sec * 1000,
     RT_ms = as.numeric(RT_ms),
+    English_Identity = Origin_Identity,
+    Standardized_Idnetity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "We" ~ "Self",
+      English_Identity == "They" ~ "Close",
+      English_Identity == "You" ~ "Close",
+    ),
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Identity
+    Subject, Matching, Origin_Identity
     )
 
 names(df)[25] <- "Constable_2019_EPHPP_Exp4"
