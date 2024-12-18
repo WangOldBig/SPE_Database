@@ -1,4 +1,4 @@
-"","Subject","Gender","Age","Handedness","First_Lanugage","Shape","Matching","Origin_Identity","English_Identity","Standardized_Idnetity","Response","ShapeLoc","FaceIdentity","Stimulus","Strength","textColour","Stimuli_Type","RT_ms","RT_sec","ACC"
+"","Subject","Gender","Age","Handedness","First_Lanugage","Shape","Matching","Origin_Identity","English_Identity","Standarlized_Identity","Response","ShapeLoc","FaceIdentity","Stimulus","Strength","textColour","Stimuli_Type","RT_ms","RT_sec","ACC"
 "1",1,"Male",24,"Right","Ukrainian","Self","Matching","Self","Self","Self","l","Bottom",2,"SelfWeak","Weak","white","Self = Positive",767,0.767,1
 "2",1,"Male",24,"Right","Ukrainian","Self","Matching","Self","Self","Self","l","Top",2,"SelfWeak","Weak","white","Self = Positive",1117,1.117,1
 "3",1,"Male",24,"Right","Ukrainian","Self","Matching","Self","Self","Self","l","Top",2,"SelfWeak","Weak","white","Self = Positive",1050,1.05,1

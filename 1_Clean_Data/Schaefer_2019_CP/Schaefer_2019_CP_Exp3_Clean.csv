@@ -1,4 +1,4 @@
-"","Subject","Gender","Age","Handedness","Matching","Origin_Identity","English_Identity","Standardized_Idnetity","RT_ms","RT_sec","ACC"
+"","Subject","Gender","Age","Handedness","Matching","Origin_Identity","English_Identity","Standarlized_Identity","RT_ms","RT_sec","ACC"
 "1",1,"female",19,"right","comp","Bekannter","Acquaintance","Close",457,0.457,1
 "2",1,"female",19,"right","comp","Bekannter","Acquaintance","Close",525,0.525,1
 "3",1,"female",19,"right","comp","Bekannter","Acquaintance","Close",375,0.375,1

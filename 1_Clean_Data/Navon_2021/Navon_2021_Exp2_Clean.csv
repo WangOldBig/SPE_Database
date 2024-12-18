@@ -1,4 +1,4 @@
-"","Subject","Gender","Age","Handedness","First_Lanugage","Shape","Origin_Identity","English_Identity","Standardized_Idnetity","Matching","Response","RT_ms","RT_sec","ACC"
+"","Subject","Gender","Age","Handedness","First_Lanugage","Shape","Origin_Identity","English_Identity","Standarlized_Identity","Matching","Response","RT_ms","RT_sec","ACC"
 "1",1,"female",25,"right","Hebrew","circle.bmp","Close","Close","Close","Matching","z",1476,1.476,1
 "2",1,"female",25,"right","Hebrew","circle.bmp","Close","Close","Close","Matching","z",964,0.964,1
 "3",1,"female",25,"right","Hebrew","circle.bmp","Close","Close","Close","Matching","z",1139,1.139,1

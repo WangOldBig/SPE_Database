@@ -1,4 +1,4 @@
-"","Subject","P1Age","P2Age","Matching","Origin_Identity","Shape","Label","ShapeLoc","Response","RT_sec","ACC","RT_ms","English_Identity","Standardized_Idnetity"
+"","Subject","P1Age","P2Age","Matching","Origin_Identity","Shape","Label","ShapeLoc","Response","RT_sec","ACC","RT_ms","English_Identity","Standarlized_Identity"
 "1",1,24,21,"Match","Person1","Person1","Person1","Bottom","z",0.767,1,767,"Person1",NA
 "2",1,24,21,"Match","Person1","Person1","Person1","Bottom","z",0.567,1,567,"Person1",NA
 "3",1,24,21,"Match","Person1","Person1","Person1","Top","z",0.684,1,684,"Person1",NA

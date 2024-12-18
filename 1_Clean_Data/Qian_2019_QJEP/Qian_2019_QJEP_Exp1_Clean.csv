@@ -1,4 +1,4 @@
-"","Subject","Gender","Age","Matching","Origin_Identity","English_Identity","Standardized_Idnetity","Mood","Arouse","Valence","Session","RT_ms","RT_sec","ACC"
+"","Subject","Gender","Age","Matching","Origin_Identity","English_Identity","Standarlized_Identity","Mood","Arouse","Valence","Session","RT_ms","RT_sec","ACC"
 "1",17,"female",19,"Matching","Familiar","Familiar","Close","happy",5,5,"S1",599,0.599,1
 "2",17,"female",19,"Matching","Familiar","Familiar","Close","happy",5,5,"S1",623,0.623,1
 "3",17,"female",19,"Matching","Familiar","Familiar","Close","happy",5,5,"S1",509,0.509,1
