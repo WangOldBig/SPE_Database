@@ -1,4 +1,4 @@
-"","Subject","Age","Gender","Handedness","Shape","Label","Origin_Identity","English_Identity","Standardized_Idnetity","Matching","Response","RT_ms","RT_sec","ACC"
+"","Subject","Age","Gender","Handedness","Shape","Label","Origin_Identity","English_Identity","Standarlized_Identity","Matching","Response","RT_ms","RT_sec","ACC"
 "1",1,25,"female","right","Dreieck.png","Fremder","Fremder","Stranger","Stranger","Matching","k",1070,1.07,0
 "2",1,25,"female","right","Kreis.png","Ich","Ich","Self","Self","Matching","d",836,0.836,1
 "3",1,25,"female","right","Kreis.png","Ich","Ich","Self","Self","Matching","d",897,0.897,1
