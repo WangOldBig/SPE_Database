@@ -3188,6 +3188,7 @@ df[[48]] <- read.csv(
     Session = Session,
     Group = Block,
     Shape = SelfRelated,
+    Origin_Identity = SelfRelated,
     Label = Question, 
     RT_ms = RT,
     ACC = ACC,
@@ -3230,9 +3231,9 @@ df[[48]] <- read.csv(
     Subject, Matching, Origin_Identity, English_Identity, Standarlized_Identity, Session
   )
 
-names(df)[50] <- "Sui_2014"
-summary(df[[50]])
-write.csv(x = df[[50]], file = "../1_Clean_Data/Sui_2014/Sui_2014_Exp1_Clean.csv")
+names(df)[48] <- "Sui_2014"
+summary(df[[48]])
+write.csv(x = df[[48]], file = "../1_Clean_Data/Sui_2014/Sui_2014_Exp1_Clean.csv")
 ```
 
 # Sui_2015
@@ -3258,17 +3259,24 @@ for (file in file_list) {
 rm(file, file_list)
 
 
-df[[51]] <- read.mat(
+df[[49]] <- read.mat(
   list = list_mat_e1
   ) %>%
   dplyr::mutate(
     Matching = case_when(
       Shape == Label ~ "Matching",
-      Shape != Label ~ "Nonmatching"),
-    Identity = case_when(
+      Shape != Label ~ "Nonmatching"
+      ),
+    Origin_Identity = case_when(
       Shape == 1 ~ "Self",
       Shape == 2 ~ "Friend",
       Shape == 3 ~ "Stranger"
+    ),
+    English_Identity = Origin_Identity,
+    Standarlized_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
     ),
     RT_ms = RT,
     RT_sec = RT / 1000,
@@ -3277,9 +3285,6 @@ df[[51]] <- read.mat(
     Subject = as.numeric(Subject),
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
-    ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend","Stranger")
     ),
     Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
@@ -3302,9 +3307,9 @@ df[[51]] <- read.mat(
 
 rm(list_mat_e1, mat_data)
 
-names(df)[51] <- "Sui_2015"
-summary(df[[51]])
-write.csv(x = df[[51]], file = "../1_Clean_Data/Sui_2015/Sui_2015_Exp1_Clean.csv")
+names(df)[49] <- "Sui_2015"
+summary(df[[49]])
+write.csv(x = df[[49]], file = "../1_Clean_Data/Sui_2015/Sui_2015_Exp1_Clean.csv")
 ```
 
 # Sui_2015
@@ -3329,13 +3334,13 @@ for (file in file_list) {
 
 rm(file, file_list)
 
-df[[52]] <- read.mat(list = list_mat_e2) %>%
+df[[50]] <- read.mat(list = list_mat_e2) %>%
   dplyr::mutate(
     Matching = case_when(
       Shape == Label ~ "Matching",
       Shape != Label ~ "Nonmatching"
     ),
-    Identity = case_when(
+    Origin_Identity = case_when(
       Shape == 1 ~ "Self",
       Shape == 2 ~ "Friend",
       Shape == 3 ~ "Stranger"
@@ -3348,8 +3353,11 @@ df[[52]] <- read.mat(list = list_mat_e2) %>%
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Friend","Stranger")
+    English_Identity = Origin_Identity,
+    Standarlized_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
     ),
     Session = as.factor(Session),
     RT_ms = as.numeric(RT_ms),
@@ -3373,7 +3381,7 @@ df[[52]] <- read.mat(list = list_mat_e2) %>%
 
 rm(list_mat_e2, mat_data)
 
-names(df)[52] <- "Sui_2015"
-summary(df[[52]])
-write.csv(x = df[[52]], file = "../1_Clean_Data/Sui_2015/Sui_2015_Exp2_Clean.csv")
+names(df)[50] <- "Sui_2015"
+summary(df[[50]])
+write.csv(x = df[[50]], file = "../1_Clean_Data/Sui_2015/Sui_2015_Exp2_Clean.csv")
 ```
