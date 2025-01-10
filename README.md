@@ -28,6 +28,8 @@ root
 │  .gitignore
 │  README.md
 │  Dataset_inf.xlsx 
+│  Contact information.xlsx
+│  Dataset_inf.xlsx 
 ├─1_Clean_Data 
 │   └─ <Author>_<Year>_<Journal>
 │       └─ <Author>_<Year>_<Journal>_<Exp-id>_Clean.csv
@@ -35,7 +37,7 @@ root
 ├─2_Raw_Data # raw data will be stored on OSF
 │   └─ <Author>_<Year>_<Journal>
 │       └─ <Author>_<Year>_<Journal>_<Exp-id>_raw.csv
-│       └─ Readme.md  # Including 'Authors'、'CItation'、'Participants'、'Procedure'、'Data Files'.
+│       └─ Readme.md  # Including 'Authors'、'Citation'、'Participants'、'Procedure'、'Data Files'.
 ├─3_Code
 │   └─ Clean_Data.Rproj
 │   └─ Clean_Data.Rmd
