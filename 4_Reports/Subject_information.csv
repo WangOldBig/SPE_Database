@@ -1,8 +1,8 @@
-"total_subjects","male_count","female_count","paper_name"
-56,25,31,"Constable_2020_CE Exp 1"
-56,28,28,"Constable_2020_CE_Exp2"
-24,9,15,"Qian_2019_QJEP_Exp1"
-25,7,18,"Qian_2019_QJEP_Exp2"
-32,4,28,"Schäfer_2019_CP_Exp1"
-36,7,29,"Schäfer_2019_CP Exp 2"
-35,2,33,"Schäfer_2019_CP_Exp3"
+total_subjects,male_count,female_count,paper_name
+56,25,31,Constable_2020_CE Exp 1
+56,28,28,Constable_2020_CE_Exp2
+24,9,15,Qian_2019_QJEP_Exp1
+25,7,18,Qian_2019_QJEP_Exp2
+32,4,28,Sch?fer_2019_CP_Exp1
+36,7,29,Sch?fer_2019_CP Exp 2
+35,2,33,Sch?fer_2019_CP_Exp3
