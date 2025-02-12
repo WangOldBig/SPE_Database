@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-```{r}
+```{r Package, warning = FALSE,message = FALSE}
 library(ggplot2)
 library(dplyr)
 library(purrr) 

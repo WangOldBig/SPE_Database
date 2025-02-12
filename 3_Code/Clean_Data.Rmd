@@ -320,7 +320,7 @@ write.csv(x = df[[3]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_
 
 # Haoyue Qian_2019_QJEP 
 ## Experiment 1 (Identity = 3)
-"Self", "Familiar", "Stranger"
+"Self", "Familiar"("Celebrity"), "Stranger"
 ```{r Paper p51 Experiment 1}
 df[[4]] <- read.csv(
   "../2_Raw_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp1_raw.csv"
@@ -333,7 +333,7 @@ df[[4]] <- read.csv(
   dplyr::mutate(
     Identity = case_when(
       Identity == "Self" ~ "Self",
-      Identity == "Familiar" ~ "Familiar",
+      Identity == "Familiar" ~ "Celebrity",
       Identity == "Stranger" ~ "Stranger"
     ),
     Matching = case_when(
@@ -387,7 +387,7 @@ write.csv(x = df[[4]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp
 
 # Haoyue Qian_2019_QJEP 
 ## Experiment 2 (Identity = 2)
-"Self", "Familiar"
+"Self", "Familiar"("Celebrity")
 ```{r Paper p51 Experiment 2}
 df[[5]] <- read.csv(
   "../2_Raw_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp2_raw.csv"
@@ -401,7 +401,7 @@ df[[5]] <- read.csv(
     Subject = Subject,
     Identity = case_when(
       Identity == "Self" ~ "Self",
-      Identity == "Familiar" ~ "Familiar"
+      Identity == "Familiar" ~ "Celebrity"
     ),
     Matching = case_when(
       Matching == "Matched" ~ "Matching",
@@ -1340,12 +1340,12 @@ summary(df[[20]])
 write.csv(x = df[[20]], file = "../1_Clean_Data/Yang_2021_CP/Yang_2021_CP_Exp1_Clean.csv")
 ```
 
-# Hu_2023_PA  
+# Hu_2023  
 ## Experiment 1 (Identity = 2)
 "Self", "Stranger"
 ```{r Paper s2 Experiment 1}
 df[[21]] <- read.csv(
-  "../2_Raw_Data/Hu_2023_PA/Hu_2023_PA_Exp1_raw.csv"
+  "../2_Raw_Data/Hu_2023_PA/Hu_2023_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
     Session != 3,
@@ -1401,9 +1401,9 @@ df[[21]] <- read.csv(
     Subject, Matching, Origin_Identity
   )
 
-names(df)[21] <- "Hu_2023_PA_Exp1"
+names(df)[21] <- "Hu_2023_Exp1"
 summary(df[[21]])
-write.csv(x = df[[21]], file = "../1_Clean_Data/Hu_2023_PA/Hu_2023_PA_Exp1_Clean.csv")
+write.csv(x = df[[21]], file = "../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
 ```
 
 # Constable_2019_EPHPP
@@ -1615,7 +1615,7 @@ write.csv(x = df[[25]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp4/Consta
 "Self", "Stranger"
 ```{r Paper t6 Experiment 1}
 df[[26]] <- read.csv(
-  "../2_Raw_Data/Vicovaro_2022/Vicovaro_2022_Exp1_raw.csv"
+  "../2_Raw_Data/Vicovaro_2022_EPHPP/Vicovaro_2022_EPHPP_Exp1_raw.csv"
   ) %>%
   dplyr::select(
     Subject = participant_id,
@@ -1673,9 +1673,9 @@ df[[26]] <- read.csv(
     Subject, Matching, Origin_Identity
   )
 
-names(df)[26] <- "Vicovaro_2022_Exp1"
+names(df)[26] <- "Vicovaro_2022_EPHPP_Exp1"
 summary(df[[26]])
-write.csv(x = df[[26]], file = "../1_Clean_Data/Vicovaro_2022/Vicovaro_2022_Exp1_Clean.csv")
+write.csv(x = df[[26]], file = "../1_Clean_Data/Vicovaro_2022_EPHPP/Vicovaro_2022_EPHPP_Exp1_Clean.csv")
 ```
 
 # Vicovaro_2022_EPHPP
