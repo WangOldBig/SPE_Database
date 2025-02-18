@@ -16,15 +16,15 @@ library(effsize)
 ```
 
 # Initial Data.Frame List
+## Identity：self,close,stranger,non-person,celebrity,acquaintance
 ```{r Data.Frame List}
 df <- list()
 
 df_Self_Stranger <- list()
-df_Self_Familiar <- list()
-df_Self_Mother <- list()
+df_Self_Close <- list()
 df_Self_Acquaintance <- list()
-df_Self_Others <- list()
-df_Self_Friend <- list()
+df_Self_Celebrity <- list()
+df_Self_Non_Person <- list()
 ```
 
 # Merryn Dale Constable_2020_CE

@@ -186,7 +186,7 @@ write.csv(x = df[[1]], file = "../1_Clean_Data/Constable_2020_AP/Constable_2020_
 
 # Merryn Dale Constable_2020_CE
 ## Experiment 1 (Identity = 2)
-"Self", "Stranger"
+"Self", "Stranger"    →   "Self","Stranger"
 ```{r Paper p46 Experiment 1}
 df[[2]] <- read.csv(
   "../2_Raw_Data/Constable_2020_CE/Exp1/Constable_2020_CE_Exp1_raw.csv"
@@ -252,7 +252,7 @@ write.csv(x = df[[2]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_
 
 # Merryn Dale Constable_2020_CE (Dark Light Box)
 ## Experiment 2 (Identity = 2)
-"Self", "Stranger"
+"Self", "Stranger"    →   "Self","Stranger"
 ```{r Paper p46 Experiment 2}
 df[[3]] <- read.csv(
   "../2_Raw_Data/Constable_2020_CE/Exp2/Constable_2020_CE_Exp2_raw.csv"
@@ -320,7 +320,7 @@ write.csv(x = df[[3]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_
 
 # Haoyue Qian_2019_QJEP 
 ## Experiment 1 (Identity = 3)
-"Self", "Familiar"("Celebrity"), "Stranger"
+"Self", "Familiar"("Celebrity"), "Stranger"   →   "Self","Celebrity","Stranger"
 ```{r Paper p51 Experiment 1}
 df[[4]] <- read.csv(
   "../2_Raw_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp1_raw.csv"
@@ -387,7 +387,7 @@ write.csv(x = df[[4]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp
 
 # Haoyue Qian_2019_QJEP 
 ## Experiment 2 (Identity = 2)
-"Self", "Familiar"("Celebrity")
+"Self", "Familiar"("Celebrity")   →   "Self","Celebrity","Stranger"
 ```{r Paper p51 Experiment 2}
 df[[5]] <- read.csv(
   "../2_Raw_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp2_raw.csv"
@@ -449,7 +449,7 @@ write.csv(x = df[[5]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp
 
 # Sarah Schaefer_2019_CP 
 ## Experiment 1 (Identity = 4)
-"Self", "Mother","none", "Acquaintance"
+"Self", "Mother","none", "Acquaintance"   →   "Self","Close","Acquaintance,"Non_Person"
 ```{r Paper p54 Experiment 1}
 df[[6]] <- read.csv(
   "../2_Raw_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp1_raw.csv"
@@ -486,7 +486,7 @@ df[[6]] <- read.csv(
     Standarlized_Identity = case_when(
       English_Identity == "Self" ~ "Self",
       English_Identity == "Mother" ~ "Close",
-      English_Identity == "Acquaintance" ~ "Close",
+      English_Identity == "Acquaintance" ~ "Acquaintance",
       English_Identity == "none" ~ "NonPerson",
     ),
     RT_ms = as.numeric(RT_ms),
@@ -512,7 +512,7 @@ write.csv(x = df[[6]], file = "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP
 
 # Sarah Schaefer_2019_CP 
 ## Experiment 2 (Identity = 4)
-"Self", "Mother","none", "Acquaintance"
+"Self", "Mother","none", "Acquaintance"   
 ```{r Paper p54 Experiment 2}
 df[[7]] <- read.csv(
   "../2_Raw_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp2_raw.csv"
@@ -551,7 +551,7 @@ write.csv(x = df[[7]], file = "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP
 
 # Sarah Schaefer_2019_CP 
 ## Experiment 3 (Identity = 3)
-"Self", "Mother", "Acquaintance"
+"Self", "Mother", "Acquaintance"    →   "Self","Close","Non_Person"
 ```{r Paper p54 Experiment 3}
 df[[8]] <- read.csv(
   "../2_Raw_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp3_raw.csv"
@@ -584,7 +584,7 @@ df[[8]] <- read.csv(
     Standarlized_Identity = case_when(
       English_Identity == "Self" ~ "Self",
       English_Identity == "Mother" ~ "Close",
-      English_Identity == "Acquaintance" ~ "Close",
+      English_Identity == "Acquaintance" ~ "Acquaintance",
     ),
   ) %>%
   dplyr::select(
@@ -605,7 +605,7 @@ write.csv(x = df[[8]], file = "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP
 
 # Mateusz Wozniak_2018_PLOS (Face)
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Non_Person"
 ```{r Paper p95 Experiment 1}
 df[[9]] <- read.csv(
   "../2_Raw_Data/Wozniak_2018_PLOS/Wozniak_2018_PLOS_Exp1_raw.csv"
@@ -682,7 +682,7 @@ write.csv(x = df[[9]], file = "../1_Clean_Data/Wozniak_2018_PLOS/Wozniak_2018_PL
 
 # Mateusz Wozniak_2018_PLOS
 ## Experiment 2 (Identity = 3)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper p95 Experiment 2}
 df[[10]] <- read.csv(
   "../2_Raw_Data/Wozniak_2018_PLOS/Wozniak_2018_PLOS_Exp2_raw.csv"
@@ -755,7 +755,7 @@ write.csv(x = df[[10]], file = "../1_Clean_Data/Wozniak_2018_PLOS/Wozniak_2018_P
 
 # Marius Golubickis_2021_AP
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper n4 Experiment 1}
 df[[11]] <- read.csv(
   "../2_Raw_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp1_raw.csv"
@@ -804,7 +804,7 @@ write.csv(x = df[[11]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_20
 ```
 
 ## Experiment 2 (Identity = 3)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper n4 Experiment 2}
 df[[12]] <- read.csv(
   "../2_Raw_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp2_raw.csv"
@@ -854,7 +854,7 @@ write.csv(x = df[[12]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_20
 
 # Mayan Navon_2021
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper n13 Experiment 1}
 df[[13]] <- read.csv(
   "../2_Raw_Data/Navon_2021/Navon_2021_Exp1_raw.csv"
@@ -923,7 +923,7 @@ write.csv(x = df[[13]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp1_Clean
 
 # Mayan Navon_2021
 ## Experiment 2 (Identity = 3)
-"Father", "Close", "Stranger"
+"Father", "Close", "Stranger"   →   "Close","Close","Stranger"
 ```{r Paper n13 Experiment 2}
 df[[14]] <- read.csv(
   "../2_Raw_Data/Navon_2021/Navon_2021_Exp2_raw.csv"
@@ -995,7 +995,7 @@ write.csv(x = df[[14]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp2_Clean
 
 # Mayan Navon_2021
 ## Experiment 3 (Identity = 3) 
-"Self", "Father", "Stranger"
+"Self", "Father", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper n13 Experiment 3}
 df[[15]] <- read.csv(
   "../2_Raw_Data/Navon_2021/Navon_2021_Exp3_raw.csv"
@@ -1066,7 +1066,7 @@ write.csv(x = df[[15]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp3_Clean
 
 # Mayan Navon_2021
 ## Experiment 4 (Identity = 3)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper n13 Experiment 4}
 df[[16]] <- read.csv(
   "../2_Raw_Data/Navon_2021/Navon_2021_Exp4_raw.csv"
@@ -1135,7 +1135,7 @@ write.csv(x = df[[16]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp4_Clean
 
 # Saga L. Svensson_2021_PR
 ## Experiment 1 (Identity = 2)
-"Self", "Friend"
+"Self", "Friend"    →   "Self","Close"
 ```{r Paper n16 Experiment 1}
 df[[17]] <- read.csv(
   "../2_Raw_Data/Svensson_2021_PR/Svensson_2021_PR_Exp1_raw.csv"
@@ -1185,7 +1185,7 @@ write.csv(x = df[[17]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_P
 
 # Saga L. Svensson_2021_PR
 ## Experiment 2 (Identity = 2)
-"Self", "Friend"
+"Self", "Friend"    →   "Self","Close"
 ```{r Paper n16 Experiment 2}
 df[[18]] <- read.csv(
   "../2_Raw_Data/Svensson_2021_PR/Svensson_2021_PR_Exp2_raw.csv"
@@ -1235,7 +1235,7 @@ write.csv(x = df[[18]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_P
 
 # Saga L. Svensson_2021_PR
 ## Experiment 3 (Identity = 2)
-"Self", "Friend"
+"Self", "Friend"    →   "Self","Close"
 ```{r Paper n16 Experiment 3}
 df[[19]] <- read.csv(
   "../2_Raw_Data/Svensson_2021_PR/Svensson_2021_PR_Exp3_raw.csv"
@@ -1285,7 +1285,7 @@ write.csv(x = df[[19]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_P
 
 # Yang Xu_2021_CP
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper n23 Experiment 1}
 df[[20]] <- read.csv(
   "../2_Raw_Data/Yang_2021_CP/Yang_2021_CP_Exp1_raw.csv"
@@ -1342,7 +1342,7 @@ write.csv(x = df[[20]], file = "../1_Clean_Data/Yang_2021_CP/Yang_2021_CP_Exp1_C
 
 # Hu_2023  
 ## Experiment 1 (Identity = 2)
-"Self", "Stranger"
+"Self", "Stranger"    →   "Self","Stranger"
 ```{r Paper s2 Experiment 1}
 df[[21]] <- read.csv(
   "../2_Raw_Data/Hu_2023_PA/Hu_2023_Exp1_raw.csv"
@@ -1408,7 +1408,7 @@ write.csv(x = df[[21]], file = "../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
 
 # Constable_2019_EPHPP
 ## Experiment 1 (Identity = 4)
-"Self", "We", "They","You"
+"Self", "We", "They","You"    →   "Self","Group-Self","Stranger","Group-Stranger"
 ```{r Paper p5 Experiment 1}
 df[[22]] <- read.csv(
   "../2_Raw_Data/Constable_2019_EPHPP/Exp1/Constable_2019_EPHPP_Exp1_raw.csv"
@@ -1460,7 +1460,7 @@ write.csv(x = df[[22]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp1/Consta
 
 # Constable_2019_EPHPP
 ## Experiment 2 (Identity = 4)
-"Self", "We", "They","You"
+"Self", "We", "They","You"    →   "Self","Group-Self","Stranger","Group-Stranger"
 ```{r Paper p5 Experiment 2}
 df[[23]] <- read.csv(
   "../2_Raw_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_raw.csv"
@@ -1513,7 +1513,7 @@ write.csv(x = df[[23]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp2/Consta
 
 # Constable_2019_EPHPP
 ## Experiment 3 (Identity = 4)
-"Self", "We", "They","Alone"
+"Self", "We", "They","Alone"    →   "Self","Group-Self","Stranger","Group-Stranger"
 ```{r Paper p5 Experiment 3}
 df[[24]] <- read.csv(
   "../2_Raw_Data/Constable_2019_EPHPP/Exp3/Constable_2019_EPHPP_Exp3_raw.csv"
@@ -1566,7 +1566,7 @@ write.csv(x = df[[24]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp3/Consta
 
 # Constable_2019_EPHPP
 ## Experiment 4 (Identity = 5)
-"Self", "We", "They","Alone"
+"Self", "We", "They","Alone"    →   "Self","Group-Self","Stranger","Group-Stranger"
 ```{r Paper p5 Experiment 4}
 df[[25]] <- read.csv(
   "../2_Raw_Data/Constable_2019_EPHPP/Exp4/Constable_2019_EPHPP_Exp4_raw.csv"
@@ -1612,7 +1612,7 @@ write.csv(x = df[[25]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp4/Consta
 
 # Vicovaro_2022_EPHPP
 ## Experiment 1 (Identity = 2)
-"Self", "Stranger"
+"Self", "Stranger"    →   "Self","Stranger"
 ```{r Paper t6 Experiment 1}
 df[[26]] <- read.csv(
   "../2_Raw_Data/Vicovaro_2022_EPHPP/Vicovaro_2022_EPHPP_Exp1_raw.csv"
@@ -1680,7 +1680,7 @@ write.csv(x = df[[26]], file = "../1_Clean_Data/Vicovaro_2022_EPHPP/Vicovaro_202
 
 # Vicovaro_2022_EPHPP
 ## Experiment 2 (Identity = 2)
-"Self", "Stranger"
+"Self", "Stranger"    →   "Self","Stranger"
 ```{r Paper t6 Experiment 2}
 temp <- read.csv(
   "../2_Raw_Data/Vicovaro_2022/Vicovaro_2022_Exp2_raw.csv"
@@ -1770,7 +1770,7 @@ rm(Subject_ID,temp)
 
 # Perrykkad_2022_BMC
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper t7 Experiment 1}
 df[[28]] <- read.csv(
   "../2_Raw_Data/Perrykkad_2022_BMC/Perrykkad_2022_BMC_Exp1_raw.csv"
@@ -1834,7 +1834,7 @@ write.csv(x = df[[28]], file = "../1_Clean_Data/Perrykkad_2022_BMC/Perrykkad_202
 
 # Hu_2020_CP
 ## Experiment 1 (Identity = 2)
-"Self", "Other"
+"Self", "Other"   →   "Self","Stranger"
 ```{r Paper p20 Experiment 1}
 df[[29]] <- read.csv(
   "../2_Raw_Data/Hu_2020_CP/Hu_2020_CP_raw.csv"
@@ -1895,7 +1895,7 @@ write.csv(x = df[[29]], file = "../1_Clean_Data/Hu_2020_CP/Hu_2020_CP_Clean.csv"
 
 # Wozniak_2022_PR
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "None"
+"Self", "Friend", "None"    →   "Self","Close","Non_Person"
 ```{r Paper t9 Experiment 1}
 ###############################Save Raw Data####################################
 # 获取文件列表
@@ -1986,7 +1986,7 @@ write.csv(x = df[[30]], file = "../1_Clean_Data/Wozniak_2022_PR/Wozniak_2022_PR_
 
 # Wozniak_2022_PR
 ## Experiment 2 (Identity = 3)
-"Self", "Friend", "None"
+"Self", "Friend", "None"    →   "Self","Close","Non_Person"
 ```{r Paper t9 Experiment 2}
 ###############################Save Raw Data####################################
 # 获取文件列表
@@ -2078,7 +2078,7 @@ write.csv(x = df[[31]], file = "../1_Clean_Data/Wozniak_2022_PR/Wozniak_2022_PR_
 
 # Wozniak_2022_PR
 ## Experiment 3 (Identity = 3)
-"Self", "Friend", "None"
+"Self", "Friend", "None"    →   "Self","Close","Non_Person"
 ```{r Paper t9 Experiment 3}
 ###############################Save Raw Data####################################
 # 获取文件列表
@@ -2170,7 +2170,7 @@ write.csv(x = df[[32]], file = "../1_Clean_Data/Wozniak_2022_PR/Wozniak_2022_PR_
 
 # Haciahmet_2023_Psychophysiology 
 ## Experiment 1 (Identity = 2)
-"Self", "Stranger"
+"Self", "Stranger"    →   "Self","Stranger"
 ```{r Paper t1 Experiment 1}
 df[[33]] <- read.csv(
   "../2_Raw_Data/Haciahmet_2023_Psy/Haciahmet_2023_Psy_Exp1_raw.csv"
@@ -2234,7 +2234,7 @@ write.csv(x = df[[33]], file = "../1_Clean_Data/Haciahmet_2023_Psy/Haciahmet_202
 
 # Sui_2023_CC
 ## Experiment 1 (Identity = 2)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper t18 Experiment 1}
 df[[34]] <- read.csv(
   "../2_Raw_Data/Sui_2023_CC/Sui_2023_CC_Exp1_raw.csv"
@@ -2291,7 +2291,7 @@ write.csv(x = df[[34]], file = "../1_Clean_Data/Sui_2023_CC/Sui_2023_CC_Exp1_Cle
 
 # Hobbs_2023_PM 
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper t2 Experiment 1}
 temp <- read.csv(
   "../2_Raw_Data/Hobbs_2023_PM/Hobbs_2023_PM_Exp1_raw.csv"
@@ -2381,7 +2381,7 @@ write.csv(x = df[[35]], file = "../1_Clean_Data/Hobbs_2023_PM/Hobbs_2023_PM_Exp1
 
 # Mcivor_2020_EJN 
 ## Experiment 1 (Identity = 2)
-"Self", "Other"
+"Self", "Other"   →   "Self","Stranger"
 ```{r Paper p45 Experiment 1}
 df[[36]] <- read.csv(
   "../2_Raw_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_Exp1_raw.csv"
@@ -2453,7 +2453,7 @@ write.csv(x = df[[36]], file = "../1_Clean_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_
 
 # Liang_2021_HBM
 ## Experiment 1 (Identity = 2)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper t3 Experiment 1}
 df[[37]] <- read.csv(
   "../2_Raw_Data/Liang_2021_HBM/Liang_2021_HBM_Exp1_raw.csv"
@@ -2517,7 +2517,7 @@ write.csv(x = df[[37]], file = "../1_Clean_Data/Liang_2021_HBM/Liang_2021_HBM_Ex
 
 # Kolvoort_2020_HBM 
 ## Experiment 1 (Identity = 2)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper p34 Experiment 1}
 df[[38]] <- read.csv(
   "../2_Raw_Data/Kolvoort_2020_HBM/Kolvoort_2020_HBM_Exp1_correctRT_raw.csv"
@@ -2585,7 +2585,7 @@ write.csv(x = df[[38]], file = "../1_Clean_Data/Kolvoort_2020_HBM/Kolvoort_2020_
 
 # Liu_2023_CP
 ## Experiment 1 (Identity = 2)
-"Self", "Stranger"
+"Self", "Stranger"    →   "Self","Stranger"
 ```{r Paper s1 Experiment 1}
 df_Ps1_E1 <- read.csv(
   "../2_Raw_Data/Liu_2023_CP/Liu_2023_CP_Exp1_raw.csv"
@@ -2668,7 +2668,7 @@ write.csv(x = df[[39]], file = "../1_Clean_Data/Liu_2023_CP/Liu_2023_CP_Exp1_Cle
 
 # Orellana-Corrales_2021_EP
 ## Experiment 1 (Identity = 2)
-"Self", "Stranger"
+"Self", "Stranger"    →   "Self","Stranger"
 ```{r Paper n14 Experiment 1}
 df[[40]] <- read.csv(
 "../2_Raw_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp1_raw.csv"
@@ -2735,7 +2735,7 @@ write.csv(x = df[[40]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orella
 
 # Orellana-Corrales_2021_EP
 ## Experiment 2 (Identity = 2)
-"Self", "Stranger"
+"Self", "Stranger"    →   "Self","Stranger"
 ```{r Paper n14 Experiment 2}
 df[[41]] <- read.csv(
 "../2_Raw_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp2_raw.csv"
@@ -2802,7 +2802,7 @@ write.csv(x = df[[41]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orella
 
 # Orellana-Corrales_2021_EP
 ## Experiment 3 (Identity = 2)
-"Self", "Stranger"
+"Self", "Stranger"    →   "Self","Stranger"
 ```{r Paper n14 Experiment 3}
 df[[42]] <- read.csv(
 "../2_Raw_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp3_raw.csv"
@@ -2869,7 +2869,7 @@ write.csv(x = df[[42]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orella
 
 # Amodeo_2024_CABN
 ## Experiment 1 (Identity = 3)
-"Self","Friend","Stranger"
+"Self","Friend","Stranger"    →   "Self","Close","Stranger"
 ```{r Paper t28 Experiment 1}
 df[[43]] <- read.csv(
 "../2_Raw_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_raw.csv"
@@ -2931,7 +2931,7 @@ write.csv(x = df[[43]], file = "../1_Clean_Data/Amodeo_2024_CABN/Amodeo_2024_CAB
 
 # Zhang_2023_NI
 ## Experiment 1 (Identity = 2)
-"Self","Stranger"
+"Self","Stranger"   →   "Self","Stranger"
 ```{r Paper t10 Experiment 1}
 df[[44]] <- read.csv(
 "../2_Raw_Data/Zhang_2023_NI/Zhang_2023_NI_Exp1_raw.csv"
@@ -2997,7 +2997,7 @@ write.csv(x = df[[44]], file = "../1_Clean_Data/Zhang_2023_NI/Zhang_2023_NI_Exp1
 
 # Feldborg_2021_ERPH
 ## Experiment 1 (Identity = 3)
-"Self","Friend","Stranger"
+"Self","Friend","Stranger"    →   "Self","Close","Stranger"
 ```{r Paper t13 Experiment 1}
 df[[45]] <- read.csv(
 "../2_Raw_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1_raw.csv"
@@ -3064,7 +3064,7 @@ write.csv(x = df[[45]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021
 
 # Martínez-Perez_2024_CC
 ## Experiment 2 (Identity = 3)
-"self", "best friend","stranger"
+"self", "best friend","stranger"    →   "Self","Close","Stranger"
 ```{r Paper t27 Experiment 2}
 df[[46]] <- read.csv(
   "../2_Raw_Data/Martinez-Perez_2024_CC/Martinez-Perez_2024_CC_Exp2_raw.csv"
@@ -3120,7 +3120,7 @@ write.csv(x = df[[46]], file = "../1_Clean_Data/Martinez-Perez_2024_CC/Martinez-
 
 # Wang_2016_EPHPP
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r  Experiment 1}
 df[[47]] <- read.csv(
   "../2_Raw_Data/Wang_2016_EPHPP/Merge_Data_Used.csv"
@@ -3176,7 +3176,7 @@ write.csv(x = df[[47]], file = "../1_Clean_Data/Wang_2016_EPHPP/Wang_2016_EPHPP_
 
 # Sui_2014
 ## Experiment 1 (Identtiy = 3)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper s3 Experiment 1}
 df[[48]] <- read.csv(
   "../2_Raw_Data/Sui_2014/Sui_2014_Exp1_raw.csv"
@@ -3238,7 +3238,7 @@ write.csv(x = df[[48]], file = "../1_Clean_Data/Sui_2014/Sui_2014_Exp1_Clean.csv
 
 # Sui_2015
 ## Experiment 1 (Identtiy = 3)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper s4 Experiment 1}
 # 获取文件夹内所有满足条件的文件名
 file_list <- list.files(
@@ -3314,7 +3314,7 @@ write.csv(x = df[[49]], file = "../1_Clean_Data/Sui_2015/Sui_2015_Exp1_Clean.csv
 
 # Sui_2015
 ## Experiment 2 (Identtiy = 3)
-"Self", "Friend", "Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper s4 Experiment 2}
 # 获取文件夹内所有满足条件的文件名
 file_list <- list.files(

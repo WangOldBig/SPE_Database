@@ -11,7 +11,7 @@
 
 <meta name="author" content="Author First M. Last" />
 
-<meta name="date" content="2025-01-13" />
+<meta name="date" content="2025-02-18" />
 
 <title>Self-Prioritization Effects Database</title>
 
@@ -1481,7 +1481,7 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">Self-Prioritization Effects Database</h1>
 <h4 class="author">Author First M. Last</h4>
-<h4 class="date">2025-01-13</h4>
+<h4 class="date">2025-02-18</h4>
 
 </div>
 
@@ -1602,19 +1602,27 @@ database.</p>
 <h2><span class="header-section-number">4.1</span> The effect size of
 Self-prioritization Effect is moderated by baseline condition.</h2>
 <ul>
-<li>思路：用不同Identity与Self的差值画图</li>
+<li>思路：用不同Identity（close,stranger,non-person,celebrity,acquaintance）与Self的差值画图</li>
 <li>目的：展现出与不同Identity相比的SPE的程度</li>
-<li>P1(横坐标是RT,纵坐标是Correlation with Cohen’s d-Self-Friend in RT.
-)</li>
-<li>P2(横坐标是RT,纵坐标是Correlation with Cohen’s d-Self-Close in RT.
-)</li>
-<li>P3(横坐标是RT,纵坐标是Correlation with Cohen’s d-Self-Stranger in
-RT. )</li>
+<li>P1.1(横坐标是SA_RT,纵坐标是Cohen’s d-Self-Acquaintance in RT. )</li>
+<li>P1.2(横坐标是SC_RT,纵坐标是Cohen’s d-Self-Close in RT. )</li>
+<li>P1.3(横坐标是SS_RT,纵坐标是Cohen’s d-Self-Stranger in RT. )</li>
+<li>P1.4(横坐标是SN_RT,纵坐标是Cohen’s d-Self-Non_Person in RT. )</li>
 </ul>
 </div>
 <div id="serial-dependence-effect-in-spe." class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span> Serial dependence
 effect in SPE.</h2>
+<ul>
+<li>思路：使用LMM(Linear Mixed
+Model)来探索在知觉匹配范式中，是否存在序列位置效应。以及序列位置效应中Identity是如何影响RT/ACC的(反应时越短，说明加工越快；正确率越高，说明加工越准确)</li>
+<li>目的：展现出不同Identity对于当前呈现刺激的影响。进而揭示SPE的认知和感知的潜在机制，为解释自我优势效应生成的本质提供思考。</li>
+<li>P1(横坐标是History of RTs,纵坐标是β)</li>
+</ul>
+</div>
+<div id="negativepositive-metacognitive-sensitivity" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> Negative/positive
+metacognitive sensitivity</h2>
 <ul>
 <li>思路：模仿Confidence Database,看不同的Trial、ACC对SPE的影响</li>
 <li>目的：展现出可能会影响SPE的其他影响</li>
@@ -1624,8 +1632,8 @@ effect in SPE.</h2>
 <li>P7(横坐标是Median choice RT (s),纵坐标是Cohen’s d)</li>
 </ul>
 </div>
-<div id="spe-in-non-matching-condition." class="section level2" number="4.3">
-<h2><span class="header-section-number">4.3</span> SPE in non-matching
+<div id="spe-in-non-matching-condition." class="section level2" number="4.4">
+<h2><span class="header-section-number">4.4</span> SPE in non-matching
 condition.</h2>
 <ul>
 <li>思路：探索Nonmatching条件下，是否存在自我优势效应</li>

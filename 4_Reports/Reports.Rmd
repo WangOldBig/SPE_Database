@@ -48,14 +48,19 @@ The Self-Prioritization Effects Database can be used for a variety of purposes, 
 Below are some example analyses demonstrating the utility of the database.
 
 ## The effect size of Self-prioritization Effect is moderated by baseline condition.
-- 思路：用不同Identity与Self的差值画图
+- 思路：用不同Identity（close,stranger,non-person,celebrity,acquaintance）与Self的差值画图
 - 目的：展现出与不同Identity相比的SPE的程度
-- P1(横坐标是RT,纵坐标是Correlation with Cohen's d-Self-Friend in RT. )
-- P2(横坐标是RT,纵坐标是Correlation with Cohen's d-Self-Close in RT. )
-- P3(横坐标是RT,纵坐标是Correlation with Cohen's d-Self-Stranger in RT. )
+- P1.1(横坐标是SA_RT,纵坐标是Cohen's d-Self-Acquaintance in RT. )
+- P1.2(横坐标是SC_RT,纵坐标是Cohen's d-Self-Close in RT. )
+- P1.3(横坐标是SS_RT,纵坐标是Cohen's d-Self-Stranger in RT. )
+- P1.4(横坐标是SN_RT,纵坐标是Cohen's d-Self-Non_Person in RT. )
   
 ## Serial dependence effect in SPE.
+- 思路：使用LMM(Linear Mixed Model)来探索在知觉匹配范式中，是否存在序列位置效应。以及序列位置效应中Identity是如何影响RT/ACC的(反应时越短，说明加工越快；正确率越高，说明加工越准确)
+- 目的：展现出不同Identity对于当前呈现刺激的影响。进而揭示SPE的认知和感知的潜在机制，为解释自我优势效应生成的本质提供思考。
+- P1(横坐标是History of RTs,纵坐标是β)
 
+## Negative/positive metacognitive sensitivity
 - 思路：模仿Confidence Database,看不同的Trial、ACC对SPE的影响
 - 目的：展现出可能会影响SPE的其他影响
 - P4(横坐标是RT/ACC,纵坐标是Cohen's d)
