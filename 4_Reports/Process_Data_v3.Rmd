@@ -8,7 +8,7 @@ output: html_document
 # Process Coding
 ## Loading package
 ```{r Package, warning = FALSE,message = FALSE}
-# clean data
+## 加载必要的 R 包
 library(tidyr)
 library(dplyr)
 library(stringr)
@@ -24,106 +24,82 @@ dataPath = "../1_Clean_Data"
 data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
 ```
 
-## Pre-allocate empty variables
-```{r}
-rt_self <- c()
-rt_close <- c()
-rt_stranger <- c()
-rt_non_person <- c()
-rt_acquaintance <- c()
-cohens_d_self_close <- c()
-cohens_d_self_stranger <- c()
-cohens_d_self_non_person <- c()
-cohens_d_self_acquaintance <- c()
-counter <- 1
-```
-
 ## Read csv
 ```{r}
-# 遍历所有数据文件
-for (i in 1:length(data_files)) {
+## 预分配存储变量（使用列表存储数据，避免 `assign()`）
+results_list <- list()
+
+## 读取 CSV 文件并处理数据
+counter <- 1
+for (i in seq_along(data_files)) {
   Data <- read.csv(data_files[i], fileEncoding = "UTF-8-BOM")
   
-  # 确保数据包含 RT_ms 和 Standarlized_Identity
-  if (all(c("RT_ms", "Standarlized_Identity", "Subject") %in% names(Data))) {
+  # 确保数据包含必要的变量
+  if (all(c("RT_ms", "Standarlized_Identity", "Subject", "Matching") %in% names(Data))) {
     
     # 获取当前数据集包含的 Identity（自动筛选）
     available_identities <- unique(Data$Standarlized_Identity)
-    
+    Data$Subject <- paste0(basename(data_files[i]), "_", Data$Subject)
+
     # 获取当前数据集的所有被试
     subs <- unique(Data$Subject)
     
-    for (j in 1:length(subs)) {
-      temp <- subset(Data, Subject == subs[j])
+    for (sub in subs) {
+      temp <- Data %>%
+        filter(Subject == sub) %>%
+        filter(RT_ms > 10 & RT_ms < 5000)  # 过滤异常反应时
       
-      # 标准化 RT（Z-score）
-      temp$RT_z <- scale(temp$RT_ms)
-      
-      # 过滤异常反应时 (10ms < RT < 5000ms)
-      temp <- subset(temp, RT_ms > 10 & RT_ms < 5000)
-      
-      # 计算 Self 的 RT 均值
-      if ("Self" %in% available_identities) {
-        rt_self[counter] <- mean(temp$RT_ms[temp$Standarlized_Identity == "Self"], na.rm = TRUE)
-      } else {
-        rt_self[counter] <- NA  # 若当前数据无 Self，则填充 NA
+      for (match_condition in c("Matching", "Nonmatching")) {
+        temp_match <- temp %>% filter(Matching == match_condition)
+        
+        # 计算 Self 的 RT
+        rt_self <- if ("Self" %in% available_identities) {
+          mean(temp_match$RT_ms[temp_match$Standarlized_Identity == "Self"], na.rm = TRUE)
+        } else { NA }
+        
+        # 存储当前被试的结果
+        temp_results <- list(
+          Subject = sub,
+          Matching = match_condition,
+          rt_self = rt_self
+        )
+        
+        # 计算各个 Identity 的 RT 和 Cohen’s d
+        for (identity in c("Close", "Stranger", "NonPerson", "Acquaintance")) {
+          rt_identity <- if (identity %in% available_identities) {
+            mean(temp_match$RT_ms[temp_match$Standarlized_Identity == identity], na.rm = TRUE)
+          } else { NA }
+          
+          # 计算 Cohen’s d
+          if (!is.na(rt_self) & !is.na(rt_identity)) {
+            pooled_sd <- sqrt((sd(temp_match$RT_ms[temp_match$Standarlized_Identity == "Self"], na.rm = TRUE)^2 + 
+                               sd(temp_match$RT_ms[temp_match$Standarlized_Identity == identity], na.rm = TRUE)^2) / 2)
+            cohens_d <- (rt_self - rt_identity) / pooled_sd
+          } else {
+            cohens_d <- NA
+          }
+          
+          temp_results[[paste0("rt_", tolower(identity))]] <- rt_identity
+          temp_results[[paste0("cohens_d_self_", tolower(identity))]] <- cohens_d
+        }
+        
+        # 存入列表
+        results_list[[counter]] <- temp_results
+        counter <- counter + 1
       }
-      
-      # 计算各个 Identity 的 RT 和 Cohen’s d
-      if ("Close" %in% available_identities) {
-        rt_close[counter] <- mean(temp$RT_ms[temp$Standarlized_Identity == "Close"], na.rm = TRUE)
-        cohens_d_self_close[counter] <- (rt_self[counter] - rt_close[counter]) / 
-          sqrt((var(temp$RT_ms[temp$Standarlized_Identity == "Self"], na.rm = TRUE) + 
-                var(temp$RT_ms[temp$Standarlized_Identity == "Close"], na.rm = TRUE)) / 2)
-      } else {
-        rt_close[counter] <- NA
-        cohens_d_self_close[counter] <- NA
-      }
-      
-      if ("Stranger" %in% available_identities) {
-        rt_stranger[counter] <- mean(temp$RT_ms[temp$Standarlized_Identity == "Stranger"], na.rm = TRUE)
-        cohens_d_self_stranger[counter] <- (rt_self[counter] - rt_stranger[counter]) / 
-          sqrt((var(temp$RT_ms[temp$Standarlized_Identity == "Self"], na.rm = TRUE) + 
-                var(temp$RT_ms[temp$Standarlized_Identity == "Stranger"], na.rm = TRUE)) / 2)
-      } else {
-        rt_stranger[counter] <- NA
-        cohens_d_self_stranger[counter] <- NA
-      }
-      
-      if ("Nonperson" %in% available_identities) {
-        rt_non_person[counter] <- mean(temp$RT_ms[temp$Standarlized_Identity == "NonPerson"], na.rm = TRUE)
-        cohens_d_self_non_person[counter] <- (rt_self[counter] - rt_non_person[counter]) / 
-          sqrt((var(temp$RT_ms[temp$Standarlized_Identity == "Self"], na.rm = TRUE) + 
-                var(temp$RT_ms[temp$Standarlized_Identity == "Nonperson"], na.rm = TRUE)) / 2)
-      } else {
-        rt_non_person[counter] <- NA
-        cohens_d_self_non_person[counter] <- NA
-      }
-      
-      if ("Acquaintance" %in% available_identities) {
-        rt_acquaintance[counter] <- mean(temp$RT_ms[temp$Standarlized_Identity == "Acquaintance"], na.rm = TRUE)
-        cohens_d_self_acquaintance[counter] <- (rt_self[counter] - rt_acquaintance[counter]) / 
-          sqrt((var(temp$RT_ms[temp$Standarlized_Identity == "Self"], na.rm = TRUE) + 
-                var(temp$RT_ms[temp$Standarlized_Identity == "Acquaintance"], na.rm = TRUE)) / 2)
-      } else {
-        rt_acquaintance[counter] <- NA
-        cohens_d_self_acquaintance[counter] <- NA
-      }
-      
-      counter <- counter + 1
     }
   }
   print(paste('完成数据集', i, '处理'))
 }
 
 # 生成最终数据框
-results <- data.frame(
-  rt_self, rt_close, rt_stranger, rt_non_person, rt_acquaintance,
-  cohens_d_self_close, cohens_d_self_stranger, cohens_d_self_non_person, cohens_d_self_acquaintance
-)
+results <- do.call(rbind, lapply(results_list, as.data.frame))
 
 # 输出数据到 CSV
-write.csv(results, "Processed_Data.csv", row.names = FALSE)
+write.csv(results, "Processed_Data_Matching.csv", row.names = FALSE)
+
+print("数据处理完成，已导出 Processed_Data_Matching.csv")
+
 ```
 
 ## Pic1
@@ -238,4 +214,7 @@ library(gridExtra)
 grid.arrange(p1.1, p1.2, p1.3, p1.4, ncol = 2)
 
 ```
+
+
+
 

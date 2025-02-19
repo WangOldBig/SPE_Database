@@ -14,6 +14,8 @@ This project is in parallel with preregistered meta-analysis (on-going) leading 
 
 ### Data contributors
 All authors of those studies whose data are included in this database, if permitted, will be listed as contributors.
+Contributors (Alphabetical Order)
+Letizia Amodeo; Marco Bertamini; Mario Dalmaso; Christian Frings; Xiangping Gao; Marius Golubickis; Judith Goris; Lili Guan; Ivar Kolvoort; Tal Makovski; Víctor Martínez-Pérez; Mayan Navon; Annabel D. Nijhof; Georg Northoff; Marel Pauly; Prof Lucía B. Palmero; Bernhard Pastötter; Haoyue Qian; Sarah Schäfer; Michele Vicovaro; Dirk Wentura; Jan R. Wiersema; Mateusz Wozniak
 
 ## OSF page
 
