@@ -210,6 +210,8 @@ df[[2]] <- read.csv(
     Stimuli_Type = X6..Stimuli.Type.Self...Positive.Self...Negative.,
     RT_sec = rt,
     ACC = corr,
+    Block = Block,
+    Trial = trialinBlock
   ) %>%
   # 转化为标准化的名称
   dplyr::mutate(
@@ -234,7 +236,7 @@ df[[2]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Gender, Age, Handedness, First_Lanugage,
+    Subject, Block, Trial, Gender, Age, Handedness, First_Lanugage,
     Shape, Matching, Origin_Identity, English_Identity, Standarlized_Identity, Standarlized_Identity,Response, ShapeLoc, Colour,
     ShapeColour, textColour,Stimuli_Type, RT_ms, RT_sec, ACC
   ) %>%
@@ -243,7 +245,7 @@ df[[2]] <- read.csv(
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Shape
+    Subject, Block
   )
 names(df)[2] <- "Constable_2020_CE Exp 1"
 summary(df[[2]])
@@ -276,7 +278,9 @@ df[[3]] <- read.csv(
     ShapeLoc = ShapeLoc,
     Stimuli_Type = X6..Stimuli.Type..Self...Negative.Self...Positive.,
     RT_sec = rt,
-    ACC = corr
+    ACC = corr,
+    Block = Block,
+    Trial = trialinBlock
   ) %>%
   # 转化为标准化的名称
   dplyr::mutate(
@@ -301,7 +305,7 @@ df[[3]] <- read.csv(
     ),
   ) %>%
   dplyr::select(
-    Subject, Gender, Age, Handedness, First_Lanugage,
+    Subject, Block, Trial, Gender, Age, Handedness, First_Lanugage,
     Shape, Matching, Origin_Identity, English_Identity, Standarlized_Identity,Response, ShapeLoc, FaceIdentity, Stimulus,
     Strength, textColour, Stimuli_Type, RT_ms, RT_sec, ACC
   ) %>%
@@ -310,7 +314,7 @@ df[[3]] <- read.csv(
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Shape
+    Subject, Block
   )
 
 names(df)[3] <- "Constable_2020_CE Exp 2"
@@ -320,7 +324,7 @@ write.csv(x = df[[3]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_
 
 # Haoyue Qian_2019_QJEP 
 ## Experiment 1 (Identity = 3)
-"Self", "Familiar"("Celebrity"), "Stranger"   →   "Self","Celebrity","Stranger"
+"Self", "Familiar"("Celebrity"), "Stranger"   →   "Self","Celebrity","Stranger" （No  trial message)
 ```{r Paper p51 Experiment 1}
 df[[4]] <- read.csv(
   "../2_Raw_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp1_raw.csv"
@@ -387,7 +391,7 @@ write.csv(x = df[[4]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp
 
 # Haoyue Qian_2019_QJEP 
 ## Experiment 2 (Identity = 2)
-"Self", "Familiar"("Celebrity")   →   "Self","Celebrity","Stranger"
+"Self", "Familiar"("Celebrity")   →   "Self","Celebrity","Stranger" （No trial message)
 ```{r Paper p51 Experiment 2}
 df[[5]] <- read.csv(
   "../2_Raw_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp2_raw.csv"
@@ -449,7 +453,7 @@ write.csv(x = df[[5]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp
 
 # Sarah Schaefer_2019_CP 
 ## Experiment 1 (Identity = 4)
-"Self", "Mother","none", "Acquaintance"   →   "Self","Close","Acquaintance,"Non_Person"
+"Self", "Mother","none", "Acquaintance"   →   "Self","Close","Acquaintance,"Non_Person"（No  trial message)
 ```{r Paper p54 Experiment 1}
 df[[6]] <- read.csv(
   "../2_Raw_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp1_raw.csv"
@@ -512,7 +516,7 @@ write.csv(x = df[[6]], file = "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP
 
 # Sarah Schaefer_2019_CP 
 ## Experiment 2 (Identity = 4)
-"Self", "Mother","none", "Acquaintance"   
+"Self", "Mother","none", "Acquaintance"   （No  trial message)
 ```{r Paper p54 Experiment 2}
 df[[7]] <- read.csv(
   "../2_Raw_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp2_raw.csv"
@@ -551,7 +555,7 @@ write.csv(x = df[[7]], file = "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP
 
 # Sarah Schaefer_2019_CP 
 ## Experiment 3 (Identity = 3)
-"Self", "Mother", "Acquaintance"    →   "Self","Close","Non_Person"
+"Self", "Mother", "Acquaintance"    →   "Self","Close","Non_Person"（No trial message)
 ```{r Paper p54 Experiment 3}
 df[[8]] <- read.csv(
   "../2_Raw_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp3_raw.csv"
@@ -605,7 +609,7 @@ write.csv(x = df[[8]], file = "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP
 
 # Mateusz Wozniak_2018_PLOS (Face)
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"    →   "Self","Close","Non_Person"
+"Self", "Friend", "Stranger"    →   "Self","Close","Non_Person" (Face_Gender)
 ```{r Paper p95 Experiment 1}
 df[[9]] <- read.csv(
   "../2_Raw_Data/Wozniak_2018_PLOS/Wozniak_2018_PLOS_Exp1_raw.csv"
@@ -620,7 +624,9 @@ df[[9]] <- read.csv(
     Face_Gender = Face_Gender,
     RT_ms = Cue.RT,
     ACC = Cue.ACC,
-    Response = Cue.RESP
+    Response = Cue.RESP,
+    Block = TrialList.Cycle,
+    Trial = TrialList.Sample,
   ) %>%
   dplyr::mutate(
     Shape = case_when(
@@ -665,14 +671,16 @@ df[[9]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Origin_Identity, English_Identity, Standarlized_Identity, RT_ms, RT_sec, ACC, Face_Gender
+    Subject, Block, Trial, Face_Gender,
+    Matching, Origin_Identity, English_Identity, Standarlized_Identity, 
+    RT_ms, RT_sec, ACC, 
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Origin_Identity
+    Subject, Block, Face_Gender
   )
 
 names(df)[9] <- "Wozniak_2018_PLOS Exp 1"
@@ -696,7 +704,9 @@ df[[10]] <- read.csv(
     Shape = Stimulus,
     Face_Gender = Face_Gender,
     RT_ms = Stimulus.RT,
-    ACC = Stimulus.ACC
+    ACC = Stimulus.ACC,
+    Block = TrialList.Cycle,
+    Trial = TrialList.Sample,
   ) %>%
   dplyr::mutate(
     Shape = case_when(
@@ -738,14 +748,16 @@ df[[10]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Origin_Identity, English_Identity, Standarlized_Identity, RT_ms, RT_sec, ACC, Face_Gender
+    Subject, Block, Trial, 
+    Matching, Origin_Identity, English_Identity, Standarlized_Identity, 
+    RT_ms, RT_sec, ACC, Face_Gender
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Origin_Identity
+    Subject, Block, 
   )
 
 names(df)[10] <- "Wozniak_2018_PLOS Exp 2"
@@ -755,7 +767,7 @@ write.csv(x = df[[10]], file = "../1_Clean_Data/Wozniak_2018_PLOS/Wozniak_2018_P
 
 # Marius Golubickis_2021_AP
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"（No  trial message)
 ```{r Paper n4 Experiment 1}
 df[[11]] <- read.csv(
   "../2_Raw_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp1_raw.csv"
@@ -805,56 +817,58 @@ write.csv(x = df[[11]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_20
 
 ## Experiment 2 (Identity = 3)
 "Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
-```{r Paper n4 Experiment 2}
+```{r}
 df[[12]] <- read.csv(
   "../2_Raw_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp2_raw.csv"
-  ) %>%
+) %>%
   dplyr::mutate(
     Subject = as.numeric(subject),
     Matching = case_when(
       type == "match" ~ "Matching",
       type == "nonmatch" ~ "Nonmatching"
     ),
-    blocktype = blocktype,
+    Blocktype = blocktype,
     Origin_Identity = label,
     RT_ms = as.numeric(latency),
     RT_sec = RT_ms / 1000,
-    ACC = as.numeric(correct)
+    ACC = as.numeric(correct),
+    Trial = trialnum,
+    Block = ceiling(row_number() / 60)
   ) %>%
   dplyr::mutate(
-    Subjcet = as.numeric(Subject),
-    Matching = factor(
-      Matching, levels = c("Matching", "Nonmatching")
+    Matching = factor(Matching, levels = c("Matching", "Nonmatching")),
+    English_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "friend" ~ "Friend",
+      Origin_Identity == "stranger" ~ "Stranger"
     ),
-    RT_ms = as.numeric(RT_ms),
-    RT_sec = as.numeric(RT_sec),
-    ACC = as.numeric(ACC),
-    English_Identity = Origin_Identity,
     Standarlized_Identity = case_when(
       English_Identity == "Self" ~ "Self",
       English_Identity == "Friend" ~ "Close",
-      English_Identity == "Stranger" ~ "Stranger",
-    ),
+      English_Identity == "Stranger" ~ "Stranger"
+    )
   ) %>%
+  dplyr::group_by(Subject) %>%
+  dplyr::ungroup() %>%
   dplyr::select(
-    Subject, Matching, Origin_Identity, English_Identity, Standarlized_Identity, RT_ms, RT_sec, ACC, blocktype
+    Subject, Block, Trial, 
+    Matching, Origin_Identity, English_Identity, Standarlized_Identity, 
+    RT_ms, RT_sec, ACC, Blocktype
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
-  dplyr::arrange(
-    Subject, Matching, Origin_Identity
-  )
+  dplyr::arrange(Subject, Block)
 
 names(df)[12] <- "Golubickis_2021_AP Exp 2"
 summary(df[[12]])
-write.csv(x = df[[12]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp2_Clean.csv")
+write.csv(x = df[[12]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp2_Clean.csv", row.names = FALSE)
 ```
 
 # Mayan Navon_2021
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"（No  trial message)
 ```{r Paper n13 Experiment 1}
 df[[13]] <- read.csv(
   "../2_Raw_Data/Navon_2021/Navon_2021_Exp1_raw.csv"
@@ -910,7 +924,9 @@ df[[13]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage,
-    Shape, Label, Matching, Origin_Identity, English_Identity, Standarlized_Identity, Response, RT_ms, RT_sec, ACC
+    Shape, Label, Matching, 
+    Origin_Identity, English_Identity, Standarlized_Identity, 
+    Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
     Subject, Matching, Origin_Identity
@@ -923,7 +939,7 @@ write.csv(x = df[[13]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp1_Clean
 
 # Mayan Navon_2021
 ## Experiment 2 (Identity = 3)
-"Father", "Close", "Stranger"   →   "Close","Close","Stranger"
+"Father", "Close", "Stranger"   →   "Close","Close","Stranger"（No  trial message)
 ```{r Paper n13 Experiment 2}
 df[[14]] <- read.csv(
   "../2_Raw_Data/Navon_2021/Navon_2021_Exp2_raw.csv"
@@ -995,7 +1011,7 @@ write.csv(x = df[[14]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp2_Clean
 
 # Mayan Navon_2021
 ## Experiment 3 (Identity = 3) 
-"Self", "Father", "Stranger"    →   "Self","Close","Stranger"
+"Self", "Father", "Stranger"    →   "Self","Close","Stranger"（No  trial message)
 ```{r Paper n13 Experiment 3}
 df[[15]] <- read.csv(
   "../2_Raw_Data/Navon_2021/Navon_2021_Exp3_raw.csv"
@@ -1066,7 +1082,7 @@ write.csv(x = df[[15]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp3_Clean
 
 # Mayan Navon_2021
 ## Experiment 4 (Identity = 3)
-"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"（No  trial message)
 ```{r Paper n13 Experiment 4}
 df[[16]] <- read.csv(
   "../2_Raw_Data/Navon_2021/Navon_2021_Exp4_raw.csv"
@@ -1135,7 +1151,7 @@ write.csv(x = df[[16]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp4_Clean
 
 # Saga L. Svensson_2021_PR
 ## Experiment 1 (Identity = 2)
-"Self", "Friend"    →   "Self","Close"
+"Self", "Friend"    →   "Self","Close"（No  trial message)
 ```{r Paper n16 Experiment 1}
 df[[17]] <- read.csv(
   "../2_Raw_Data/Svensson_2021_PR/Svensson_2021_PR_Exp1_raw.csv"
@@ -1185,7 +1201,7 @@ write.csv(x = df[[17]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_P
 
 # Saga L. Svensson_2021_PR
 ## Experiment 2 (Identity = 2)
-"Self", "Friend"    →   "Self","Close"
+"Self", "Friend"    →   "Self","Close"（No  trial message)
 ```{r Paper n16 Experiment 2}
 df[[18]] <- read.csv(
   "../2_Raw_Data/Svensson_2021_PR/Svensson_2021_PR_Exp2_raw.csv"
@@ -1235,7 +1251,7 @@ write.csv(x = df[[18]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_P
 
 # Saga L. Svensson_2021_PR
 ## Experiment 3 (Identity = 2)
-"Self", "Friend"    →   "Self","Close"
+"Self", "Friend"    →   "Self","Close"（No  trial message)
 ```{r Paper n16 Experiment 3}
 df[[19]] <- read.csv(
   "../2_Raw_Data/Svensson_2021_PR/Svensson_2021_PR_Exp3_raw.csv"
@@ -1285,7 +1301,7 @@ write.csv(x = df[[19]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_P
 
 # Yang Xu_2021_CP
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"（No  trial message)
 ```{r Paper n23 Experiment 1}
 df[[20]] <- read.csv(
   "../2_Raw_Data/Yang_2021_CP/Yang_2021_CP_Exp1_raw.csv"

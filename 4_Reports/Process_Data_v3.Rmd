@@ -103,7 +103,6 @@ print("数据处理完成，已导出 Processed_Data_Matching.csv")
 ```
 
 ## Pic1
-
 ```{r}
 library(ggplot2)
 library(dplyr)
@@ -215,6 +214,165 @@ grid.arrange(p1.1, p1.2, p1.3, p1.4, ncol = 2)
 
 ```
 
+## SDF
+```{r}
+# 加载必要的库
+library(dplyr)
+library(readr)
 
+# 设置数据路径
+dataPath <- "../1_Clean_Data"
+data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
 
+# 读取并合并数据
+df_combined <- lapply(data_files, function(file) {
+  df <- read_csv(file)
+  df$SourceFile <- basename(file)  # 添加文件来源信息
+  df
+}) %>% bind_rows()
+
+# 确保数据包含所需变量
+required_vars <- c("RT_ms", "Standarlized_Identity", "Subject", "Matching")
+df_combined <- df_combined %>% select(all_of(required_vars))
+
+# 过滤异常反应时（RT < 10ms 或 RT > 5000ms）
+df_combined <- df_combined %>%
+  filter(RT_ms > 10 & RT_ms < 5000)
+
+# 按 Subject 和试次顺序排序（假设数据是按出现顺序排列的）
+df_combined <- df_combined %>%
+  group_by(Subject, Matching) %>%
+  arrange(Subject, Matching, .by_group = TRUE) %>%
+  mutate(
+    RT_lag1 = lag(RT_ms, 1),
+    RT_lag2 = lag(RT_ms, 2),
+    RT_lag3 = lag(RT_ms, 3),
+    RT_lag4 = lag(RT_ms, 4),
+    RT_lag5 = lag(RT_ms, 5)
+  ) %>%
+  ungroup()
+
+# 查看数据结构
+glimpse(df_combined)
+
+# 计算当前 RT 和滞后 RT 之间的相关性
+cor_results <- df_combined %>%
+  summarise(
+    cor_lag1 = cor(RT_ms, RT_lag1, use = "complete.obs"),
+    cor_lag2 = cor(RT_ms, RT_lag2, use = "complete.obs"),
+    cor_lag3 = cor(RT_ms, RT_lag3, use = "complete.obs"),
+    cor_lag4 = cor(RT_ms, RT_lag4, use = "complete.obs"),
+    cor_lag5 = cor(RT_ms, RT_lag5, use = "complete.obs")
+  )
+
+# 打印相关性结果
+print(cor_results)
+
+# 进行线性回归分析，检查滞后 RT 是否预测当前 RT
+lm_model <- lm(RT_ms ~ RT_lag1 + RT_lag2 + RT_lag3 + RT_lag4 + RT_lag5, data = df_combined)
+summary(lm_model)
+
+```
+
+```{r}
+library(dplyr)
+library(readr)
+
+## 设置数据路径
+dataPath <- "../1_Clean_Data"
+data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
+
+## 预分配存储变量（列表存储数据）
+results_list <- list()
+
+## 计数器
+counter <- 1
+
+## 读取 CSV 文件并处理数据
+for (i in seq_along(data_files)) {
+  Data <- read_csv(data_files[i], show_col_types = FALSE) %>%
+    mutate(across(where(is.character), as.character))  # 确保字符变量类型一致
+  
+  # 确保数据包含所需变量
+  if (all(c("RT_ms", "ACC","Standarlized_Identity", "Subject", "Matching","Block","Trial") %in% names(Data))) {
+    
+    # 生成唯一标识每篇文章的 Subject ID
+    Data <- Data %>%
+      mutate(Subject = paste0(basename(data_files[i]), "_", Subject))
+    
+    # 过滤 RT 在合理范围内的行
+    Data <- Data %>%
+      filter(RT_ms > 10 & RT_ms < 5000)  # 过滤异常值
+
+    # **存入列表**
+    results_list[[counter]] <- Data %>%
+      select(Subject, Block, Trial, Matching, Standarlized_Identity, RT_ms, ACC)  # 仅保留所需列
+    
+    counter <- counter + 1
+  }
+  print(paste('完成数据集', i, '处理'))
+}
+
+# **合并所有数据**
+results <- bind_rows(results_list)
+
+# **检查合并后的数据**
+print("数据处理完成，已存入 `results` 变量")
+# 输出数据到 CSV
+write.csv(results, "Processed_Data.csv", row.names = FALSE)
+```
+
+```{r}
+library(dplyr)
+library(readr)
+
+## 设置数据路径
+dataPath <- "../1_Clean_Data"
+data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
+
+## 预分配存储变量（列表存储数据）
+results_list <- list()
+
+## 计数器
+counter <- 1
+
+## 读取 CSV 文件并处理数据
+for (i in seq_along(data_files)) {
+  file_name <- basename(data_files[i])  # 提取文件名（假设文件名代表文章名称）
+  
+  Data <- read_csv(data_files[i], show_col_types = FALSE) %>%
+    mutate(across(where(is.character), as.character))  # 确保字符变量类型一致
+  
+  # 确保数据包含所需变量
+  if (all(c("RT_ms", "ACC", "Standarlized_Identity", "Subject", "Matching", "Block", "Trial") %in% names(Data))) {
+    
+    # 生成唯一标识每篇文章的 Subject ID，并添加 Source 变量
+    Data <- Data %>%
+      mutate(
+        Subject = paste0(file_name, "_", Subject),
+        Source = file_name  # **新增变量，标记来源文章**
+      )
+    
+    # 过滤 RT 在合理范围内的行
+    Data <- Data %>%
+      filter(RT_ms > 10 & RT_ms < 5000)  # 过滤异常值
+
+    # **存入列表**
+    results_list[[counter]] <- Data %>%
+      select(Source, Subject, Block, Trial, Matching, Standarlized_Identity, RT_ms, ACC)  # **保留 Source 变量**
+    
+    counter <- counter + 1
+  }
+  print(paste('完成数据集', i, '处理'))
+}
+
+# **合并所有数据**
+results <- bind_rows(results_list)
+
+# **检查合并后的数据**
+print("数据处理完成，已存入 `results` 变量")
+
+# **输出数据到 CSV**
+write.csv(results, "Processed_Data.csv", row.names = FALSE)
+```
 
