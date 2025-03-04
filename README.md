@@ -1,5 +1,5 @@
 # SPE Database
-This project was inspired by [the Confidence Database](https://doi.org/10.1038/s41562-019-0813-1). We aimed at curating a database that include trial-level data and other meta-data from as many empirical studies that used self-matching task from [Sui, He, & Humphreys (2012)](http://www.ncbi.nlm.nih.gov/pubmed/22963229).
+This project was inspired by [the Confidence Database](https://doi.org/10.1038/s41562-019-0813-1). We aimed at curating a database that include trial-level data and other meta-data from as many empirical studies that used self-matching task from [Sui, He, & Humphreys (2012)](http://www.ncbi.nlm.nih.gov/pubmed/22963229). <!-- OSF, preprint, and publication links will be directly added to this paragraph -->
 
 This project is in parallel with an on-going preregistered meta-analysis leading by Hu Chuan-Peng and Zheng Liu (see registry [here](https://osf.io/euqmf)).
 
@@ -39,12 +39,6 @@ Contributors (Alphabetical Order)
 - Dirk Wentura; 
 - Jan R. Wiersema; 
 - Mateusz Wozniak
-
-## OSF page
-
-## Preprint
-
-## Summary of the database
 
 ## Folder structure
 
