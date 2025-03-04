@@ -321,7 +321,7 @@ print("数据处理完成，已存入 `results` 变量")
 # 输出数据到 CSV
 write.csv(results, "Processed_Data.csv", row.names = FALSE)
 ```
-
+# Read csv
 ```{r}
 library(dplyr)
 library(readr)
@@ -375,4 +375,56 @@ print("数据处理完成，已存入 `results` 变量")
 # **输出数据到 CSV**
 write.csv(results, "Processed_Data.csv", row.names = FALSE)
 ```
+# Copute SDE
+```{r}
+library(dplyr)
+library(lme4)  # 用于LMM
+library(lmerTest)  # 提供p值（可选）
+
+# 假设你的数据已加载到 `results` 中
+# 如果没有，先运行你的原始代码生成 `results`
+
+# 1. 按Subject和Block排序，并生成lag变量
+data_seq <- results %>%
+  arrange(Subject, Block, Trial) %>%
+  group_by(Subject, Block) %>%  # 在每个Subject和Block内操作
+  mutate(
+    Lag1_Identity = lag(Standarlized_Identity, 1),  # 前1次
+    Lag2_Identity = lag(Standarlized_Identity, 2),  # 前2次
+    Lag3_Identity = lag(Standarlized_Identity, 3),  # 前3次
+    Lag4_Identity = lag(Standarlized_Identity, 4),  # 前4次
+    Lag5_Identity = lag(Standarlized_Identity, 5),  # 前5次
+    Lag6_Identity = lag(Standarlized_Identity, 6),  # 前6次
+    Lag7_Identity = lag(Standarlized_Identity, 7)   # 前7次
+  ) %>%
+  ungroup()
+
+# 2. 移除开头没有完整lag数据的行
+data_seq_clean <- data_seq %>%
+  filter(!is.na(Lag7_Identity))  # 确保所有lag变量都非NA
+
+# 3. 检查数据
+print("序列位置效应数据已生成，以下是前几行：")
+print(head(data_seq_clean))
+
+# 4. 建立LMM模型分析RT
+# 固定效应：当前Identity + 前7次Identity
+# 随机效应：Subject
+rt_lmm <- lmer(RT_ms ~ Standarlized_Identity + Lag1_Identity + Lag2_Identity + 
+               Lag3_Identity + Lag4_Identity + Lag5_Identity + Lag6_Identity + 
+               Lag7_Identity + (1 | Subject), 
+               data = data_seq_clean)
+
+# 5. 查看模型结果
+summary(rt_lmm)
+
+# 6. （可选）保存模型结果到文件
+sink("RT_LMM_Summary.txt")
+print(summary(rt_lmm))
+sink()
+
+# 7. 保存处理后的数据
+write.csv(data_seq_clean, "Sequence_Effect_Data.csv", row.names = FALSE)
+```
+
 
