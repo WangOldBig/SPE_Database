@@ -1,21 +1,44 @@
 # SPE Database
-This project was inspired by [Rahnev et al., (2020)](https://doi.org/10.1038/s41562-019-0813-1). We aimed at curating a database that include trial-level data from as many empirical studies that used self-matching task from [Sui, He, & Humphreys (2012)](http://www.ncbi.nlm.nih.gov/pubmed/22963229).
+This project was inspired by [the Confidence Database](https://doi.org/10.1038/s41562-019-0813-1). We aimed at curating a database that include trial-level data and other meta-data from as many empirical studies that used self-matching task from [Sui, He, & Humphreys (2012)](http://www.ncbi.nlm.nih.gov/pubmed/22963229).
 
-This project is in parallel with preregistered meta-analysis (on-going) leading by Zheng Liu, Mengzheng Hu, Jie Sui, and Hu Chuan-Peng, see registry [here](https://osf.io/euqmf).
+This project is in parallel with an on-going preregistered meta-analysis leading by Hu Chuan-Peng and Zheng Liu (see registry [here](https://osf.io/euqmf)).
 
-## Leading contributors
-- Zhenxin Cai (NNU,email:czx@nnu.edu.cn)
-- Xinru Sun (NNU)
-- Wanke Pan (NNU)
-- Mengzheng Hu (NNU)
-- Zheng Liu (CUHK-SZ)
+## Leading Team
+- Zhenxin Cai (School of Psychology, Nanjing Normal University,email:czx@nnu.edu.cn)
+- Xinru Sun (School of Psychology, Nanjing Normal University)
+- Wanke Pan (School of Psychology, Nanjing Normal University)
+- Mengzheng Hu (School of Psychology, Nanjing Normal University)
+- Zheng Liu (Division of Applied Psychology, School of Humanities and Social Science, CUHK-Shenzhen)
 - [Jie Sui, University of Aberdeen](https://www.abdn.ac.uk/people/jie.sui)
-- Hu Chuan-Peng (NNU, email: hcp4715@hotmail.com)
+- Hu Chuan-Peng (School of Psychology, Nanjing Normal University, email: hcp4715@hotmail.com)
 
 ### Data contributors
-All authors of those studies whose data are included in this database, if permitted, will be listed as contributors.
+Authors of published studies were invited and listed here, if permitted, as contributors.
+
 Contributors (Alphabetical Order)
-Letizia Amodeo; Marco Bertamini; Mario Dalmaso; Christian Frings; Xiangping Gao; Marius Golubickis; Judith Goris; Lili Guan; Ivar Kolvoort; Tal Makovski; Víctor Martínez-Pérez; Mayan Navon; Annabel D. Nijhof; Georg Northoff; Marel Pauly; Prof Lucía B. Palmero; Bernhard Pastötter; Haoyue Qian; Sarah Schäfer; Michele Vicovaro; Dirk Wentura; Jan R. Wiersema; Mateusz Wozniak
+- Letizia Amodeo (); 
+- Marco Bertamini; 
+- Mario Dalmaso; 
+- Christian Frings (Department of Cognitive Psychology, University of Trier); 
+- Xiangping Gao; 
+- Marius Golubickis; 
+- Judith Goris; 
+- Lili Guan; 
+- Ivar Kolvoort; 
+- Tal Makovski; 
+- Víctor Martínez-Pérez; 
+- Mayan Navon; 
+- Annabel D. Nijhof; 
+- Georg Northoff; 
+- Marel Pauly; 
+- Lucía B. Palmero; 
+- Bernhard Pastötter; 
+- Haoyue Qian; 
+- Sarah Schäfer; 
+- Michele Vicovaro; 
+- Dirk Wentura; 
+- Jan R. Wiersema; 
+- Mateusz Wozniak
 
 ## OSF page
 

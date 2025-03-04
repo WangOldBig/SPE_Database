@@ -6,6 +6,7 @@ Clean_Data(Draft).Rmd
 
 # Datasets
 Datasets/
+/2_Raw_Data/Zhang_2023_NI
 2_Raw_Data/Zhang_2022_NI/Zhang_2022_NI_Exp1_raw.csv
 
 Feldborg_2021_ERPH/
@@ -19,6 +20,7 @@ Perrykkad_2022_BMC/
 Schaefer_2019_CP/
 Svensson_2021_PR/
 Wang_2016_EPHPP/
+
 
 # 忽略所有子目录和文件
 **/.DS_Store
@@ -48,6 +50,3 @@ desktop.ini
 *.synctex.gz
 
 /2_Literature_Search/2_1_All_Papers
-
-
-/2_Raw_Data/Zhang_2023_NI
