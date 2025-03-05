@@ -1413,10 +1413,6 @@ df[[21]] <- read.csv(
     Block, Trial, Shape, Label, Matching, 
     Origin_Identity, English_Identity, Standarlized_Identity, RT_ms, RT_sec, ACC
   ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-  ) %>%
   dplyr::arrange(
     Subject, Block, Trial
   )
@@ -1435,6 +1431,8 @@ df[[22]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject = Participant.Number,
+    Block = Block,
+    Trial = trialinBlock,
     Gender = Gender,
     Age = Age,
     Handedness = Handedness,
@@ -1466,12 +1464,8 @@ df[[22]] <- read.csv(
       English_Identity == "You" ~ "Stranger",
     ),
   ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-    ) %>%
   dplyr::arrange(
-    Subject, Matching, Origin_Identity
+    Subject, Block, Trial
     )
 names(df)[22] <- "Constable_2019_EPHPP_Exp1"
 summary(df[[22]])
@@ -1487,6 +1481,8 @@ df[[23]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject = Participant.Number,
+    Block = Block,
+    Trial = trialinBlock,
     Gender = Gender,
     Age = Age,
     Handedness = Handedness,
@@ -1518,12 +1514,8 @@ df[[23]] <- read.csv(
       English_Identity == "You" ~ "Stranger",
     ),
   ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-  ) %>%
   dplyr::arrange(
-    Subject, Matching, Origin_Identity
+    Subject, Block, Trial
   )
 
 names(df)[23] <- "Constable_2019_EPHPP_Exp2"
@@ -1540,6 +1532,8 @@ df[[24]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject = Participant.Number,
+    Block = Block,
+    Trial = trialinBlock,
     Gender = Gender,
     Age = Age,
     Handedness = Handedness,
@@ -1571,12 +1565,8 @@ df[[24]] <- read.csv(
       English_Identity == "You" ~ "Stranger",
     ),
   ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-    ) %>%
   dplyr::arrange(
-    Subject, Matching, Origin_Identity
+    Subject, Block, Trial
     )
 
 names(df)[24] <- "Constable_2019_EPHPP_Exp3"
@@ -1593,6 +1583,8 @@ df[[25]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject = Pair.Number,
+    Block = Block,
+    Trial = trialinblock,
     P1Age = P1Age,
     P2Age = P2Age,
     Matching = Condition,
@@ -1611,20 +1603,16 @@ df[[25]] <- read.csv(
     RT_ms = as.numeric(RT_ms),
     English_Identity = Origin_Identity,
     Standarlized_Identity = case_when(
-      English_Identity == "Self" ~ "Self",
-      English_Identity == "We" ~ "Group-Self",
-      English_Identity == "They" ~ "Group-Stranger",
-      English_Identity == "You" ~ "Stranger",
+      English_Identity == "Person1" ~ "Self",
+      English_Identity == "Person2" ~ "Self",
+      English_Identity == "Team" ~ "Group-Self",
+      English_Identity == "StrangerTeam" ~ "Group-Stranger",
+      English_Identity == "Stranger" ~ "Stranger",
     ),
   ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-  ) %>%
   dplyr::arrange(
-    Subject, Matching, Origin_Identity
+    Subject, Block, Trial
     )
-
 names(df)[25] <- "Constable_2019_EPHPP_Exp4"
 summary(df[[25]])
 write.csv(x = df[[25]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp4/Constable_2019_EPHPP_Exp4_Clean.csv")
@@ -1632,7 +1620,7 @@ write.csv(x = df[[25]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp4/Consta
 
 # Vicovaro_2022_EPHPP
 ## Experiment 1 (Identity = 2)
-"Self", "Stranger"    →   "Self","Stranger"
+"Self", "Stranger"    →   "Self","Stranger" (No  trial message)
 ```{r Paper t6 Experiment 1}
 df[[26]] <- read.csv(
   "../2_Raw_Data/Vicovaro_2022_EPHPP/Vicovaro_2022_EPHPP_Exp1_raw.csv"
@@ -1700,7 +1688,7 @@ write.csv(x = df[[26]], file = "../1_Clean_Data/Vicovaro_2022_EPHPP/Vicovaro_202
 
 # Vicovaro_2022_EPHPP
 ## Experiment 2 (Identity = 2)
-"Self", "Stranger"    →   "Self","Stranger"
+"Self", "Stranger"    →   "Self","Stranger" (No  trial message)
 ```{r Paper t6 Experiment 2}
 temp <- read.csv(
   "../2_Raw_Data/Vicovaro_2022/Vicovaro_2022_Exp2_raw.csv"
@@ -1852,7 +1840,7 @@ summary(df[[28]])
 write.csv(x = df[[28]], file = "../1_Clean_Data/Perrykkad_2022_BMC/Perrykkad_2022_BMC_Exp1_Clean.csv")
 ```
 
-# Hu_2020_CP
+# Hu_2020_CP --
 ## Experiment 1 (Identity = 2)
 "Self", "Other"   →   "Self","Stranger"
 ```{r Paper p20 Experiment 1}
@@ -1915,7 +1903,7 @@ write.csv(x = df[[29]], file = "../1_Clean_Data/Hu_2020_CP/Hu_2020_CP_Clean.csv"
 
 # Wozniak_2022_PR
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "None"    →   "Self","Close","Non_Person"
+"Self", "Friend", "None"    →   "Self","Close","Non_Person" (No  trial message)
 ```{r Paper t9 Experiment 1}
 ###############################Save Raw Data####################################
 # 获取文件列表
@@ -2006,7 +1994,7 @@ write.csv(x = df[[30]], file = "../1_Clean_Data/Wozniak_2022_PR/Wozniak_2022_PR_
 
 # Wozniak_2022_PR
 ## Experiment 2 (Identity = 3)
-"Self", "Friend", "None"    →   "Self","Close","Non_Person"
+"Self", "Friend", "None"    →   "Self","Close","Non_Person" (No  trial message)
 ```{r Paper t9 Experiment 2}
 ###############################Save Raw Data####################################
 # 获取文件列表
@@ -2098,7 +2086,7 @@ write.csv(x = df[[31]], file = "../1_Clean_Data/Wozniak_2022_PR/Wozniak_2022_PR_
 
 # Wozniak_2022_PR
 ## Experiment 3 (Identity = 3)
-"Self", "Friend", "None"    →   "Self","Close","Non_Person"
+"Self", "Friend", "None"    →   "Self","Close","Non_Person" (No  trial message)
 ```{r Paper t9 Experiment 3}
 ###############################Save Raw Data####################################
 # 获取文件列表
@@ -2188,14 +2176,14 @@ summary(df[[32]])
 write.csv(x = df[[32]], file = "../1_Clean_Data/Wozniak_2022_PR/Wozniak_2022_PR_Exp3_Clean.csv")
 ```
 
-# Haciahmet_2023_Psychophysiology 
+# Haciahmet_2023_Psychophysiology --
 ## Experiment 1 (Identity = 2)
 "Self", "Stranger"    →   "Self","Stranger"
 ```{r Paper t1 Experiment 1}
 df[[33]] <- read.csv(
   "../2_Raw_Data/Haciahmet_2023_Psy/Haciahmet_2023_Psy_Exp1_raw.csv"
   ) %>%
-  dplyr::filter(Phase == 1
+  dplyr::filter(Phase == 1,
   ) %>%
   dplyr::select(
     Subject = Subject,
@@ -3591,7 +3579,7 @@ write.csv(x = df[[53]], file = "../1_Clean_Data/Bukowski_2021_AP/Bukowski_2021_A
 ## Experiment 2 (Identtiy = 3)
 "Self", "Friend", "Stranger"
 ```{r}
-df[[38]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_19/P19_Exp2_raw.csv") %>%
+df[[54]] <- read.csv("../2_Raw_Data/Bukowski_2021_AP/Bukowski_2021_AP_Exp2_raw.csv") %>%
   dplyr::filter(Session == 3) %>%
   dplyr::select(
     Subject,
@@ -3643,9 +3631,9 @@ df[[38]] <- read.csv("../4_Data_Extraction/4_2_Open_Data/Paper_19/P19_Exp2_raw.c
     Subject, Matching, Identity, Session
   )
 
-names(df)[54] <- "Paper 19 Exp 2"
+names(df)[54] <- "Bukowski_2021_AP_Exp2"
 summary(df[[54]])
-write.csv(x = df[[54]], file = "../1_Clean_Data/Bukowski_2021_AP/Bukowski_2021_AP_Exp1_Clean.csv")
+write.csv(x = df[[54]], file = "../1_Clean_Data/Bukowski_2021_AP/Bukowski_2021_AP_Exp2_Clean.csv")
 ```
 
 

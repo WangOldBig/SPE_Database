@@ -1,9 +1,13 @@
 # SPE Database
-This project was inspired by [the Confidence Database](https://doi.org/10.1038/s41562-019-0813-1). We aimed at curating a database that include trial-level data and other meta-data from as many empirical studies that used self-matching task from [Sui, He, & Humphreys (2012)](http://www.ncbi.nlm.nih.gov/pubmed/22963229). <!-- OSF, preprint, and publication links will be directly added to this paragraph -->
+
+This project was inspired by [the Confidence Database](https://doi.org/10.1038/s41562-019-0813-1). We aimed at curating a database that include trial-level data and other meta-data from as many empirical studies that used self-matching task from [Sui, He, &amp; Humphreys (2012)](http://www.ncbi.nlm.nih.gov/pubmed/22963229). `<!-- OSF, preprint, and publication links will be directly added to this paragraph -->`
+
+This database compiles data from  **[X] published papers** , covering **[Y] experiments** and **[Z] participants** in total. Each dataset includes information on reaction times (RTs), accuracy (ACC), and relevant experimental conditions. The included studies come from diverse cultural and experimental backgrounds, facilitating cross-study comparisons and meta-analytic investigations.
 
 This project is in parallel with an on-going preregistered meta-analysis leading by Hu Chuan-Peng and Zheng Liu (see registry [here](https://osf.io/euqmf)).
 
 ## Leading Team
+
 - Zhenxin Cai (School of Psychology, Nanjing Normal University,email:czx@nnu.edu.cn)
 - Xinru Sun (School of Psychology, Nanjing Normal University)
 - Wanke Pan (School of Psychology, Nanjing Normal University)
@@ -13,31 +17,33 @@ This project is in parallel with an on-going preregistered meta-analysis leading
 - Hu Chuan-Peng (School of Psychology, Nanjing Normal University, email: hcp4715@hotmail.com)
 
 ### Data contributors
+
 Authors of published studies were invited and listed here, if permitted, as contributors.
 
 Contributors (Alphabetical Order)
-- Letizia Amodeo (); 
-- Marco Bertamini; 
-- Mario Dalmaso; 
-- Christian Frings (Department of Cognitive Psychology, University of Trier); 
-- Xiangping Gao; 
-- Marius Golubickis; 
-- Judith Goris; 
-- Lili Guan; 
-- Ivar Kolvoort; 
-- Tal Makovski; 
-- Víctor Martínez-Pérez; 
-- Mayan Navon; 
-- Annabel D. Nijhof; 
-- Georg Northoff; 
-- Marel Pauly; 
-- Lucía B. Palmero; 
-- Bernhard Pastötter; 
-- Haoyue Qian; 
-- Sarah Schäfer; 
-- Michele Vicovaro; 
-- Dirk Wentura; 
-- Jan R. Wiersema; 
+
+- Letizia Amodeo ();
+- Marco Bertamini;
+- Mario Dalmaso;
+- Christian Frings (Department of Cognitive Psychology, University of Trier);
+- Xiangping Gao;
+- Marius Golubickis;
+- Judith Goris;
+- Lili Guan;
+- Ivar Kolvoort;
+- Tal Makovski;
+- Víctor Martínez-Pérez;
+- Mayan Navon;
+- Annabel D. Nijhof;
+- Georg Northoff;
+- Marel Pauly;
+- Lucía B. Palmero;
+- Bernhard Pastötter;
+- Haoyue Qian;
+- Sarah Schäfer;
+- Michele Vicovaro;
+- Dirk Wentura;
+- Jan R. Wiersema;
 - Mateusz Wozniak
 
 ## Folder structure
