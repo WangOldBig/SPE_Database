@@ -2,7 +2,7 @@
 
 This project was inspired by [the Confidence Database](https://doi.org/10.1038/s41562-019-0813-1). We aimed at curating a database that include trial-level data and other meta-data from as many empirical studies that used self-matching task from [Sui, He, &amp; Humphreys (2012)](http://www.ncbi.nlm.nih.gov/pubmed/22963229). `<!-- OSF, preprint, and publication links will be directly added to this paragraph -->`
 
-This database compiles data from  **[X] published papers** , covering **[Y] experiments** and **[Z] participants** in total. Each dataset includes information on reaction times (RTs), accuracy (ACC), and relevant experimental conditions. The included studies come from diverse cultural and experimental backgrounds, facilitating cross-study comparisons and meta-analytic investigations.
+This database compiles data from  **25 published papers** , covering **[Y] experiments** and **[Z] participants** in total. Each dataset includes information on reaction times (RTs), accuracy (ACC), and relevant experimental conditions. The included studies come from diverse cultural and experimental backgrounds, facilitating cross-study comparisons and meta-analytic investigations.
 
 This project is in parallel with an on-going preregistered meta-analysis leading by Hu Chuan-Peng and Zheng Liu (see registry [here](https://osf.io/euqmf)).
 
@@ -22,29 +22,31 @@ Authors of published studies were invited and listed here, if permitted, as cont
 
 Contributors (Alphabetical Order)
 
-- Letizia Amodeo ();
-- Marco Bertamini;
-- Mario Dalmaso;
-- Christian Frings (Department of Cognitive Psychology, University of Trier);
-- Xiangping Gao;
-- Marius Golubickis;
-- Judith Goris;
-- Lili Guan;
-- Ivar Kolvoort;
-- Tal Makovski;
-- Víctor Martínez-Pérez;
-- Mayan Navon;
-- Annabel D. Nijhof;
-- Georg Northoff;
-- Marel Pauly;
-- Lucía B. Palmero;
-- Bernhard Pastötter;
-- Haoyue Qian;
-- Sarah Schäfer;
-- Michele Vicovaro;
-- Dirk Wentura;
-- Jan R. Wiersema;
-- Mateusz Wozniak
+- Letizia Amodeo(Department of Experimental Clinical and Health Psychology, Ghent University, Henri Dunantlaan 2, B-9000, Ghent, Belgium)
+- Marco Bertamini(University of Padua Department of General Psychology, Italy)
+- Mario Dalmaso(Department of Developmental and Social Psychology, University of Padova, via Venezia 8, 35131, Padova, Italy)
+- Merryn D. Constable
+- Christian Frings
+- Xiangping Gao
+  Marius Golubickis
+  Judith Goris
+  Lili Guan
+  Luis J. Fuentes
+  Ivar Kolvoort
+  Tal Makovski
+  Víctor Martínez-Pérez
+  Mayan Navon
+  Annabel D. Nijhof
+  Georg Northoff
+  Marel Pauly
+  Prof Lucía B. Palmero
+  Bernhard Pastötter
+  Haoyue Qian
+  Sarah Schäfer
+  Dirk Wentura
+  Jan R. Wiersema
+  Mateusz Wozniak
+  Michele Vicovaro
 
 ## Folder structure
 
