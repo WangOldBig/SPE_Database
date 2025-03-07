@@ -3182,7 +3182,7 @@ summary(df[[47]])
 write.csv(x = df[[47]], file = "../1_Clean_Data/Wang_2016_EPHPP/Wang_2016_EPHPP_Exp1_Clean.csv")
 ```
 
-# Sui_2014
+# Sui_2014 (Unpublish)
 ## Experiment 1 (Identtiy = 3)
 "Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper s3 Experiment 1}
@@ -3244,7 +3244,7 @@ summary(df[[48]])
 write.csv(x = df[[48]], file = "../1_Clean_Data/Sui_2014/Sui_2014_Exp1_Clean.csv")
 ```
 
-# Sui_2015
+# Sui_2015 (Unpublish)
 ## Experiment 1 (Identtiy = 3)
 "Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper s4 Experiment 1}

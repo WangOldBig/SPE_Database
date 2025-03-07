@@ -22,31 +22,29 @@ Authors of published studies were invited and listed here, if permitted, as cont
 
 Contributors (Alphabetical Order)
 
-- Letizia Amodeo(Department of Experimental Clinical and Health Psychology, Ghent University, Henri Dunantlaan 2, B-9000, Ghent, Belgium)
-- Marco Bertamini(University of Padua Department of General Psychology, Italy)
+- Letizia Amodeo(Department of Experimental Clinical and Health Psychology, Ghent University, Henri Dunantlaan 2, 9000, Ghent, Belgium)
+- Marco Bertamini(Department of General Psychology, University of Padova)
 - Mario Dalmaso(Department of Developmental and Social Psychology, University of Padova, via Venezia 8, 35131, Padova, Italy)
-- Merryn D. Constable
-- Christian Frings
-- Xiangping Gao
-  Marius Golubickis
-  Judith Goris
-  Lili Guan
-  Luis J. Fuentes
-  Ivar Kolvoort
-  Tal Makovski
-  Víctor Martínez-Pérez
-  Mayan Navon
-  Annabel D. Nijhof
-  Georg Northoff
-  Marel Pauly
-  Prof Lucía B. Palmero
-  Bernhard Pastötter
-  Haoyue Qian
-  Sarah Schäfer
-  Dirk Wentura
-  Jan R. Wiersema
-  Mateusz Wozniak
-  Michele Vicovaro
+- Merryn D. Constable(Department of Psychology, Northumbria University, United Kingdom of Great Britain and Northern Ireland)
+- Christian Frings(University of Trier, Trier, Germany)
+- Xiangping Gao(Department of Psychology, Shanghai Normal University, Shanghai, China)
+- Marius Golubickis(University of Aberdeen, Aberdeen, UK)
+- Judith Goris(Department of Experimental Psychology, Ghent University, Henri Dunantlaan 2, 9000, Ghent, Belgium)
+- Lili Guan(School of Psychology, Northeast Normal University, 5268 Renmin Street, ChangChun, Jilin, 130024, China)
+- Luis J. Fuentes(Departamento de Psicología Básica y Metodología, Facultad de Psicología y Logopedia, Universidad de Murcia, 30100 Murcia, Spain)
+- Ivar Kolvoort(Department of Psychology, Programme Group Psychological Methods, University of Amsterdam, Amsterdam, The Netherlands)
+- Tal Makovski(Department of Psychology, Tel-Hai Academic College, Upper Galilee, lsrael)
+- Víctor Martínez-Pérez(University of Castilla-La Mancha Albacete Campus, Faculty of Medicine (UCLM - Albacete), Albacete, Spain)
+- Mayan Navon(Department of Education and Psychology, The Open University of Israel, Israel)
+- Annabel D. Nijhof(Department of Experimental Clinical and Health Psychology, Ghent University, Henri Dunantlaan 2, 9000, Ghent, Belgium)
+- Georg Northoff(Institute of Mental Health Research, University of Ottawa, Ottawa, Ontario, Canada)
+- Prof Lucía B. Palmero(Departamento de Psicología Básica y Metodología, Facultad de Psicología y Logopedia, Universidad de Murcia, 30100 Murcia, Spain)
+- Bernhard Pastötter(Bernhard Pastötter, University of Trier, Universitätsring 15, Trier 54286, Germany.)
+- Haoyue Qian(School of Physics and Shanghai Key Laboratory of Magnetic Resonance, East China Normal University, Shanghai, China;Department of Psychology, Shanghai Normal University, Shanghai, China)
+- Sarah Schäfer(University of Trier, Trier, Germany)
+- Jan R. Wiersema(Department of Experimental Clinical and Health Psychology, Ghent University, Henri Dunantlaan 2, 9000, Ghent, Belgium)
+- Mateusz Wozniak(1Social Cognition in Human-Robot Interaction Group, Italian Institute of Technology, Genoa, Italy;Social Mind Center, Department of Cognitive Science, Central European University, Vienna, Austria;Cognition and Philosophy Lab, Department of Philosophy, Monash University, Melbourne, VIC, Australia;Institute of Psychology, Jagiellonian University, Cracow, Poland)
+- Michele Vicovaro(Department of General Psychology, School of Psychology, University of Padua Padua, Italy)
 
 ## Folder structure
 
