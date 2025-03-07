@@ -2307,6 +2307,8 @@ df[[36]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject = Subject,
+    Block = Testphase.Cycle,
+    Trial = Testphase.Sample,
     Age = Age,
     Handedness = Handedness,
     Gender = Sex,
@@ -2348,28 +2350,23 @@ df[[36]] <- read.csv(
     ),
     ) %>%
   dplyr::select(
-    Subject, Age, Gender, Handedness,
+    Subject, Block, Trial, Age, Gender, Handedness,
     Happyshapeother, Happyshapeself, Neutralshapeother, Neutralshapeself,
     Sadshapeother, Sadshapeself, Othershape, Selfshape, 
     Label, Origin_Identity, English_Identity, Standarlized_Identity,
     Matching, Response, RT_ms, RT_sec, ACC
     ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-    ) %>%
   dplyr::arrange(
-    Subject, Matching, Origin_Identity
+    Subject, Block, Trial
     )
-
 names(df)[36] <- "Mcivor_2020_EJN"
 summary(df[[36]])
 write.csv(x = df[[36]], file = "../1_Clean_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_Exp1_Clean.csv")
 ```
 
 # Liang_2021_HBM
-## Experiment 1 (Identity = 2)
-"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
+## Experiment 1 (Identity = 3)
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No  trial message)
 ```{r Paper t3 Experiment 1}
 df[[37]] <- read.csv(
   "../2_Raw_Data/Liang_2021_HBM/Liang_2021_HBM_Exp1_raw.csv"
@@ -2418,12 +2415,8 @@ df[[37]] <- read.csv(
     Subject, Age, Gender, 
     Shape, Matching, Origin_Identity, English_Identity, Standarlized_Identity, Response, Phase, RT_ms, RT_sec, ACC
   ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-  ) %>%
   dplyr::arrange(
-    Subject, Matching, Origin_Identity
+    Subject
   )
 
 names(df)[37] <- "Liang_2021_HBM"
@@ -2432,7 +2425,7 @@ write.csv(x = df[[37]], file = "../1_Clean_Data/Liang_2021_HBM/Liang_2021_HBM_Ex
 ```
 
 # Kolvoort_2020_HBM 
-## Experiment 1 (Identity = 2)
+## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper p34 Experiment 1}
 df[[38]] <- read.csv(
@@ -2440,6 +2433,8 @@ df[[38]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject = subid,
+    Block = block_index,
+    Trial = trial_index,
     Age = age,
     Handedness = handedness,
     First_Language = firstlanguage,
@@ -2482,16 +2477,12 @@ df[[38]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Age, Handedness, First_Language, Education, Countryself, Countryparents, 
+    Subject, Block, Trial, Age, Handedness, First_Language, Education, Countryself, Countryparents, 
     Shape, Label, Matching, Origin_Identity, English_Identity, Standarlized_Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-  ) %>%
   dplyr::arrange(
-    Subject, Matching
+    Subject, Block, Trial
   )
 
 names(df)[38] <- "Kolvoort_2020_HBM"
@@ -2508,6 +2499,7 @@ df_Ps1_E1 <- read.csv(
   ) %>%
   dplyr::select(
     Subject = Participant.Public.ID,
+    Trial = Trial.Number,
     Match = P_Orginal,
     Label = Label,
     Origin_Identity = P_Group,
@@ -2565,14 +2557,10 @@ df[[39]] <- df_Ps1_E1 %>%
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Matching, Label, Response, Origin_Identity, English_Identity, Standarlized_Identity, RT_ms, RT_sec, ACC
-  ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
+    Subject, Trial, Matching, Label, Response, Origin_Identity, English_Identity, Standarlized_Identity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Origin_Identity
+    Subject, Trial
   )
 
 rm(df_Subject_ID, df_Ps1_E1)
@@ -2594,6 +2582,8 @@ df[[40]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject = Subject,
+    Block = manipCheck.Cycle,
+    Trial = manipCheck.Sample,
     Age = Age,
     Handedness = Handedness,
     Gender = Sex,
@@ -2632,16 +2622,13 @@ df[[40]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Age, Gender, Handedness, 
+    Subject, Block, Trial, 
+    Age, Gender, Handedness, 
     Shape, Label, Origin_Identity, English_Identity, Standarlized_Identity, Matching,  
     Response, RT_ms, RT_sec, ACC
   ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-  ) %>%
   dplyr::arrange(
-    Subject, Matching 
+    Subject, Block, Trial  
   )
 
 names(df)[40] <- "Orellana-Corrales_2021_EP"
@@ -2661,6 +2648,8 @@ df[[41]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject = Subject,
+    Block = manipCheck.Cycle,
+    Trial = manipCheck.Sample,
     Age = Age,
     Handedness = Handedness,
     Gender = Sex,
@@ -2699,16 +2688,12 @@ df[[41]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Age, Gender, Handedness, 
+    Subject, Block, Trial, Age, Gender, Handedness, 
     Shape, Label, Origin_Identity, English_Identity, Standarlized_Identity, Matching, 
     Response, RT_ms, RT_sec, ACC
   ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-  ) %>%
   dplyr::arrange(
-    Subject, Matching,
+    Subject, Block,Trial
   )
 
 names(df)[41] <- "Orellana-Corrales_2021_Exp2"
@@ -2728,6 +2713,8 @@ df[[42]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject = Subject,
+    Block = manipCheck.Cycle,
+    Trial = manipCheck.Sample,
     Age = Age,
     Handedness = Handedness,
     Gender = Sex,
@@ -2766,13 +2753,9 @@ df[[42]] <- read.csv(
     ),
   ) %>%
   dplyr::select(
-    Subject, Age, Gender, Handedness, 
+    Subject, Block, Trial, Age, Gender, Handedness, 
     Shape, Label, Origin_Identity, English_Identity, Standarlized_Identity, Matching,  
     Response, RT_ms, RT_sec, ACC
-  ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
     Subject, Matching,
@@ -2792,6 +2775,8 @@ df[[43]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject = Subject,
+    Block = BlockList.Sample,
+    Trial = SubTrial,
     Matching = Label,
     Shape = Target,
     Label = Label,
@@ -2828,16 +2813,12 @@ df[[43]] <- read.csv(
     ),
   ) %>%
   dplyr::select(
-    Subject,  
+    Subject, Block, Trial,
     Shape, Label, Matching, Origin_Identity, English_Identity, Standarlized_Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-  ) %>%
   dplyr::arrange(
-    Subject, Matching, Origin_Identity
+    Subject, Block, Trial
   )
 
 names(df)[43] <- "Amodeo_2024_CABN"
