@@ -408,7 +408,155 @@ for (i in seq_along(data_files)) {
     mutate(across(where(is.character), as.character))  # 确保字符变量类型一致
   
   # 确保数据包含所需变量
-  if (all(c("RT_ms", "ACC", "Standarlized_Identity", "Subject", "Matching", "Block", "Trial") %in% names(Data))) {
+  if (all(c("RT_ms", "ACC", "Standarlized_Identity", "Subject", "Matching") %in% names(Data))) {
+    
+    # 生成唯一标识每篇文章的 Subject ID，并添加 Source 变量
+    Data <- Data %>%
+      mutate(
+        Subject = paste0(file_name, "_", Subject),
+        Source = file_name  # **新增变量，标记来源文章**
+      )
+    
+    # 过滤 RT 在合理范围内的行
+    Data <- Data %>%
+      filter(RT_ms > 10 & RT_ms < 5000, ACC %in% c(0, 1))  # 过滤异常值
+
+    # **存入列表**
+    results_list[[counter]] <- Data %>%
+      select(Source, Subject, Matching, Standarlized_Identity, RT_ms, ACC)  # **保留 Source 变量**
+    
+    counter <- counter + 1
+  }
+  print(paste('完成数据集', i, '处理'))
+}
+
+# **合并所有数据**
+results <- bind_rows(results_list)
+
+# **检查合并后的数据**
+print("数据处理完成，已存入 `results` 变量")
+
+# **输出数据到 CSV**
+write.csv(results, "Processed_Data.csv", row.names = FALSE)
+```
+
+
+```{r}
+library(dplyr)
+library(readr)
+library(stringr)
+
+# 读取已处理的数据
+data <- read_csv("Processed_Data.csv", show_col_types = FALSE)
+
+# 处理 Source 变量，提取文章信息（支持两种格式）
+data <- data %>%
+  mutate(
+    Article = case_when(
+      str_detect(Source, "^[^_]+_\\d{4}_[^_]+_Exp\\d+") ~ str_extract(Source, "^[^_]+_\\d{4}_[^_]+"),  # 发表的格式
+      str_detect(Source, "^[^_]+_\\d{4}_Exp\\d+") ~ str_extract(Source, "^[^_]+_\\d{4}")  # 未发表的格式
+    ),
+    Experiment = str_extract(Source, "Exp\\d+"),  # 提取实验编号
+    Subject_ID = str_extract(Subject, "[^_]+$")  # 提取被试编号
+  )
+
+# 统计文章、实验、被试数量
+summary_table <- data %>%
+  group_by(Article, Experiment) %>%
+  summarise(Num_Subjects = n_distinct(Subject_ID), .groups = "drop") %>%
+  arrange(Article, Experiment)
+
+# 统计每篇文章的实验数
+article_summary <- summary_table %>%
+  group_by(Article) %>%
+  summarise(Num_Experiments = n_distinct(Experiment), Total_Subjects = sum(Num_Subjects), .groups = "drop")
+
+# 输出结果
+write.csv(summary_table, "Experiment_Summary.csv", row.names = FALSE)
+write.csv(article_summary, "Article_Summary.csv", row.names = FALSE)
+
+# 打印摘要信息
+print("实验统计完成，已输出以下文件：")
+print("- Experiment_Summary.csv（每篇文章的实验及被试数量）")
+print("- Article_Summary.csv（每篇文章的实验数和总被试数）")
+
+```
+
+
+
+
+```{r}
+library(dplyr)
+library(readr)
+library(stringr)
+
+# 读取已处理的数据
+data <- read_csv("Processed_Data.csv", show_col_types = FALSE)
+
+# 提取文章名称（不包含实验部分）
+data <- data %>%
+  mutate(Article = str_extract(Source, "^[^_]+_\\d{4}_[^_]+")) %>%  # 提取 作者_年份_期刊
+  mutate(Experiment = str_extract(Source, "Exp\\d+")) %>%  # 提取实验编号
+  mutate(Subject_ID = str_extract(Subject, "[^_]+$"))  # 提取被试编号
+
+# 统计文章、实验、被试数量
+summary_table <- data %>%
+  group_by(Article, Experiment) %>%
+  summarise(Num_Subjects = n_distinct(Subject_ID), .groups = "drop") %>%
+  arrange(Article, Experiment)
+
+# 统计每篇文章的实验数
+article_summary <- summary_table %>%
+  group_by(Article) %>%
+  summarise(Num_Experiments = n_distinct(Experiment), Total_Subjects = sum(Num_Subjects), .groups = "drop")
+
+# 输出结果
+write.csv(summary_table, "Experiment_Summary.csv", row.names = FALSE)
+write.csv(article_summary, "Article_Summary.csv", row.names = FALSE)
+
+# 打印摘要信息
+print("实验统计完成，已输出以下文件：")
+print("- Experiment_Summary.csv（每篇文章的实验及被试数量）")
+print("- Article_Summary.csv（每篇文章的实验数和总被试数）")
+
+```
+
+
+
+# Copute SDE
+
+```{r}
+library(dplyr)
+library(readr)
+
+## 设置数据路径
+dataPath <- "../1_Clean_Data"
+data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
+
+## 需要排除的文件夹
+exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP", 
+                     "Hobbs_2023_PM", "Mcivor_2020_EJN", 
+                     "Orellana-Corrales_2021_EP", "Svensson_2021_PR", 
+                     "Wang_2016_EPHPP")
+
+## 过滤掉不需要的文件
+data_files <- data_files[!grepl(paste(exclude_folders, collapse = "|"), data_files)]
+
+## 预分配存储变量（列表存储数据）
+results_list <- list()
+
+## 计数器
+counter <- 1
+
+## 读取 CSV 文件并处理数据
+for (i in seq_along(data_files)) {
+  file_name <- basename(data_files[i])  # 提取文件名（假设文件名代表文章名称）
+  
+  Data <- read_csv(data_files[i], show_col_types = FALSE) %>%
+    mutate(across(where(is.character), as.character))  # 确保字符变量类型一致
+  
+  # 确保数据包含所需变量
+  if (all(c("RT_ms", "ACC", "Standarlized_Identity", "Subject", "Matching", "Block", "Trial","Gender") %in% names(Data))) {
     
     # 生成唯一标识每篇文章的 Subject ID，并添加 Source 变量
     Data <- Data %>%
@@ -441,9 +589,6 @@ write.csv(results, "Processed_Data.csv", row.names = FALSE)
 ```
 
 
-
-
-# Copute SDE
 ```{r}
 library(dplyr)
 library(lme4)  # 用于LMM

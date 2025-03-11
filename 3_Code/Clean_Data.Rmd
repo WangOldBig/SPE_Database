@@ -1769,7 +1769,7 @@ write.csv(x = df[[28]], file = "../1_Clean_Data/Perrykkad_2022_BMC/Perrykkad_202
 "Self", "Other"   →   "Self","Stranger"
 ```{r Paper p20 Experiment 1}
 df[[29]] <- read.csv(
-  "../2_Raw_Data/Hu_2020_CP/Hu_2020_CP_raw.csv"
+  "../2_Raw_Data/Hu_2020_CP/Hu_2020_CP_Exp1_raw.csv"
   ) %>%
   dplyr::select(
     Subject = Subject,
@@ -1820,9 +1820,9 @@ df[[29]] <- read.csv(
     Subject, Block, Bin, Trial
     )
 
-names(df)[29] <- "Hu_2020_CP"
+names(df)[29] <- "Hu_2020_CP_Exp1"
 summary(df[[29]])
-write.csv(x = df[[29]], file = "../1_Clean_Data/Hu_2020_CP/Hu_2020_CP_Clean.csv")
+write.csv(x = df[[29]], file = "../1_Clean_Data/Hu_2020_CP/Hu_2020_CP_Exp1_Clean.csv")
 ```
 
 # Wozniak_2022_PR
@@ -3533,7 +3533,7 @@ write.csv(x = df[[54]], file = "../1_Clean_Data/Bukowski_2021_AP/Bukowski_2021_A
 ###############################Save Raw Data####################################
 # 获取文件列表
 file_list <- list.files(
-  path = "../2_Raw_Data/Wozniak_2022_PLOS/Data - Experiment 1/",
+  path = "../2_Raw_Data/Wozniak_2020_PLOS/Data - Experiment 1/",
   pattern = "^SelfPriorExp_3.*\\.dat$",
   full.names = TRUE
 )
@@ -3545,7 +3545,7 @@ combined_data <- do.call(rbind, data_list)
 
 write.csv(
   x = combined_data, 
-  file = "../2_Raw_Data/Wozniak_2022_PLOS/Wozniak_2022_PLOS_Exp1_raw.csv",
+  file = "../2_Raw_Data/Wozniak_2020_PLOS/Wozniak_2020_PLOS_Exp1_raw.csv",
   row.names = FALSE
 )
 

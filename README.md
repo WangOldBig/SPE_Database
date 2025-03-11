@@ -2,7 +2,9 @@
 
 This project was inspired by [the Confidence Database](https://doi.org/10.1038/s41562-019-0813-1). We aimed at curating a database that include trial-level data and other meta-data from as many empirical studies that used self-matching task from [Sui, He, &amp; Humphreys (2012)](http://www.ncbi.nlm.nih.gov/pubmed/22963229). `<!-- OSF, preprint, and publication links will be directly added to this paragraph -->`
 
-This database compiles data from  **25 published papers** , covering **[Y] experiments** and **[Z] participants** in total. Each dataset includes information on reaction times (RTs), accuracy (ACC), and relevant experimental conditions. The included studies come from diverse cultural and experimental backgrounds, facilitating cross-study comparisons and meta-analytic investigations.
+This database compiles data from  **24 published papers** , covering **24 experiments** and **2284 participants** in total. Each dataset includes information on reaction times (RTs), accuracy (ACC), and relevant experimental conditions. The included studies come from diverse cultural and experimental backgrounds, facilitating cross-study comparisons and meta-analytic investigations.
+
+The SPE Database is continuously updated as new studies and datasets become available. We welcome contributions from researchers who wish to share their data and help expand this resource. If you are interested in contributing or collaborating, please feel free to reach out!
 
 This project is in parallel with an on-going preregistered meta-analysis leading by Hu Chuan-Peng and Zheng Liu (see registry [here](https://osf.io/euqmf)).
 
