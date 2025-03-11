@@ -3526,4 +3526,30 @@ write.csv(x = df[[54]], file = "../1_Clean_Data/Bukowski_2021_AP/Bukowski_2021_A
 ```
 
 
+# Wozniak_2020_PLOS
+## Experiment 1 (Identity = 3)
+"Self", "Friend", "None"    →   "Self","Close","Non_Person" (No  trial message)
+```{r Paper a3 Experiment 1}
+###############################Save Raw Data####################################
+# 获取文件列表
+file_list <- list.files(
+  path = "../2_Raw_Data/Wozniak_2022_PLOS/Data - Experiment 1/",
+  pattern = "^SelfPriorExp_3.*\\.dat$",
+  full.names = TRUE
+)
+
+# 读取dat文件并存入list中
+data_list <- lapply(file_list, read.table, header = FALSE, sep = " ")
+
+combined_data <- do.call(rbind, data_list)
+
+write.csv(
+  x = combined_data, 
+  file = "../2_Raw_Data/Wozniak_2022_PLOS/Wozniak_2022_PLOS_Exp1_raw.csv",
+  row.names = FALSE
+)
+
+rm(file_list, data_list, combined_data)
+```
+
 

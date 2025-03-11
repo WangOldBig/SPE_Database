@@ -1,0 +1,92 @@
+{
+  "Description": {
+    "Authors": [
+      {
+        "Name": "Letizia Amodeo",
+        "affiliation": [
+          "Department of Experimental Clinical and Health Psychology, Ghent University, Henri Dunantlaan 2, 9000 Ghent, Belgium",
+          "EXPLORA, Ghent University, Ghent, Belgium"
+        ]
+      },
+      {
+        "Name": "Judith Goris",
+        "affiliation": [
+          "EXPLORA, Ghent University, Ghent, Belgium",
+          "Department of Experimental Psychology, Ghent University, Henri Dunantlaan 2, 9000 Ghent, Belgium"
+        ]
+      },
+      {
+        "Name": "Annabel D. Nijhof",
+        "affiliation": [
+          "Department of Experimental Clinical and Health Psychology, Ghent University, Henri Dunantlaan 2, 9000 Ghent, Belgium",
+          "EXPLORA, Ghent University, Ghent, Belgium"
+        ]
+      },
+      {
+        "Name": "Jan R. Wiersema",
+        "affiliation": [
+          "Department of Experimental Clinical and Health Psychology, Ghent University, Henri Dunantlaan 2, 9000 Ghent, Belgium",
+          "EXPLORA, Ghent University, Ghent, Belgium"
+        ]
+      }
+    ],
+    "APA_Citation": "Amodeo, L., Goris, J., Nijhof, A. D., & Wiersema, J. R. (2024). Electrophysiological correlates of self-related processing in adults with autism. Cognitive, Affective & Behavioral Neuroscience, 24(3), 582–598. https://doi.org/10.3758/s13415-024-01157-0"
+  },
+  "Experiment": {
+    "participants": {
+      "total": 70,
+      "autism_group": {
+        "initial": 39,
+        "final": 36,
+        "EEG_sample": 32
+      },
+      "neurotypical_group": {
+        "initial": 31,
+        "final": 30,
+        "EEG_sample": 27
+      },
+      "gender": {
+        "male": 49,
+        "female": 21
+      },
+      "exclusion_criteria": "Accuracy below 70% in practice trials"
+    },
+    "Procedure": {
+      "task_origin": "Adapted from Sui et al. (2012)",
+      "stimuli": "Three geometric shapes paired with personal Names (Self, Close Other, Stranger)",
+      "training": {
+        "practice_trials": 24,
+        "practice_blocks": 1,
+        "feedback": true,
+        "accuracy_threshold": ">=70% to proceed"
+      },
+      "testing": {
+        "trials": 360,
+        "blocks": 6,
+        "stimuli_presentation": "Shorter display times, no feedback",
+        "software": "E-prime Studio, version 2.0.10.248"
+      }
+    },
+    "Design": "2 (Group: Autism, Neurotypical) × 2 (Matching: Matching, Mismatching) × 3 (Identity: Self, Close, Stranger)"
+  },
+  "Data_files": [
+    {
+      "file_Name": "Amodeo_2024_CABN_Exp1_raw.csv",
+      "description": "Raw data from experiment 1"
+    }
+  ],
+  "metadata": {
+    "year": 2024,
+    "journal": "Cognitive, Affective, & Behavioral Neuroscience",
+    "experiment_number": 1,
+    "study": 1,
+    "stimulus_language": "Unavailable",
+    "session": "Unavailable",
+    "environmental_information": "Unavailable",
+    "country": "Belgium",
+    "city": "Ghent",
+    "corresponding_author": "Letizia Amodeo",
+    "email": "letizia.amodeo@ugent.be",
+    "repo_link": "https://doi.org/10.3758/s13415-024-01157-0"
+  }
+}

@@ -26,7 +26,7 @@ This study adapted a task from Sui et al. (2012), using three geometric shapes a
 # Data files
 
 ```
-"Pt28_Exp1_raw.csv": raw data from experiment 1.
+"Amodeo_2024_CABN_Exp1_raw.csv": raw data from experiment 1.
 ```
 
 Feel free to explore the data and codebooks provided in this repository for more detailed information.
