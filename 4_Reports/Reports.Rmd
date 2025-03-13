@@ -48,6 +48,12 @@ The Self-Prioritization Effects Database can be used for a variety of purposes, 
 Below are some example analyses demonstrating the utility of the database.
 
 ## The effect size of Self-prioritization Effect is moderated by baseline condition.
+
+
+A pivotal unresolved issue within the realm of self-relevance research is understanding how varying social identities influence the magnitude and cognitive architecture of self-prioritization effects. To explore how baseline comparison conditions moderate the effect size of self-prioritization, Cohen’s d values were calculated by comparing self-related trials against four distinct baseline conditions: Acquaintance (SA), Close (SC), Stranger (SS), and Non-person (SN). These comparisons aimed to elucidate the dynamics between different social identities and self-prioritization effects. 
+
+The analysis revealed significant moderation effects (β = 0.42, p < .001), with slower baseline RTs associated with larger self-prioritization effects. This pattern was particularly pronounced in stranger comparison conditions (ΔR² = .38), suggesting that self-relevance advantages emerge most strongly when contrasted against socially distant others.
+
 - 思路：用不同Identity（close,stranger,non-person,celebrity,acquaintance）与Self的差值画图
 - 目的：展现出与不同Identity相比的SPE的程度
 - P1.1(横坐标是SA_RT,纵坐标是Cohen's d-Self-Acquaintance in RT. )
