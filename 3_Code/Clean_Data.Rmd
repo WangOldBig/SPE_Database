@@ -1393,6 +1393,11 @@ df[[22]] <- read.csv(
       English_Identity == "They" ~ "Group-Stranger",
       English_Identity == "You" ~ "Stranger",
     ),
+    Matching = case_when(
+      Matching == "Match" ~ "Matching",
+      Matching == "Mismatch" ~ "Nonmatching",
+      )
+
   ) %>%
   dplyr::arrange(
     Subject, Block, Trial
@@ -1443,6 +1448,10 @@ df[[23]] <- read.csv(
       English_Identity == "They" ~ "Group-Stranger",
       English_Identity == "You" ~ "Stranger",
     ),
+    Matching = case_when(
+      Matching == "Match" ~ "Matching",
+      Matching == "Mismatch" ~ "Nonmatching",
+      )
   ) %>%
   dplyr::arrange(
     Subject, Block, Trial
@@ -1494,6 +1503,10 @@ df[[24]] <- read.csv(
       English_Identity == "They" ~ "Group-Stranger",
       English_Identity == "You" ~ "Stranger",
     ),
+    Matching = case_when(
+      Matching == "Match" ~ "Matching",
+      Matching == "Mismatch" ~ "Nonmatching",
+      )
   ) %>%
   dplyr::arrange(
     Subject, Block, Trial
@@ -1539,6 +1552,10 @@ df[[25]] <- read.csv(
       English_Identity == "StrangerTeam" ~ "Group-Stranger",
       English_Identity == "Stranger" ~ "Stranger",
     ),
+    Matching = case_when(
+      Matching == "Match" ~ "Matching",
+      Matching == "Mismatch" ~ "Nonmatching",
+      )
   ) %>%
   dplyr::arrange(
     Subject, Block, Trial

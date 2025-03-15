@@ -18,88 +18,99 @@ library(pwr)
 library(ggplot2)
 ```
 
-## Set data path 
+# Read csv (区分公开和未公开) [包含没有Trial记录的]
 ```{r}
-dataPath = "../1_Clean_Data"
-data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
-```
+library(dplyr)
+library(readr)
 
-## Read csv
-```{r}
-## 预分配存储变量（使用列表存储数据，避免 `assign()`）
+## 设置数据路径
+dataPath <- "../1_Clean_Data"
+data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
+
+## 需要排除的文件夹
+exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP", 
+                     "Hobbs_2023_PM", "Mcivor_2020_EJN", 
+                     "Orellana-Corrales_2021_EP", "Svensson_2021_PR", 
+                     "Wang_2016_EPHPP")
+
+## 过滤掉不需要的文件
+data_files <- data_files[!grepl(paste(exclude_folders, collapse = "|"), data_files)]
+
+## 预分配存储变量（列表存储数据）
 results_list <- list()
 
-## 读取 CSV 文件并处理数据
+## 计数器
 counter <- 1
-for (i in seq_along(data_files)) {
-  Data <- read.csv(data_files[i], fileEncoding = "UTF-8-BOM")
-  
-  # 确保数据包含必要的变量
-  if (all(c("RT_ms", "Standarlized_Identity", "Subject", "Matching") %in% names(Data))) {
-    
-    # 获取当前数据集包含的 Identity（自动筛选）
-    available_identities <- unique(Data$Standarlized_Identity)
-    Data$Subject <- paste0(basename(data_files[i]), "_", Data$Subject)
 
-    # 获取当前数据集的所有被试
-    subs <- unique(Data$Subject)
+## 读取 CSV 文件并处理数据
+for (i in seq_along(data_files)) {
+  file_name <- basename(data_files[i])  # 提取文件名（假设文件名代表文章名称）
+  
+  Data <- read_csv(data_files[i], show_col_types = FALSE) %>%
+    mutate(across(where(is.character), as.character))  # 确保字符变量类型一致
+  
+  # 确保数据包含所需变量
+  if (all(c("RT_ms", "ACC", "Standarlized_Identity", "Subject", "Matching") %in% names(Data))) {
     
-    for (sub in subs) {
-      temp <- Data %>%
-        filter(Subject == sub) %>%
-        filter(RT_ms > 10 & RT_ms < 5000)  # 过滤异常反应时
-      
-      for (match_condition in c("Matching", "Nonmatching")) {
-        temp_match <- temp %>% filter(Matching == match_condition)
-        
-        # 计算 Self 的 RT
-        rt_self <- if ("Self" %in% available_identities) {
-          mean(temp_match$RT_ms[temp_match$Standarlized_Identity == "Self"], na.rm = TRUE)
-        } else { NA }
-        
-        # 存储当前被试的结果
-        temp_results <- list(
-          Subject = sub,
-          Matching = match_condition,
-          rt_self = rt_self
-        )
-        
-        # 计算各个 Identity 的 RT 和 Cohen’s d
-        for (identity in c("Close", "Stranger", "NonPerson", "Acquaintance")) {
-          rt_identity <- if (identity %in% available_identities) {
-            mean(temp_match$RT_ms[temp_match$Standarlized_Identity == identity], na.rm = TRUE)
-          } else { NA }
-          
-          # 计算 Cohen’s d
-          if (!is.na(rt_self) & !is.na(rt_identity)) {
-            pooled_sd <- sqrt((sd(temp_match$RT_ms[temp_match$Standarlized_Identity == "Self"], na.rm = TRUE)^2 + 
-                               sd(temp_match$RT_ms[temp_match$Standarlized_Identity == identity], na.rm = TRUE)^2) / 2)
-            cohens_d <- (rt_self - rt_identity) / pooled_sd
-          } else {
-            cohens_d <- NA
-          }
-          
-          temp_results[[paste0("rt_", tolower(identity))]] <- rt_identity
-          temp_results[[paste0("cohens_d_self_", tolower(identity))]] <- cohens_d
-        }
-        
-        # 存入列表
-        results_list[[counter]] <- temp_results
-        counter <- counter + 1
-      }
-    }
+    # 生成唯一标识每篇文章的 Subject ID，并添加 Source 变量
+    Data <- Data %>%
+      mutate(
+        Subject = paste0(file_name, "_", Subject),
+        Source = file_name  # **新增变量，标记来源文章**
+      )
+    
+    # 过滤 RT 在合理范围内的行
+    Data <- Data %>%
+      filter(RT_ms > 10 & RT_ms < 5000, ACC %in% c(0, 1))  # 过滤异常值
+
+    # **存入列表**
+    results_list[[counter]] <- Data %>%
+      select(Source, Subject, Matching, Standarlized_Identity, RT_ms, ACC)  # **保留 Source 变量**
+    
+    counter <- counter + 1
   }
   print(paste('完成数据集', i, '处理'))
 }
 
-# 生成最终数据框
-results <- do.call(rbind, lapply(results_list, as.data.frame))
+# **合并所有数据**
+results <- bind_rows(results_list)
 
-# 输出数据到 CSV
-write.csv(results, "Processed_Data_Matching.csv", row.names = FALSE)
+# **检查合并后的数据**
+print("数据处理完成，已存入 `results` 变量")
 
-print("数据处理完成，已导出 Processed_Data_Matching.csv")
+# **输出数据到 CSV**
+write.csv(results, "Processed_Data.csv", row.names = FALSE)
+```
 
+# 论文数量、实验数量、被试数
+```{r}
+library(dplyr)
+library(readr)
+library(stringr)
+
+# 读取已处理的数据
+data <- read_csv("Processed_Data.csv", show_col_types = FALSE)
+
+# 提取文章名称（不包含实验部分）
+data <- data %>%
+  mutate(Article = str_extract(Source, "^[^_]+_\\d{4}_[^_]+")) %>%  # 提取 作者_年份_期刊
+  mutate(Experiment = str_extract(Source, "Exp\\d+")) %>%  # 提取实验编号
+  mutate(Subject_ID = str_extract(Subject, "[^_]+$"))  # 提取被试编号
+
+# 统计文章、实验、被试数量
+summary_table <- data %>%
+  group_by(Article, Experiment) %>%
+  summarise(Num_Subjects = n_distinct(Subject_ID), .groups = "drop") %>%
+  arrange(Article, Experiment)
+
+# 统计每篇文章的实验数
+article_summary <- summary_table %>%
+  group_by(Article) %>%
+  summarise(Num_Experiments = n_distinct(Experiment), Total_Subjects = sum(Num_Subjects), .groups = "drop")
+
+# 输出结果
+write.csv(summary_table, "Experiment_Summary.csv", row.names = FALSE)
+write.csv(article_summary, "Article_Summary.csv", row.names = FALSE)
 ```
 
 ## Pic1
@@ -211,172 +222,10 @@ p1.4 <- generate_plot("SN_RT", "cohens_d_self_non_person", "SN_RT", "Cohen's d (
 # 显示所有图形
 library(gridExtra)
 grid.arrange(p1.1, p1.2, p1.3, p1.4, ncol = 2)
-
 ```
 
-## SDF
-```{r}
-# 加载必要的库
-library(dplyr)
-library(readr)
-
-# 设置数据路径
-dataPath <- "../1_Clean_Data"
-data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
-
-# 读取并合并数据
-df_combined <- lapply(data_files, function(file) {
-  df <- read_csv(file)
-  df$SourceFile <- basename(file)  # 添加文件来源信息
-  df
-}) %>% bind_rows()
-
-# 确保数据包含所需变量
-required_vars <- c("RT_ms", "Standarlized_Identity", "Subject", "Matching")
-df_combined <- df_combined %>% select(all_of(required_vars))
-
-# 过滤异常反应时（RT < 10ms 或 RT > 5000ms）
-df_combined <- df_combined %>%
-  filter(RT_ms > 10 & RT_ms < 5000)
-
-# 按 Subject 和试次顺序排序（假设数据是按出现顺序排列的）
-df_combined <- df_combined %>%
-  group_by(Subject, Matching) %>%
-  arrange(Subject, Matching, .by_group = TRUE) %>%
-  mutate(
-    RT_lag1 = lag(RT_ms, 1),
-    RT_lag2 = lag(RT_ms, 2),
-    RT_lag3 = lag(RT_ms, 3),
-    RT_lag4 = lag(RT_ms, 4),
-    RT_lag5 = lag(RT_ms, 5)
-  ) %>%
-  ungroup()
-
-# 查看数据结构
-glimpse(df_combined)
-
-# 计算当前 RT 和滞后 RT 之间的相关性
-cor_results <- df_combined %>%
-  summarise(
-    cor_lag1 = cor(RT_ms, RT_lag1, use = "complete.obs"),
-    cor_lag2 = cor(RT_ms, RT_lag2, use = "complete.obs"),
-    cor_lag3 = cor(RT_ms, RT_lag3, use = "complete.obs"),
-    cor_lag4 = cor(RT_ms, RT_lag4, use = "complete.obs"),
-    cor_lag5 = cor(RT_ms, RT_lag5, use = "complete.obs")
-  )
-
-# 打印相关性结果
-print(cor_results)
-
-# 进行线性回归分析，检查滞后 RT 是否预测当前 RT
-lm_model <- lm(RT_ms ~ RT_lag1 + RT_lag2 + RT_lag3 + RT_lag4 + RT_lag5, data = df_combined)
-summary(lm_model)
-
-```
-
-```{r}
-library(dplyr)
-library(readr)
-
-## 设置数据路径
-dataPath <- "../1_Clean_Data"
-data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
-
-## 预分配存储变量（列表存储数据）
-results_list <- list()
-
-## 计数器
-counter <- 1
-
-## 读取 CSV 文件并处理数据
-for (i in seq_along(data_files)) {
-  Data <- read_csv(data_files[i], show_col_types = FALSE) %>%
-    mutate(across(where(is.character), as.character))  # 确保字符变量类型一致
-  
-  # 确保数据包含所需变量
-  if (all(c("RT_ms", "ACC","Standarlized_Identity", "Subject", "Matching","Block","Trial") %in% names(Data))) {
-    
-    # 生成唯一标识每篇文章的 Subject ID
-    Data <- Data %>%
-      mutate(Subject = paste0(basename(data_files[i]), "_", Subject))
-    
-    # 过滤 RT 在合理范围内的行
-    Data <- Data %>%
-      filter(RT_ms > 10 & RT_ms < 5000)  # 过滤异常值
-
-    # **存入列表**
-    results_list[[counter]] <- Data %>%
-      select(Subject, Block, Trial, Matching, Standarlized_Identity, RT_ms, ACC)  # 仅保留所需列
-    
-    counter <- counter + 1
-  }
-  print(paste('完成数据集', i, '处理'))
-}
-
-# **合并所有数据**
-results <- bind_rows(results_list)
-
-# **检查合并后的数据**
-print("数据处理完成，已存入 `results` 变量")
-# 输出数据到 CSV
-write.csv(results, "Processed_Data.csv", row.names = FALSE)
-```
-
-# Read csv
-```{r}
-library(dplyr)
-library(readr)
-
-## 设置数据路径
-dataPath <- "../1_Clean_Data"
-data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
-
-## 预分配存储变量（列表存储数据）
-results_list <- list()
-
-## 计数器
-counter <- 1
-
-## 读取 CSV 文件并处理数据
-for (i in seq_along(data_files)) {
-  file_name <- basename(data_files[i])  # 提取文件名（假设文件名代表文章名称）
-  
-  Data <- read_csv(data_files[i], show_col_types = FALSE) %>%
-    mutate(across(where(is.character), as.character))  # 确保字符变量类型一致
-  
-  # 确保数据包含所需变量
-  if (all(c("RT_ms", "ACC", "Standarlized_Identity", "Subject", "Matching", "Block", "Trial") %in% names(Data))) {
-    
-    # 生成唯一标识每篇文章的 Subject ID，并添加 Source 变量
-    Data <- Data %>%
-      mutate(
-        Subject = paste0(file_name, "_", Subject),
-        Source = file_name  # **新增变量，标记来源文章**
-      )
-    
-    # 过滤 RT 在合理范围内的行
-    Data <- Data %>%
-      filter(RT_ms > 10 & RT_ms < 5000)  # 过滤异常值
-
-    # **存入列表**
-    results_list[[counter]] <- Data %>%
-      select(Source, Subject, Block, Trial, Matching, Standarlized_Identity, RT_ms, ACC)  # **保留 Source 变量**
-    
-    counter <- counter + 1
-  }
-  print(paste('完成数据集', i, '处理'))
-}
-
-# **合并所有数据**
-results <- bind_rows(results_list)
-
-# **检查合并后的数据**
-print("数据处理完成，已存入 `results` 变量")
-
-# **输出数据到 CSV**
-write.csv(results, "Processed_Data.csv", row.names = FALSE)
-```
-
+# Copute SDE
+## Read csv (区分公开和未公开) [只包含有Trial记录的]
 ```{r}
 library(dplyr)
 library(readr)
@@ -408,7 +257,7 @@ for (i in seq_along(data_files)) {
     mutate(across(where(is.character), as.character))  # 确保字符变量类型一致
   
   # 确保数据包含所需变量
-  if (all(c("RT_ms", "ACC", "Standarlized_Identity", "Subject", "Matching") %in% names(Data))) {
+  if (all(c("RT_ms", "ACC", "Standarlized_Identity", "Subject", "Matching", "Trial") %in% names(Data))) {
     
     # 生成唯一标识每篇文章的 Subject ID，并添加 Source 变量
     Data <- Data %>%
@@ -423,7 +272,7 @@ for (i in seq_along(data_files)) {
 
     # **存入列表**
     results_list[[counter]] <- Data %>%
-      select(Source, Subject, Matching, Standarlized_Identity, RT_ms, ACC)  # **保留 Source 变量**
+      select(Source, Subject, Trial, Matching, Standarlized_Identity, RT_ms, ACC)  # **保留 Source 变量**
     
     counter <- counter + 1
   }
@@ -437,93 +286,8 @@ results <- bind_rows(results_list)
 print("数据处理完成，已存入 `results` 变量")
 
 # **输出数据到 CSV**
-write.csv(results, "Processed_Data.csv", row.names = FALSE)
+write.csv(results, "Processed_Data_for_SDE.csv", row.names = FALSE)
 ```
-
-
-```{r}
-library(dplyr)
-library(readr)
-library(stringr)
-
-# 读取已处理的数据
-data <- read_csv("Processed_Data.csv", show_col_types = FALSE)
-
-# 处理 Source 变量，提取文章信息（支持两种格式）
-data <- data %>%
-  mutate(
-    Article = case_when(
-      str_detect(Source, "^[^_]+_\\d{4}_[^_]+_Exp\\d+") ~ str_extract(Source, "^[^_]+_\\d{4}_[^_]+"),  # 发表的格式
-      str_detect(Source, "^[^_]+_\\d{4}_Exp\\d+") ~ str_extract(Source, "^[^_]+_\\d{4}")  # 未发表的格式
-    ),
-    Experiment = str_extract(Source, "Exp\\d+"),  # 提取实验编号
-    Subject_ID = str_extract(Subject, "[^_]+$")  # 提取被试编号
-  )
-
-# 统计文章、实验、被试数量
-summary_table <- data %>%
-  group_by(Article, Experiment) %>%
-  summarise(Num_Subjects = n_distinct(Subject_ID), .groups = "drop") %>%
-  arrange(Article, Experiment)
-
-# 统计每篇文章的实验数
-article_summary <- summary_table %>%
-  group_by(Article) %>%
-  summarise(Num_Experiments = n_distinct(Experiment), Total_Subjects = sum(Num_Subjects), .groups = "drop")
-
-# 输出结果
-write.csv(summary_table, "Experiment_Summary.csv", row.names = FALSE)
-write.csv(article_summary, "Article_Summary.csv", row.names = FALSE)
-
-# 打印摘要信息
-print("实验统计完成，已输出以下文件：")
-print("- Experiment_Summary.csv（每篇文章的实验及被试数量）")
-print("- Article_Summary.csv（每篇文章的实验数和总被试数）")
-
-```
-
-
-
-
-```{r}
-library(dplyr)
-library(readr)
-library(stringr)
-
-# 读取已处理的数据
-data <- read_csv("Processed_Data.csv", show_col_types = FALSE)
-
-# 提取文章名称（不包含实验部分）
-data <- data %>%
-  mutate(Article = str_extract(Source, "^[^_]+_\\d{4}_[^_]+")) %>%  # 提取 作者_年份_期刊
-  mutate(Experiment = str_extract(Source, "Exp\\d+")) %>%  # 提取实验编号
-  mutate(Subject_ID = str_extract(Subject, "[^_]+$"))  # 提取被试编号
-
-# 统计文章、实验、被试数量
-summary_table <- data %>%
-  group_by(Article, Experiment) %>%
-  summarise(Num_Subjects = n_distinct(Subject_ID), .groups = "drop") %>%
-  arrange(Article, Experiment)
-
-# 统计每篇文章的实验数
-article_summary <- summary_table %>%
-  group_by(Article) %>%
-  summarise(Num_Experiments = n_distinct(Experiment), Total_Subjects = sum(Num_Subjects), .groups = "drop")
-
-# 输出结果
-write.csv(summary_table, "Experiment_Summary.csv", row.names = FALSE)
-write.csv(article_summary, "Article_Summary.csv", row.names = FALSE)
-
-# 打印摘要信息
-print("实验统计完成，已输出以下文件：")
-print("- Experiment_Summary.csv（每篇文章的实验及被试数量）")
-print("- Article_Summary.csv（每篇文章的实验数和总被试数）")
-
-```
-
-
-
-# Copute SDE
 
 ```{r}
 library(dplyr)
@@ -588,7 +352,7 @@ print("数据处理完成，已存入 `results` 变量")
 write.csv(results, "Processed_Data.csv", row.names = FALSE)
 ```
 
-
+## Test01
 ```{r}
 library(dplyr)
 library(lme4)  # 用于LMM
@@ -639,5 +403,133 @@ sink()
 # 7. 保存处理后的数据
 write.csv(data_seq_clean, "Sequence_Effect_Data.csv", row.names = FALSE)
 ```
+## Test02
+```{r}
+# 加载必要的库
+library(dplyr)
+library(ggplot2)
+library(readr)
+
+# 读取数据
+data <- read_csv("Processed_Data_for_SDE.csv")
+
+# 按 Source、Subject 和 Trial 排序
+data <- data %>%
+  arrange(Source, Subject, Trial) %>%
+  group_by(Source, Subject) %>%
+  mutate(
+    Prev_Matching = lag(Matching),  # 计算上一试次的Matching
+    Prev_ACC = lag(ACC),            # 计算上一试次的正确率
+    Prev_RT_ms = lag(RT_ms)         # 计算上一试次的反应时
+  ) %>%
+  ungroup()
+
+# 计算上一试次的Matching对当前试次ACC的影响
+acc_model <- glm(ACC ~ Prev_Matching, data = data, family = binomial)
+summary(acc_model)
+
+# 计算上一试次的Matching对当前试次RT_ms的影响
+rt_model <- lm(RT_ms ~ Prev_Matching, data = data)
+summary(rt_model)
+
+# 可视化上一试次Matching对当前试次RT_ms的影响
+ggplot(data, aes(x = Prev_Matching, y = RT_ms)) +
+  geom_boxplot() +
+  labs(title = "Previous Matching Condition and Current RT_ms",
+       x = "Previous Matching Condition",
+       y = "Reaction Time (ms)") +
+  theme_minimal()
+
+```
+
+## Test03
+```{r}
+# 加载必要的包
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(ggplot2)
+
+# 读取数据
+data <- read_csv("Processed_Data_for_SDE.csv")
+
+# 按 Source（实验来源）、Subject（被试）、Trial（试次）排序，确保顺序正确
+data <- data %>% arrange(Source, Subject, Trial)
+
+# 计算 Lag-1 变量（上一试次的 Matching 条件）
+data <- data %>%
+  group_by(Source, Subject) %>%
+  mutate(Prev_Matching = lag(Matching)) %>%
+  ungroup()
+
+# 移除首个试次（因为没有上一试次）
+data <- na.omit(data)
+
+# 确保 Matching 和 Prev_Matching 变量是因子变量
+data$Matching <- as.factor(data$Matching)
+data$Prev_Matching <- as.factor(data$Prev_Matching)
+```
+
+```{r}
+# 逻辑回归模型（因变量：ACC，预测变量：Prev_Matching）
+acc_model <- glmer(ACC ~ Prev_Matching + (1 | Subject) + (1 | Source),
+                   family = binomial, data = data)
+
+# 输出结果
+summary(acc_model)
+```
+
+```{r}
+# 计算不同 Lag（1~7） 条件下的相关系数
+compute_autocorr <- function(data, max_lag = 7) {
+  autocorr_results <- data.frame(Lag = integer(), Beta = numeric(), SE = numeric(), P_Value = numeric())
+  
+  for (lag in 1:max_lag) {
+    data <- data %>%
+      group_by(Source, Subject) %>%
+      mutate(Prev_Matching = lag(Matching, lag)) %>%
+      ungroup() %>%
+      na.omit()
+    
+    # 计算混合模型
+    model <- glmer(ACC ~ Prev_Matching + (1 | Subject) + (1 | Source), family = binomial, data = data)
+    
+    # 提取 β 系数、标准误和 p 值
+    beta <- summary(model)$coefficients["Prev_MatchingNonmatching", "Estimate"]
+    se <- summary(model)$coefficients["Prev_MatchingNonmatching", "Std. Error"]
+    p_value <- summary(model)$coefficients["Prev_MatchingNonmatching", "Pr(>|z|)"]
+    
+    # 存储结果
+    autocorr_results <- rbind(autocorr_results, data.frame(Lag = lag, Beta = beta, SE = se, P_Value = p_value))
+  }
+  
+  return(autocorr_results)
+}
+
+# 计算 Lag-1 ~ Lag-7 的自相关
+autocorr_results <- compute_autocorr(data, max_lag = 7)
+
+# 查看结果
+print(autocorr_results)
+```
+
+```{r}
+# 画图（仿照 Rahnev 的 NHB 图）
+ggplot(autocorr_results, aes(x = Lag, y = Beta)) +
+  geom_point(size = 4, color = "blue") +                        # 画点
+  geom_errorbar(aes(ymin = Beta - SE, ymax = Beta + SE),        # 误差条
+                width = 0.2, color = "blue") +
+  geom_line(size = 1, color = "blue") +                         # 连接线
+  theme_minimal(base_size = 16) +
+  labs(title = "Serial Dependence in Accuracy (Lag-1 to Lag-7)",
+       x = "Lag (Previous Trial)",
+       y = "Autocorrelation (Beta ± SEM)") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+
+```
+
+
+
+
 
 
