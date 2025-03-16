@@ -403,6 +403,7 @@ sink()
 # 7. 保存处理后的数据
 write.csv(data_seq_clean, "Sequence_Effect_Data.csv", row.names = FALSE)
 ```
+
 ## Test02
 ```{r}
 # 加载必要的库
@@ -528,6 +529,90 @@ ggplot(autocorr_results, aes(x = Lag, y = Beta)) +
 
 ```
 
+## Test04
+```{r}
+# 加载必要的包
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(broom.mixed)
+
+# 读取数据
+data <- read_csv("Processed_Data_for_SDE.csv")
+
+# 预处理：生成lag变量
+data_preprocessed <- data %>%
+  arrange(Source, Subject, Trial) %>%
+  group_by(Subject) %>%
+  mutate(
+    Lag1_Matching = lag(Matching),
+    Lag2_Matching = lag(Matching, 2),
+    Lag3_Matching = lag(Matching, 3),
+    Lag4_Matching = lag(Matching, 4),
+    Lag5_Matching = lag(Matching, 5),
+    Lag6_Matching = lag(Matching, 6),
+    Lag7_Matching = lag(Matching, 7)
+  ) %>%
+  ungroup()
+
+# 初始化结果存储
+results <- tibble()
+
+# 分析不同lag的效应
+for (lag_num in 1:7) {
+  # 选择对应的lag变量
+  lag_var <- paste0("Lag", lag_num, "_Matching")
+  
+  # 过滤有效数据
+  temp_data <- data_preprocessed %>%
+    filter(!is.na(!!sym(lag_var))) %>%
+    rename(Current_Matching = Matching)
+  
+  # 运行混合效应模型（以反应时为例）
+  model <- lmer(
+    RT_ms ~ !!sym(lag_var) + (1 | Subject) + (1 | Source),
+    data = temp_data
+  )
+  
+  # 提取结果
+  summ <- summary(model)
+  coeffs <- summ$coefficients
+  
+  # 存储结果
+  results <- results %>% bind_rows(
+    tibble(
+      Lag = lag_num,
+      Beta = coeffs[2, "Estimate"],
+      SE = coeffs[2, "Std. Error"],
+      t = coeffs[2, "t value"],
+      p = coeffs[2, "Pr(>|t|)"]
+    )
+  )
+}
+
+# 可视化
+ggplot(results, aes(x = Lag, y = Beta)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray60") +
+  geom_line(color = "steelblue") +
+  geom_point(size = 3, color = "steelblue") +
+  geom_errorbar(aes(ymin = Beta - SE, ymax = Beta + SE), 
+                width = 0.2, color = "steelblue") +
+  geom_text(aes(label = ifelse(p < 0.001, "***", 
+                             ifelse(p < 0.01, "**",
+                                    ifelse(p < 0.05, "*", "")))),
+            vjust = -0.5, size = 5) +
+  scale_x_continuous(breaks = 1:7) +
+  labs(x = "Lag", 
+       y = "β Coefficient",
+       title = "Serial Dependence in Reaction Time",
+       subtitle = "Effect of Previous Trial's Matching Condition on Current Trial RT") +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+```
 
 
 
