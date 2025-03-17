@@ -48,6 +48,81 @@ Contributors (Alphabetical Order)
 - Mateusz Wozniak(1Social Cognition in Human-Robot Interaction Group, Italian Institute of Technology, Genoa, Italy;Social Mind Center, Department of Cognitive Science, Central European University, Vienna, Austria;Cognition and Philosophy Lab, Department of Philosophy, Monash University, Melbourne, VIC, Australia;Institute of Psychology, Jagiellonian University, Cracow, Poland)
 - Michele Vicovaro(Department of General Psychology, School of Psychology, University of Padua Padua, Italy)
 
+
+## Contributors (Alphabetical Order)
+
+### Ghent University
+#### Department of Experimental Clinical and Health Psychology
+- Letizia Amodeo (Henri Dunantlaan 2, 9000, Ghent, Belgium)
+- Judith Goris (Henri Dunantlaan 2, 9000, Ghent, Belgium)
+- Annabel D. Nijhof (Henri Dunantlaan 2, 9000, Ghent, Belgium)
+- Jan R. Wiersema (Henri Dunantlaan 2, 9000, Ghent, Belgium)
+
+### University of Padova
+#### Department of General Psychology
+- Marco Bertamini
+- Michele Vicovaro (School of Psychology, Padua, Italy)
+#### Department of Developmental and Social Psychology
+- Mario Dalmaso (via Venezia 8, 35131, Padova, Italy)
+
+### Northumbria University
+- Merryn D. Constable (United Kingdom of Great Britain and Northern Ireland)
+
+### University of Trier
+- Christian Frings (Trier, Germany)
+- Bernhard Pastötter (Universitätsring 15, Trier 54286, Germany)
+- Sarah Schäfer (Trier, Germany)
+
+### Shanghai Normal University
+- Xiangping Gao (Shanghai, China)
+- Haoyue Qian (Also affiliated with East China Normal University, Shanghai, China)
+
+### University of Aberdeen
+- Marius Golubickis (Aberdeen, UK)
+
+### Northeast Normal University
+- Lili Guan (School of Psychology, 5268 Renmin Street, ChangChun, Jilin, 130024, China)
+
+### Universidad de Murcia
+#### Departamento de Psicología Básica y Metodología
+- Luis J. Fuentes (Facultad de Psicología y Logopedia, 30100 Murcia, Spain)
+- Prof. Lucía B. Palmero (Facultad de Psicología y Logopedia, 30100 Murcia, Spain)
+
+### University of Amsterdam
+#### Department of Psychology, Programme Group Psychological Methods
+- Ivar Kolvoort (Amsterdam, The Netherlands)
+
+### Tel-Hai Academic College
+#### Department of Psychology
+- Tal Makovski (Upper Galilee, Israel)
+
+### University of Castilla-La Mancha
+- Víctor Martínez-Pérez (Albacete Campus, Faculty of Medicine, UCLM - Albacete, Spain)
+
+### The Open University of Israel
+#### Department of Education and Psychology
+- Mayan Navon (Israel)
+
+### University of Ottawa
+#### Institute of Mental Health Research
+- Georg Northoff (Ottawa, Ontario, Canada)
+
+### Italian Institute of Technology
+#### Social Cognition in Human-Robot Interaction Group
+- Mateusz Wozniak (Genoa, Italy)
+
+### Central European University
+#### Social Mind Center, Department of Cognitive Science
+- Mateusz Wozniak (Vienna, Austria)
+
+### Monash University
+#### Cognition and Philosophy Lab, Department of Philosophy
+- Mateusz Wozniak (Melbourne, VIC, Australia)
+
+### Jagiellonian University
+#### Institute of Psychology
+- Mateusz Wozniak (Cracow, Poland)
+
 ## Folder structure
 
 ```
