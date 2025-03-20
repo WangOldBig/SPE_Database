@@ -12,7 +12,7 @@ output: html_document
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Dalmaso_2024_CC/Dalmaso_2024_CC_Exp1_raw.csv")
+data <- read.csv("../2_Raw_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp2_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -3542,7 +3542,6 @@ summary(df[[54]])
 write.csv(x = df[[54]], file = "../1_Clean_Data/Bukowski_2021_AP/Bukowski_2021_AP_Exp2_Clean.csv")
 ```
 
-
 # Wozniak_2020_PLOS
 ## Experiment 1 (Identity = 3)
 "Self", "Friend", "None"    →   "Self","Close","Non_Person" (No  trial message)
@@ -3568,5 +3567,181 @@ write.csv(
 
 rm(file_list, data_list, combined_data)
 ```
+
+
+# Svensson_2023_QJEP
+## Experiment 1 (Identity = 2)
+"Self", "Friend"   →   "Self","Close"
+```{r}
+df[[55]] <- read.csv(
+  "../2_Raw_Data/Svensson_2023_QJEP/Svensson_2023_QJEP_Exp1_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subject,
+    Origin_Identity = shapeassociation,
+    Matching = matchingcondition,
+    Response = response,
+    Trial = trialnum,
+    RT_ms = latency,
+    ACC = correct,
+    ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "matching" ~ "Matching",
+      Matching == "mismatching" ~ "Nomatching",
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    English_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "friend" ~ "Friend",
+    ),
+    Standarlized_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+    ),
+    ) %>%
+  dplyr::select(
+    Subject, Trial, 
+    Origin_Identity, English_Identity, Standarlized_Identity,
+    Matching, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::arrange(
+    Subject,Trial
+    )
+
+names(df)[55] <- "Svensson_2023_QJEP"
+summary(df[[55]])
+write.csv(x = df[[55]], file = "../1_Clean_Data/Svensson_2023_QJEP/Svensson_2023_QJEP_Exp1_Clean.csv")
+```
+
+# Kirk_2025_BJP
+## Experiment 1 (Identity = 3)
+"Self", "Friend","Other"   →   "Self","Close","Stranger"
+```{r}
+df[[56]] <- read.csv(
+  "../2_Raw_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp1_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = Participant.Private.ID,
+    Origin_Identity = voiceidentity,
+    Matching = ANSWER,
+    Label = labelword,
+    Block = blocktype,
+    Trial = Trial.Number,
+    RT_ms = rt,
+    ACC = Correct,
+    ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "MATCH" ~ "Matching",
+      Matching == "MISMATCH" ~ "Nomatching",
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    English_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "friend" ~ "Fried",
+      Origin_Identity == "other" ~ "Other",
+    ),
+    Standarlized_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+      English_Identity == "Other" ~ "Stranger",
+    ),
+    ) %>%
+  dplyr::select(
+    Subject, Block, Trial, 
+    Origin_Identity, English_Identity, Standarlized_Identity,
+    Matching, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::arrange(
+    Subject,Trial
+    )
+
+names(df)[56] <- "Kirk_2025_BJP_Exp1"
+summary(df[[56]])
+write.csv(x = df[[56]], file = "../1_Clean_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp1_Clean.csv")
+```
+
+# Kirk_2025_BJP (Sound)
+## Experiment 1 (Identity = 3)
+"Self", "Friend","Other"   →   "Self","Close","Stranger"
+```{r}
+df[[57]] <- read.csv(
+  "../2_Raw_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp2_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = NewGorillaID,
+    Origin_Identity = voiceidentity,
+    Matching = trialtype,
+    Label = labelword,
+    Block = blocknumber,
+    Trial = Trial.Number,
+    RT_ms = RT,
+    ACC = Accuracy,
+    ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "MATCH" ~ "Matching",
+      Matching == "MISMATCH" ~ "Nomatching",
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    English_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "friend" ~ "Fried",
+      Origin_Identity == "other" ~ "Other",
+    ),
+    Standarlized_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+      English_Identity == "Other" ~ "Stranger",
+    ),
+    ) %>%
+  dplyr::select(
+    Subject, Block, Trial, 
+    Origin_Identity, English_Identity, Standarlized_Identity,
+    Matching, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::arrange(
+    Subject,Trial
+    )
+
+names(df)[57] <- "Kirk_2025_BJP_Exp2"
+summary(df[[57]])
+write.csv(x = df[[57]], file = "../1_Clean_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp1_Clean.csv")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
