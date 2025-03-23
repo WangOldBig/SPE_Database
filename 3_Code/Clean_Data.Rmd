@@ -12,7 +12,7 @@ output: html_document
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp2_raw.csv")
+data <- read.csv("../2_Raw_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp1_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -3728,12 +3728,128 @@ df[[57]] <- read.csv(
 
 names(df)[57] <- "Kirk_2025_BJP_Exp2"
 summary(df[[57]])
-write.csv(x = df[[57]], file = "../1_Clean_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp1_Clean.csv")
+write.csv(x = df[[57]], file = "../1_Clean_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp2_Clean.csv")
 ```
 
+# Orellana-Corrales_2021_APP
+## Experiment 1 (Identity = 2)
+"Self", "Friend","Other"   →   "Self","Close","Stranger" (NO Trial Level Data)
+```{r}
+df[[58]] <- read.csv(
+  "../2_Raw_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp1_raw.csv"
+  ) %>%
+  dplyr::filter(
+    TaskType == "PMT1" | TaskType == "PMT2"
+  ) %>%
+  dplyr::select(
+    Subject = subject,
+    Age = age,
+    Gender = sex,
+    Education = education,
+    Handedness = handedness,
+    Block = BlockNumber,
+    Shape = shape,
+    Label = word,
+    Response = response,
+    Origin_Identity = Association,
+    Matching = condition,
+    RT_ms = RT,
+    ACC = correct,
+    ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "mismatch" ~ "Nomatching",
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    English_Identity = case_when(
+      Origin_Identity == "you" ~ "You",
+      Origin_Identity == "friend" ~ "Friend",
+    ),
+    Standarlized_Identity = case_when(
+      English_Identity == "You" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+    ),
+    ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Education, Handedness, Block,
+    Origin_Identity, English_Identity, Standarlized_Identity,
+    Matching, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::arrange(
+    Subject
+    )
 
+names(df)[58] <- "Lee_2023_Cognition_Exp1"
+summary(df[[58]])
+write.csv(x = df[[58]], file = "../1_Clean_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp1_Clean.csv")
+```
 
+# Orellana-Corrales_2021_APP
+## Experiment 2 (Identity = 2)
+"Self", "Friend","Other"   →   "Self","Close","Stranger" (NO Trial Level Data)
+```{r}
+df[[59]] <- read.csv(
+  "../2_Raw_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp2_raw.csv"
+  ) %>%
+  dplyr::filter(
+    TaskType == "PMT1" | TaskType == "PMT2"
+  ) %>%
+  dplyr::select(
+    Subject = subject,
+    Age = age,
+    Gender = sex,
+    Education = education,
+    Handedness = handedness,
+    Shape = stim1,
+    Response = TaskType,
+    Origin_Identity = Association,
+    Matching = Condition,
+    RT_ms = RT,
+    ACC = correct,
+    ) %>%
+  dplyr::mutate(
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "mismatch" ~ "Nomatching",
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = RT_ms / 1000,
+    ) %>%
+  dplyr::mutate(
+    Subjcet = as.numeric(Subject),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+    English_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "friend" ~ "Friend",
+    ),
+    Standarlized_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+    ),
+    ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Education, Handedness, 
+    Origin_Identity, English_Identity, Standarlized_Identity,
+    Matching, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::arrange(
+    Subject
+    )
 
+names(df)[59] <- "Lee_2023_Cognition_Exp2"
+summary(df[[59]])
+write.csv(x = df[[59]], file = "../1_Clean_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp2_Clean.csv")
+```
 
 
 
