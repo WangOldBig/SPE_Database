@@ -12,7 +12,7 @@ output: html_document
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp1_raw.csv")
+data <- read.csv("../2_Raw_Data/Zhang_2023_NI/Zhang_2023_NI_Exp1_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -2381,12 +2381,12 @@ summary(df[[36]])
 write.csv(x = df[[36]], file = "../1_Clean_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_Exp1_Clean.csv")
 ```
 
-# Liang_2021_HBM
+# Liang_2022_HBM
 ## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No  trial message)
 ```{r Paper t3 Experiment 1}
 df[[37]] <- read.csv(
-  "../2_Raw_Data/Liang_2021_HBM/Liang_2021_HBM_Exp1_raw.csv"
+  "../2_Raw_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1_raw.csv"
   ) %>%
   dplyr::select(
     Subject = subj_idx,
@@ -2438,7 +2438,7 @@ df[[37]] <- read.csv(
 
 names(df)[37] <- "Liang_2021_HBM"
 summary(df[[37]])
-write.csv(x = df[[37]], file = "../1_Clean_Data/Liang_2021_HBM/Liang_2021_HBM_Exp1_Clean.csv")
+write.csv(x = df[[37]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1_Clean.csv")
 ```
 
 # Kolvoort_2020_HBM 
@@ -2852,6 +2852,7 @@ df[[44]] <- read.csv(
   ) %>%
   dplyr::filter(
     Procedure.Block. == "ProSelf",
+    Running.LogLevel5. == "TrialListS"
   ) %>%
   dplyr::select(
     Subject = Subject,
@@ -2860,6 +2861,8 @@ df[[44]] <- read.csv(
     Gender = Sex,
     Shape = Stimulus,
     Label = Label,
+    Block = TrialListS.Cycle,
+    Trial = TrialListS.Sample,
     Origin_Identity = Shape,
     Matching = Match,
     Response = TargetS.RESP,
@@ -2892,16 +2895,12 @@ df[[44]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Age, Gender, Handedness,
+    Subject, Age, Gender, Handedness, Block, Trial,
     Shape, Label, Matching, Origin_Identity, English_Identity, Standarlized_Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-  ) %>%
   dplyr::arrange(
-    Subject, Matching, Origin_Identity,
+    Subject, Block, Trial
   )
 
 names(df)[44] <- "Zhang_2023_NI"
