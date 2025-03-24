@@ -31,7 +31,9 @@ data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE
 exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP", 
                      "Hobbs_2023_PM", "Mcivor_2020_EJN", 
                      "Orellana-Corrales_2021_EP", "Svensson_2021_PR", 
-                     "Wang_2016_EPHPP")
+                     "Wang_2016_EPHPP","Liang_2022_HBM","Hobbs_2021_PM",
+                     "Lee_2023_Cognition","Orellana-Corrales_2021_APP",
+                     "Kirk_2025_BJP","Svensson_2023_QJEP")
 
 ## 过滤掉不需要的文件
 data_files <- data_files[!grepl(paste(exclude_folders, collapse = "|"), data_files)]
@@ -91,11 +93,16 @@ library(stringr)
 # 读取已处理的数据
 data <- read_csv("Processed_Data.csv", show_col_types = FALSE)
 
-# 提取文章名称（不包含实验部分）
+# 处理 Source 变量，提取文章信息（支持两种格式）
 data <- data %>%
-  mutate(Article = str_extract(Source, "^[^_]+_\\d{4}_[^_]+")) %>%  # 提取 作者_年份_期刊
-  mutate(Experiment = str_extract(Source, "Exp\\d+")) %>%  # 提取实验编号
-  mutate(Subject_ID = str_extract(Subject, "[^_]+$"))  # 提取被试编号
+  mutate(
+    Article = case_when(
+      str_detect(Source, "^[^_]+_\\d{4}_[^_]+_Exp\\d+") ~ str_extract(Source, "^[^_]+_\\d{4}_[^_]+"),  # 发表的格式
+      str_detect(Source, "^[^_]+_\\d{4}_Exp\\d+") ~ str_extract(Source, "^[^_]+_\\d{4}")  # 未发表的格式
+    ),
+    Experiment = str_extract(Source, "Exp\\d+"),  # 提取实验编号
+    Subject_ID = str_extract(Subject, "[^_]+$")  # 提取被试编号
+  )
 
 # 统计文章、实验、被试数量
 summary_table <- data %>%
@@ -111,6 +118,12 @@ article_summary <- summary_table %>%
 # 输出结果
 write.csv(summary_table, "Experiment_Summary.csv", row.names = FALSE)
 write.csv(article_summary, "Article_Summary.csv", row.names = FALSE)
+
+# 打印摘要信息
+print("实验统计完成，已输出以下文件：")
+print("- Experiment_Summary.csv（每篇文章的实验及被试数量）")
+print("- Article_Summary.csv（每篇文章的实验数和总被试数）")
+
 ```
 
 ## Pic1
@@ -238,7 +251,9 @@ data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE
 exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP", 
                      "Hobbs_2023_PM", "Mcivor_2020_EJN", 
                      "Orellana-Corrales_2021_EP", "Svensson_2021_PR", 
-                     "Wang_2016_EPHPP")
+                     "Wang_2016_EPHPP","Liang_2022_HBM","Hobbs_2021_PM",
+                     "Lee_2023_Cognition","Orellana-Corrales_2021_APP",
+                     "Kirk_2025_BJP","Svensson_2023_QJEP")
 
 ## 过滤掉不需要的文件
 data_files <- data_files[!grepl(paste(exclude_folders, collapse = "|"), data_files)]

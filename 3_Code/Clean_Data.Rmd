@@ -2915,6 +2915,9 @@ write.csv(x = df[[44]], file = "../1_Clean_Data/Zhang_2023_NI/Zhang_2023_NI_Exp1
 df[[45]] <- read.csv(
 "../2_Raw_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1_raw.csv"
   ) %>%
+  dplyr::filter(
+    tasktype == "SAT"
+  ) %>%
   dplyr::select(
     Subject = subject,
     Age = SubAge,
@@ -2922,6 +2925,8 @@ df[[45]] <- read.csv(
     Ethnicity = SubEthnicity,
     Handedness = SubHand,
     Group = group,
+    Block = nblock,
+    Trial = TrialID,
     Matching = Con_match,
     Shape = fill,
     Label = Con_label,
@@ -2958,16 +2963,12 @@ df[[45]] <- read.csv(
     ),
   ) %>%
   dplyr::select(
-    Subject, Age, Gender, Ethnicity, Handedness, Group,
+    Subject, Age, Gender, Ethnicity, Handedness, Group, Block, Trial,
     Shape, Label, Matching, Origin_Identity, English_Identity, Standarlized_Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-  ) %>%
   dplyr::arrange(
-    Subject, Matching
+    Subject, Block, Trial
   )
 
 names(df)[45] <- "Feldborg_2021_ERPH"
@@ -3018,10 +3019,6 @@ df[[46]] <- read.csv(
       English_Identity == "Stranger" ~ "Stranger",
     ),
   ) %>%
-  dplyr::mutate(
-    RT_sec = round(RT_sec, 3),
-    RT_ms = round(RT_ms, 0)
-    ) %>%
   dplyr::arrange(
     Subject, Origin_Identity
     )
@@ -3850,7 +3847,226 @@ summary(df[[59]])
 write.csv(x = df[[59]], file = "../1_Clean_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp2_Clean.csv")
 ```
 
+# Sui_2014_APP
+## Experiment 1 (Identtiy = 3)
+"Self", "Mother", "Stranger" → "Self","Close","Stranger" 
+1:1:1
+```{r paper s5}
+df[[60]] <- read.csv(
+  "../2_Raw_Data/Sui_2014_APP/Sui_2014_APP_Exp1_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subj_idx,
+    Block = blockNo,
+    Trial = trialNo,
+    Matching = matchness,
+    Origin_Identity = Id_fig,
+    RT_sec = rt,
+    ACC = response,
+  ) %>%
+  dplyr::mutate(
+    English_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "mother" ~ "Mother",
+      Origin_Identity == "stranger" ~ "Stranger",
+    ),
+    Standarlize_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Mother" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
+    Matching = case_when(
+      Matching == "yes" ~ "Matching",
+      Matching == "no" ~ "Nonmatching"),
+    RT_ms = RT_sec * 1000,
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Block, Trial, Matching, 
+    Origin_Identity, English_Identity, Standarlize_Identity,
+    RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::arrange(
+    Subject, Block, Trial
+  )
 
+names(df)[60] <- "Sui_2014_APP_Exp1"
+summary(df[[60]])
+write.csv(x = df[[60]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp1_Clean.csv")
+```
+
+## Experiment 2 (Identtiy = 3)
+"Self", "Mother", "Stranger"
+1:3:3
+```{r}
+df[[61]] <- read.csv(
+  "../2_Raw_Data/Sui_2014_APP/Sui_2014_APP_Exp2_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subj_idx,
+    Block = blockNo,
+    Trial = trialNo,
+    Matching = matchness,
+    Origin_Identity = Id_fig,
+    RT_sec = rt,
+    ACC = response,
+  ) %>%
+  dplyr::mutate(
+    English_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "mother" ~ "Mother",
+      Origin_Identity == "stranger" ~ "Stranger",
+    ),
+    Standarlize_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Mother" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
+    Matching = case_when(
+      Matching == "yes" ~ "Matching",
+      Matching == "no" ~ "Nonmatching"),
+    RT_ms = RT_sec * 1000,
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Block, Trial, Matching, 
+    Origin_Identity, English_Identity, Standarlize_Identity,
+    RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::arrange(
+    Subject, Block, Trial
+  )
+
+names(df)[61] <- "Sui_2014_APP_Exp2"
+summary(df[[61]])
+write.csv(x = df[[61]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp2_Clean.csv")
+```
+
+## Experiment 3 (Identtiy = 3)
+"Self", "Mother", "Stranger"
+3:1:3
+```{r}
+df[[62]] <- read.csv(
+  "../2_Raw_Data/Sui_2014_APP/Sui_2014_APP_Exp3_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subj_idx,
+    Block = blockNo,
+    Trial = trialNo,
+    Matching = matchness,
+    Origin_Identity = Id_fig,
+    RT_sec = rt,
+    ACC = response,
+  ) %>%
+  dplyr::mutate(
+    English_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "mother" ~ "Mother",
+      Origin_Identity == "stranger" ~ "Stranger",
+    ),
+    Standarlize_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Mother" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
+    Matching = case_when(
+      Matching == "yes" ~ "Matching",
+      Matching == "no" ~ "Nonmatching"),
+    RT_ms = RT_sec * 1000,
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Block, Trial, Matching, 
+    Origin_Identity, English_Identity, Standarlize_Identity,
+    RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::arrange(
+    Subject, Block, Trial
+  )
+
+names(df)[62] <- "Sui_2014_APP_Exp3"
+summary(df[[62]])
+write.csv(x = df[[62]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp3_Clean.csv")
+```
+
+## Experiment 4 (Identtiy = 3)
+"Self", "Mother", "Stranger"
+3:3:1
+```{r}
+df[[63]] <- read.csv(
+  "../2_Raw_Data/Sui_2014_APP/Sui_2014_APP_Exp4_raw.csv"
+  ) %>%
+  dplyr::select(
+    Subject = subj_idx,
+    Block = blockNo,
+    Trial = trialNo,
+    Matching = matchness,
+    Origin_Identity = Id_fig,
+    RT_sec = rt,
+    ACC = response,
+  ) %>%
+  dplyr::mutate(
+    English_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "mother" ~ "Mother",
+      Origin_Identity == "stranger" ~ "Stranger",
+    ),
+    Standarlize_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Mother" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
+    Matching = case_when(
+      Matching == "yes" ~ "Matching",
+      Matching == "no" ~ "Nonmatching"),
+    RT_ms = RT_sec * 1000,
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Block, Trial, Matching, 
+    Origin_Identity, English_Identity, Standarlize_Identity,
+    RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::arrange(
+    Subject, Block, Trial
+  )
+
+names(df)[63] <- "Sui_2014_APP_Exp4"
+summary(df[[63]])
+write.csv(x = df[[63]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp4_Clean.csv")
+```
 
 
 
