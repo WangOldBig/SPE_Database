@@ -3851,7 +3851,7 @@ write.csv(x = df[[59]], file = "../1_Clean_Data/Lee_2023_Cognition/Lee_2023_Cogn
 ## Experiment 1 (Identtiy = 3)
 "Self", "Mother", "Stranger" → "Self","Close","Stranger" 
 1:1:1
-```{r paper s5}
+```{r paper s5 }
 df[[60]] <- read.csv(
   "../2_Raw_Data/Sui_2014_APP/Sui_2014_APP_Exp1_raw.csv"
   ) %>%
@@ -4068,7 +4068,66 @@ summary(df[[63]])
 write.csv(x = df[[63]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp4_Clean.csv")
 ```
 
+# Orellana-Corrales_2021_APP
+## Experiment 1 (Identtiy = 2)
+"Self", "Stranger"
+```{r}
+df[[64]] <- read.csv(
+  "../2_Raw_Data/Orellana-Corrales_2021_APP/Orellana-Corrales_2021_APP_Exp1.csv"
+  ) %>%
+  dplyr::filter(
+    Procedure == "Matching"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Age = Age,
+    Handedness = Handedness,
+    Gender = Sex,
+    block = Block,
+    Matching = match,
+    Shape = shape,
+    Response = MT.RESP,
+    Origin_Identity = label,
+    RT_ms = MT.RT,
+    ACC = MT.ACC,
+  ) %>%
+  dplyr::mutate(
+    Trial = block - 532,
+    English_Identity = case_when(
+      Origin_Identity == "Ich" ~ "Self",
+      Origin_Identity == "Fremder" ~ "Stranger",
+    ),
+    Standarlize_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "nonmatch" ~ "Nonmatching"),
+    RT_sec = RT_ms / 1000,
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness, Trial, Matching, 
+    Origin_Identity, English_Identity, Standarlize_Identity,
+    RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::arrange(
+    Subject, Trial
+  )
 
+names(df)[64] <- "Orellana-Corrales_2021_APP_Exp1"
+summary(df[[64]])
+write.csv(x = df[[64]], file = "../1_Clean_Data/Orellana-Corrales_2021_APP/Orellana-Corrales_2021_APP_Exp1_Clean.csv")
+```
 
 
 
