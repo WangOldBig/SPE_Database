@@ -4129,7 +4129,65 @@ summary(df[[64]])
 write.csv(x = df[[64]], file = "../1_Clean_Data/Orellana-Corrales_2021_APP/Orellana-Corrales_2021_APP_Exp1_Clean.csv")
 ```
 
+# Orellana-Corrales_2021_APP
+## Experiment 2 (Identtiy = 2)
+"Self", "Stranger"
+```{r}
+df[[65]] <- read.csv(
+  "../2_Raw_Data/Orellana-Corrales_2021_APP/Orellana-Corrales_2021_APP_Exp1.csv"
+  ) %>%
+  dplyr::filter(
+    Procedure == "Matching"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Age = Age,
+    Handedness = Handedness,
+    Gender = Sex,
+    Trial= manipCheck.Sample,
+    Matching = match,
+    Shape = shape,
+    Response = MT.RESP,
+    Origin_Identity = label,
+    RT_ms = MT.RT,
+    ACC = MT.ACC,
+  ) %>%
+  dplyr::mutate(
+    English_Identity = case_when(
+      Origin_Identity == "Ich" ~ "Self",
+      Origin_Identity == "Fremder" ~ "Stranger",
+    ),
+    Standarlize_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
+    Matching = case_when(
+      Matching == "match" ~ "Matching",
+      Matching == "nonmatch" ~ "Nonmatching"),
+    RT_sec = RT_ms / 1000,
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness, Trial, Matching, 
+    Origin_Identity, English_Identity, Standarlize_Identity,
+    RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::arrange(
+    Subject, Trial
+  )
 
+names(df)[65] <- "Orellana-Corrales_2021_APP_Exp2"
+summary(df[[65]])
+write.csv(x = df[[65]], file = "../1_Clean_Data/Orellana-Corrales_2021_APP/Orellana-Corrales_2021_APP_Exp2_Clean.csv")
+```
 
 
 
