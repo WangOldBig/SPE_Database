@@ -326,14 +326,14 @@ df[[4]] <- read.csv(
   ) %>%
   tidyr::separate(
     condition,
-    into = c("Identity", "Match"),
+    into = c("Origin_Identity", "Match"),
     sep = "-shape_"
   ) %>%
   dplyr::mutate(
-    Identity = case_when(
-      Identity == "Self" ~ "Self",
-      Identity == "Familiar" ~ "Celebrity",
-      Identity == "Stranger" ~ "Stranger"
+    Origin_Identity = case_when(
+      Origin_Identity == "Self" ~ "Self",
+      Origin_Identity == "Familiar" ~ "Familiar",
+      Origin_Identity == "Stranger" ~ "Stranger"
     ),
     Matching = case_when(
       Match == "Matched" ~ "Matching",
@@ -348,11 +348,10 @@ df[[4]] <- read.csv(
     ACC = as.numeric(respond3.ACC),
     Arouse = Arouse.RESP,
     Valence = Valence.RESP,
-    Origin_Identity = Identity,
-    English_Identity = Identity,
+    English_Identity = Origin_Identity,
     Standarlized_Identity = case_when(
       English_Identity == "Self" ~ "Self",
-      English_Identity == "Familiar" ~ "Close",
+      English_Identity == "Familiar" ~ "Celebrity",
       English_Identity == "Stranger" ~ "Stranger",
     ),
   ) %>%
@@ -372,7 +371,7 @@ df[[4]] <- read.csv(
     RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
-    Subject, Session
+    Subject
   )
 
 names(df)[4] <- "Qian_2019_QJEP Exp 1"
@@ -389,14 +388,14 @@ df[[5]] <- read.csv(
   ) %>%
   tidyr::separate(
     condition1correct,
-    into = c("Identity", "Matching"),
+    into = c("Origin_Identity", "Matching"),
     sep = "-shape_"
   ) %>%
   dplyr::mutate(
     Subject = Subject,
-    Identity = case_when(
-      Identity == "Self" ~ "Self",
-      Identity == "Familiar" ~ "Celebrity"
+    Origin_Identity = case_when(
+      Origin_Identity == "Self" ~ "Self",
+      Origin_Identity == "Familiar" ~ "Familiar"
     ),
     Matching = case_when(
       Matching == "Matched" ~ "Matching",
@@ -413,17 +412,13 @@ df[[5]] <- read.csv(
     Matching = factor(
       Matching, levels = c("Matching", "Nonmatching")
     ),
-    Identity = factor(
-      Identity, levels = c("Self", "Familiar")
-    ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
-    Origin_Identity = Identity,
-    English_Identity = Identity,
+    English_Identity = Origin_Identity,
     Standarlized_Identity = case_when(
       English_Identity == "Self" ~ "Self",
-      English_Identity == "Familiar" ~ "Close"
+      English_Identity == "Familiar" ~ "Celebrity"
     ),
   ) %>%
   dplyr::select(
@@ -1388,16 +1383,21 @@ df[[22]] <- read.csv(
     RT_ms = as.numeric(RT_ms),
     English_Identity = Origin_Identity,
     Standarlized_Identity = case_when(
-      English_Identity == "Self" ~ "Self",
+      English_Identity == "Self" ~ "Individual_Self",
       English_Identity == "We" ~ "Group-Self",
       English_Identity == "They" ~ "Group-Stranger",
-      English_Identity == "You" ~ "Stranger",
+      English_Identity == "You" ~ "Individual_Stranger",
     ),
     Matching = case_when(
       Matching == "Match" ~ "Matching",
       Matching == "Mismatch" ~ "Nonmatching",
       )
-
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness, First_Language, 
+    Block, Trial, Shape, Label, Matching, 
+    Origin_Identity, English_Identity, Standarlized_Identity, 
+    ShapeLoc, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
     Subject, Block, Trial
