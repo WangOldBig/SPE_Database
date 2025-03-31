@@ -62,6 +62,8 @@ The analysis revealed significant moderation effects (β = 0.42, p < .001), with
 - P1.4(横坐标是SN_RT,纵坐标是Cohen's d-Self-Non_Person in RT. )
   
 ## Serial dependence effect in SPE.
+Understanding the temporal dynamics of the Self-Prioritization Effect (SPE) can provide insights into the cognitive and perceptual mechanisms underlying self-referential processing. One crucial aspect to consider is the potential serial dependence effect, which refers to the influence of previously processed stimuli on the current response. 
+
 - 思路：使用LMM(Linear Mixed Model)来探索在知觉匹配范式中，是否存在序列位置效应。以及序列位置效应中Identity是如何影响RT/ACC的(反应时越短，说明加工越快；正确率越高，说明加工越准确)
 - 目的：展现出不同Identity对于当前呈现刺激的影响。进而揭示SPE的认知和感知的潜在机制，为解释自我优势效应生成的本质提供思考。
 - P1(横坐标是History of RTs,纵坐标是β)

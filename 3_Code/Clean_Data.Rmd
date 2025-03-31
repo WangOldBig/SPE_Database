@@ -1354,6 +1354,9 @@ write.csv(x = df[[21]], file = "../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
 df[[22]] <- read.csv(
   "../2_Raw_Data/Constable_2019_EPHPP/Exp1/Constable_2019_EPHPP_Exp1_raw.csv"
   ) %>%
+  dplyr::filter(
+    Training.Experiment == "EXPERIMENT"
+  ) %>%
   dplyr::select(
     Subject = Participant.Number,
     Block = Block,
@@ -1367,10 +1370,6 @@ df[[22]] <- read.csv(
     Phase = Training.Experiment,
     Shape = Shape,
     Label = Label, 
-    WeShape = WeShape,
-    SelfShape = SelfShape,
-    TheyShape = TheyShape,
-    AloneShape = AloneShape,
     ShapeLoc = ShapeLoc,
     Response = resp,
     RT_sec = rt,
@@ -1381,12 +1380,17 @@ df[[22]] <- read.csv(
     RT_sec = as.numeric(RT_sec),
     RT_ms = RT_sec * 1000,
     RT_ms = as.numeric(RT_ms),
-    English_Identity = Origin_Identity,
+    English_Identity = case_when(
+      Origin_Identity == "Self" ~ "Individual_Self",
+      Origin_Identity == "We" ~ "Group-Self",
+      Origin_Identity == "They" ~ "Group-Stranger",
+      Origin_Identity == "You" ~ "Individual_Stranger",
+    ),
     Standarlized_Identity = case_when(
-      English_Identity == "Self" ~ "Individual_Self",
-      English_Identity == "We" ~ "Group-Self",
-      English_Identity == "They" ~ "Group-Stranger",
-      English_Identity == "You" ~ "Individual_Stranger",
+      English_Identity == "Individual_Self" ~ "Self",
+      English_Identity == "Group-Self" ~ "Self",
+      English_Identity == "Group-Stranger" ~ "Stranger",
+      English_Identity == "Individual_Stranger" ~ "Stranger",
     ),
     Matching = case_when(
       Matching == "Match" ~ "Matching",
@@ -1395,9 +1399,9 @@ df[[22]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness, First_Language, 
-    Block, Trial, Shape, Label, Matching, 
+    Block, Trial, Phase, Shape, Label, Matching, 
     Origin_Identity, English_Identity, Standarlized_Identity, 
-    ShapeLoc, RT_ms, RT_sec, ACC
+    ShapeLoc, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
     Subject, Block, Trial
@@ -1413,6 +1417,9 @@ write.csv(x = df[[22]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp1/Consta
 ```{r Paper p5 Experiment 2}
 df[[23]] <- read.csv(
   "../2_Raw_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_raw.csv"
+  ) %>%
+  dplyr::filter(
+    Training.Experiment == "EXPERIMENT"
   ) %>%
   dplyr::select(
     Subject = Participant.Number,
@@ -1441,21 +1448,32 @@ df[[23]] <- read.csv(
     RT_sec = as.numeric(RT_sec),
     RT_ms = RT_sec * 1000,
     RT_ms = as.numeric(RT_ms),
-    English_Identity = Origin_Identity,
+    English_Identity = case_when(
+      Origin_Identity == "Self" ~ "Individual_Self",
+      Origin_Identity == "We" ~ "Group-Self",
+      Origin_Identity == "They" ~ "Group-Stranger",
+      Origin_Identity == "You" ~ "Individual_Stranger",
+    ),
     Standarlized_Identity = case_when(
-      English_Identity == "Self" ~ "Self",
-      English_Identity == "We" ~ "Group-Self",
-      English_Identity == "They" ~ "Group-Stranger",
-      English_Identity == "You" ~ "Stranger",
+      English_Identity == "Individual_Self" ~ "Self",
+      English_Identity == "Group-Self" ~ "Self",
+      English_Identity == "Group-Stranger" ~ "Stranger",
+      English_Identity == "Individual_Stranger" ~ "Stranger",
     ),
     Matching = case_when(
       Matching == "Match" ~ "Matching",
       Matching == "Mismatch" ~ "Nonmatching",
       )
   ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness, First_Language, 
+    Block, Trial, Phase, Shape, Label, Matching, 
+    Origin_Identity, English_Identity, Standarlized_Identity, 
+    ShapeLoc, Response, RT_ms, RT_sec, ACC
+  ) %>%
   dplyr::arrange(
     Subject, Block, Trial
-  )
+    )
 
 names(df)[23] <- "Constable_2019_EPHPP_Exp2"
 summary(df[[23]])
@@ -1468,6 +1486,9 @@ write.csv(x = df[[23]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp2/Consta
 ```{r Paper p5 Experiment 3}
 df[[24]] <- read.csv(
   "../2_Raw_Data/Constable_2019_EPHPP/Exp3/Constable_2019_EPHPP_Exp3_raw.csv"
+  ) %>%
+  dplyr::filter(
+    Training.Experiment == "EXPERIMENT"
   ) %>%
   dplyr::select(
     Subject = Participant.Number,
@@ -1496,17 +1517,28 @@ df[[24]] <- read.csv(
     RT_sec = as.numeric(RT_sec),
     RT_ms = RT_sec * 1000,
     RT_ms = as.numeric(RT_ms),
-    English_Identity = Origin_Identity,
+    English_Identity = case_when(
+      Origin_Identity == "Self" ~ "Individual_Self",
+      Origin_Identity == "We" ~ "Group-Self",
+      Origin_Identity == "They" ~ "Group-Stranger",
+      Origin_Identity == "You" ~ "Individual_Stranger",
+    ),
     Standarlized_Identity = case_when(
-      English_Identity == "Self" ~ "Self",
-      English_Identity == "We" ~ "Group-Self",
-      English_Identity == "They" ~ "Group-Stranger",
-      English_Identity == "You" ~ "Stranger",
+      English_Identity == "Individual_Self" ~ "Self",
+      English_Identity == "Group-Self" ~ "Self",
+      English_Identity == "Group-Stranger" ~ "Stranger",
+      English_Identity == "Individual_Stranger" ~ "Stranger",
     ),
     Matching = case_when(
       Matching == "Match" ~ "Matching",
       Matching == "Mismatch" ~ "Nonmatching",
       )
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness, First_Language, 
+    Block, Trial, Phase, Shape, Label, Matching, 
+    Origin_Identity, English_Identity, Standarlized_Identity, 
+    ShapeLoc, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
     Subject, Block, Trial
@@ -1544,18 +1576,29 @@ df[[25]] <- read.csv(
     RT_sec = as.numeric(RT_sec),
     RT_ms = RT_sec * 1000,
     RT_ms = as.numeric(RT_ms),
-    English_Identity = Origin_Identity,
+    English_Identity = case_when(
+      Origin_Identity == "Person1" ~ "Individual_Self",
+      Origin_Identity == "Person2" ~ "Individual_Self",
+      Origin_Identity == "Team" ~ "Group-Self",
+      Origin_Identity == "StrangerTeam" ~ "Group-Stranger",
+      Origin_Identity == "Stranger" ~ "Individual_Stranger",
+    ),
     Standarlized_Identity = case_when(
-      English_Identity == "Person1" ~ "Self",
-      English_Identity == "Person2" ~ "Self",
-      English_Identity == "Team" ~ "Group-Self",
-      English_Identity == "StrangerTeam" ~ "Group-Stranger",
-      English_Identity == "Stranger" ~ "Stranger",
+      English_Identity == "Individual_Self" ~ "Self",
+      English_Identity == "Group-Self" ~ "Self",
+      English_Identity == "Group-Stranger" ~ "Stranger",
+      English_Identity == "Individual_Stranger" ~ "Stranger",
     ),
     Matching = case_when(
       Matching == "Match" ~ "Matching",
       Matching == "Mismatch" ~ "Nonmatching",
       )
+  ) %>%
+  dplyr::select(
+    Subject, P1Age, P2Age, 
+    Block, Trial, Shape, Label, Matching, 
+    Origin_Identity, English_Identity, Standarlized_Identity, 
+    ShapeLoc, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
     Subject, Block, Trial
