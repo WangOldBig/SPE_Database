@@ -29,6 +29,7 @@ Contributors (Alphabetical Order)
 - Michele Vicovaro (Department of General Psychology, School of Psychology, University of Padova)
 - Merryn D. Constable (Department of Psychology, Northumbria University)
 - Christian Frings (University of Trier)
+- Céline Haciahmet（University of Trier）
 - Sarah Schäfer (University of Trier)
 - Bernhard Pastötter (University of Trier)
 - Judith Goris (Department of Experimental Psychology, Ghent University)
