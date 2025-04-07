@@ -15,18 +15,18 @@ This project is in parallel with an on-going preregistered meta-analysis leading
 - Wanke Pan (School of Psychology, Nanjing Normal University)
 - Mengzheng Hu (School of Psychology, Nanjing Normal University)
 - Zheng Liu (Division of Applied Psychology, School of Humanities and Social Science, CUHK-Shenzhen)
-- [Jie Sui, University of Aberdeen](https://www.abdn.ac.uk/people/jie.sui)
+- Jie Sui ([University of Aberdeen](https://www.abdn.ac.uk/people/jie.sui))
 - Hu Chuan-Peng (School of Psychology, Nanjing Normal University, email: [hcp4715@hotmail.com](hcp4715@hotmail.com))
 
 ### Data contributors
 
 Authors of published studies were invited and listed here, if permitted, as contributors.
 
-Contributors (Alphabetical Order)
+Contributors
 
 - Marco Bertamini (Department of General Psychology, University of Padova)
 - Mario Dalmaso (Department of Developmental and Social Psychology, University of Padova)
-- Michele Vicovaro (Department of General Psychology, School of Psychology, University of Padova)
+- Michele Vicovaro (Department of General Psychology, University of Padova)
 - Merryn D. Constable (Department of Psychology, Northumbria University)
 - Christian Frings (University of Trier)
 - Céline Haciahmet（University of Trier）
