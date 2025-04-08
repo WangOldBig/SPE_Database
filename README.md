@@ -1,6 +1,6 @@
 # SPE Database
 
-This project was inspired by [the Confidence Database](https://doi.org/10.1038/s41562-019-0813-1). We aimed at curating a database that include trial-level data and other meta-data from as many empirical studies that used self-matching task from [Sui, He, &amp; Humphreys (2012)](http://www.ncbi.nlm.nih.gov/pubmed/22963229). `<!-- OSF, preprint, and publication links will be directly added to this paragraph -->`
+This project was inspired by [the Confidence Database](https://doi.org/10.1038/s41562-019-0813-1). We aimed at curating a database that include trial-level data and other meta-data from as many empirical studies that used self-matching task from [Sui, He, &amp; Humphreys (2012)](http://www.ncbi.nlm.nih.gov/pubmed/22963229). <!-- OSF, preprint, and publication links will be directly added to this paragraph -->
 
 Currently, the SPE database includes trial-level data from **23 published papers**, covering **38 experiments** and **2175 participants** in total. Each dataset includes information on reaction times (RTs), accuracy (ACC), and other information reported in papers. Participants in these included studies come from diverse cultural backgrounds, facilitating cross-study comparisons and meta-analytic investigations.
 
@@ -46,8 +46,10 @@ Contributors
 - Georg Northoff (Institute of Mental Health Research, University of Ottawa)
 - Xiangping Gao (Department of Psychology, Shanghai Normal University)
 - Haoyue Qian (School of Physics and Shanghai Key Laboratory of Magnetic Resonance, East China Normal University; Department of Psychology, Shanghai Normal University)
-- Kalai Hung(Tsinghua University)
-- Fei Wang(Tsinghua University)
+- Kalai Hung (Tsinghua University)
+- Fei Wang (Tsinghua University)
+- Qiongdan Liang (Tsinghua University)
+- Yongfa Zhang (Tsinghua University)
 - Tuo Liu(Master of Science Researcher at Goethe University Frankfurt)
 - Mateusz Wozniak (Social Cognition in Human-Robot Interaction Group, Italian Institute of Technology, Genoa, Italy; Social Mind Center, Department of Cognitive Science, Central European University, Vienna, Austria; Cognition and Philosophy Lab, Department of Philosophy, Monash University, Melbourne, VIC, Australia; Institute of Psychology, Jagiellonian University, Cracow, Poland)
 
