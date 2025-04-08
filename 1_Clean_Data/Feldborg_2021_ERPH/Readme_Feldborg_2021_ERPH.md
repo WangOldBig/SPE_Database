@@ -2,17 +2,15 @@
 
 ## Authors
 
-Michella Feldborg（School of Psychology, University of Aberdeen, Aberdeen AB24 3FX, UK; michella.feldborg@abdn.ac.uk (M.F.);n.lee.20@abdn.ac.uk (N.A.L.); jie.sui@abdn.ac.uk (J.S.)）
+Michella Feldborg（School of Psychology, University of Aberdeen, Aberdeen AB24 3FX, UK）
 
-Naomi A. Lee（School of Psychology, University of Aberdeen, Aberdeen AB24 3FX, UK; michella.feldborg@abdn.ac.uk (M.F.);
-n.lee.20@abdn.ac.uk (N.A.L.); jie.sui@abdn.ac.uk (J.S.)）
+Naomi A. Lee（School of Psychology, University of Aberdeen, Aberdeen AB24 3FX, UK）
 
-Kalai Hung（Department of Psychology, Tsinghua University, Beijing 100084, China; pengkp@mail.tsinghua.edu.cn）
+Kalai Hung（Department of Psychology, Tsinghua University, Beijing 100084, China）
 
-Kaiping Peng（Department of Psychology, Tsinghua University, Beijing 100084, China; pengkp@mail.tsinghua.edu.cn）
+Kaiping Peng（Department of Psychology, Tsinghua University, Beijing 100084, China）
 
-Jie Sui（School of Psychology, University of Aberdeen, Aberdeen AB24 3FX, UK; michella.feldborg@abdn.ac.uk (M.F.);
-n.lee.20@abdn.ac.uk (N.A.L.); jie.sui@abdn.ac.uk (J.S.)）
+Jie Sui（School of Psychology, University of Aberdeen, Aberdeen AB24 3FX, UK;）
 
 
 ## Citation
