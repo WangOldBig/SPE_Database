@@ -237,6 +237,106 @@ library(gridExtra)
 grid.arrange(p1.1, p1.2, p1.3, p1.4, ncol = 2)
 ```
 
+## Pic1_v2
+```{r Package, warning = FALSE,message = FALSE}
+# 加载必要的包
+library(tidyverse)
+library(effsize)      # 计算 Cohen's d
+library(ggridges)     # 绘制 ridge plot
+library(readr)
+
+# 读取数据
+df <- read_csv("Processed_Data.csv")
+```
+
+```{r}
+# 筛选需要的 Identity 条件
+identities <- c("Close", "Stranger", "Celebrity", "Acquaintance", "NonPerson")
+
+# 创建空数据框保存 Cohen's d 结果
+d_results <- data.frame()
+
+# 循环每个 Identity 条件，计算对应的 Cohen's d 相对 Self
+for (id in identities) {
+  df_self <- df %>% filter(Standarlized_Identity == "Self")
+  df_other <- df %>% filter(Standarlized_Identity == id)
+  
+  # inner join by Subject + Matching 以保证配对
+  df_merged <- inner_join(
+    df_self, df_other,
+    by = c("Subject", "Matching"),
+    suffix = c("_Self", "_Other")
+  )
+  
+  # 计算 Cohen's d（配对样本）
+  d_value <- cohen.d(
+    df_merged$RT_ms_Self,
+    df_merged$RT_ms_Other,
+    paired = TRUE,
+    hedges.correction = TRUE
+  )$estimate
+  
+  # 保存结果
+  d_results <- rbind(d_results, data.frame(Identity = id, Cohens_d = d_value))
+}
+```
+
+```{r}
+# 计算每个被试在每个 Identity 条件下与 Self 的 Cohen's d（近似方法）
+all_d <- df %>%
+  filter(Matching == "Matching") %>%
+  filter(Standarlized_Identity %in% c("Self", identities)) %>%
+  group_by(Subject, Matching, Standarlized_Identity) %>%
+  summarise(RT_mean = mean(RT_ms), .groups = "drop") %>%
+  pivot_wider(names_from = Standarlized_Identity, values_from = RT_mean) %>%
+  rowwise() %>%
+  mutate(
+    d_Close = (Self - Close) / sd(c(Self, Close)),
+    d_Stranger = (Self - Stranger) / sd(c(Self, Stranger)),
+    d_Celebrity = (Self - Celebrity) / sd(c(Self, Celebrity)),
+    d_Acquaintance = (Self - Acquaintance) / sd(c(Self, Acquaintance)),
+    d_NonPerson = (Self - NonPerson) / sd(c(Self, NonPerson))
+  ) %>%
+  ungroup() %>%
+  select(Subject, Matching, starts_with("d_")) %>%
+  pivot_longer(
+    cols = starts_with("d_"),
+    names_to = "Identity",
+    values_to = "Cohens_d"
+  ) %>%
+  mutate(Identity = str_remove(Identity, "d_"))
+```
+
+
+```{r}
+ggplot(all_d, aes(x = Cohens_d, y = Identity, fill = Identity)) +
+  geom_density_ridges(alpha = 0.7, scale = 1.2) +
+  theme_ridges() +
+  labs(
+    title = "Distribution of Cohen's d (Self vs. Other Identities)",
+    x = "Cohen's d (RT: Self - Other)",
+    y = "Identity"
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray30") +
+  theme(legend.position = "none")
+
+```
+
+```{r}
+ggplot(all_d, aes(x = Cohens_d, y = Identity, fill = Identity)) +
+  geom_density_ridges(alpha = 0.7, scale = 1.2) +
+  facet_wrap(~Matching) +
+  theme_ridges() +
+  labs(
+    title = "Distribution of Cohen's d by Matching Condition",
+    x = "Cohen's d (RT: Self - Other)",
+    y = "Identity"
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray30") +
+  theme(legend.position = "none")
+```
+
+
 # Copute SDE
 ## Read csv (区分公开和未公开) [只包含有Trial记录的]
 ```{r}
