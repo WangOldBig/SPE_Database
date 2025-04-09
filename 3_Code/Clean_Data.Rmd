@@ -12,7 +12,7 @@ output: html_document
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Zhang_2023_NI/Zhang_2023_NI_Exp1_raw.csv")
+data <- read.csv("../2_Raw_Data/Haciahmet_2023_Psy/Haciahmet_2023_Psy_Exp1_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -4177,7 +4177,7 @@ write.csv(x = df[[64]], file = "../1_Clean_Data/Orellana-Corrales_2021_APP/Orell
 "Self", "Stranger"
 ```{r}
 df[[65]] <- read.csv(
-  "../2_Raw_Data/Orellana-Corrales_2021_APP/Orellana-Corrales_2021_APP_Exp1.csv"
+  "../2_Raw_Data/Orellana-Corrales_2021_APP/Orellana-Corrales_2021_APP_Exp2.csv"
   ) %>%
   dplyr::filter(
     Procedure == "Matching"
@@ -4189,7 +4189,6 @@ df[[65]] <- read.csv(
     Gender = Sex,
     Trial= manipCheck.Sample,
     Matching = match,
-    Shape = shape,
     Response = MT.RESP,
     Origin_Identity = label,
     RT_ms = MT.RT,
@@ -4232,7 +4231,66 @@ summary(df[[65]])
 write.csv(x = df[[65]], file = "../1_Clean_Data/Orellana-Corrales_2021_APP/Orellana-Corrales_2021_APP_Exp2_Clean.csv")
 ```
 
+# Haciahmet_2022_Psy
+## Experiment 1 (Identity = 2)
+"Self", "Stranger"    →   "Self","Stranger"
+```{r Paper t1 Experiment 1}
+df[[66]] <- read.csv(
+  "../2_Raw_Data/Haciahmet_2023_Psy/Haciahmet_2023_Psy_Exp1_raw.csv"
+  ) %>%
+  dplyr::filter(
+    Procedure.Trial. == "BlockProc"
+  ) %>%
+  dplyr::select(
+    Subject = Subject,
+    Block = BlockNr,
+    Trial = SubTrial,
+    Age = Alter,
+    Gender = Geschlecht,
+    Handedness = Hand,
+    Origin_Identity = Target,
+    Shape = TargetImage,
+    Label = LabelText,
+    Matching = Condition,
+    Response = WaitResponse.RESP,
+    RT_ms = WaitResponse.RT,
+    ACC = WaitResponse.ACC,
+    ) %>%
+  dplyr::mutate(
+    Shape = case_when(
+      Shape == ".\\Stimuli\\circle.png" ~ "circle.png",
+      Shape == ".\\Stimuli\\triangle.png" ~ "triangle.png"
+    ),
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 2 ~ "Nonmatching"
+    ),
+    Origin_Identity = case_when(
+      Origin_Identity == 1 ~ "Self",
+      Origin_Identity == 2 ~ "Stranger"
+    ),
+    English_Identity = Origin_Identity,
+    Standarlized_Identity = case_when(
+      English_Identity == "Stranger" ~ "Stranger",
+      English_Identity == "Self" ~ "Self",
+    ),
+    ) %>%
+  dplyr::mutate(
+    as.numeric(as.character(RT_ms)),
+    RT_sec = RT_ms / 1000
+    ) %>%
+  dplyr::select(
+    Subject, Block, Trial,
+    Age, Gender, Handedness,
+    Shape, Label,  Matching, 
+    Origin_Identity, English_Identity, Standarlized_Identity,
+    Response, RT_ms, RT_sec, ACC
+    ) %>%
+  dplyr::arrange(
+    Subject, Block, Trial
+    )
 
-
-
-
+names(df)[66] <- "Haciahmet_2023_Psy_Exp1"
+summary(df[[66]])
+write.csv(x = df[[66]], file = "../1_Clean_Data/Haciahmet_2022_Psy/Haciahmet_2022_Psy_Exp1_Clean.csv")
+```
