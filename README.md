@@ -20,7 +20,17 @@ This project is in parallel with an on-going preregistered meta-analysis leading
 
 ### Data contributors
 
-Authors of published studies were invited and listed here, if permitted, as contributors.
+Authors of original studies were invited and listed here, if permitted, as contributors. We will adhere to Sage’s authorship criteria for authors in our future data descriptor paper. That is, authors of our data descriptor paper must have been responsible for at least one of the following [CRediT](https://us.sagepub.com/en-us/nam/credit) roles:
+
+- Conceptualization
+- Methodology
+- Formal Analysis
+- Investigation
+
+AND at least one of the following:
+
+- Writing – Original Draft Preparation
+- Writing – Review & Editing
 
 Contributors
 
