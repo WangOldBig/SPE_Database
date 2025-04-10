@@ -435,8 +435,8 @@ for (i in seq_along(data_files)) {
       )
     
     # 过滤 RT 在合理范围内的行
-    Data <- Data %>%
-      filter(RT_ms > 10 & RT_ms < 5000, ACC %in% c(0, 1))  # 过滤异常值
+    # Data <- Data %>%
+    #   filter(RT_ms > 10 & RT_ms < 5000, ACC %in% c(0, 1))  # 过滤异常值
 
     # **存入列表**
     results_list[[counter]] <- Data %>%
@@ -635,9 +635,21 @@ data <- data %>%
 # 移除首个试次（因为没有上一试次）
 data <- na.omit(data)
 
-# 确保 Matching 和 Prev_Matching 变量是因子变量
+# 清理 ACC：将 1 以外的所有值（包括 NA）统一处理为 0
+data <- data %>%
+  mutate(ACC = ifelse(ACC == 1, 1, 0))
+
+# 确保 Matching 和 Prev_Matching 是因子变量
 data$Matching <- as.factor(data$Matching)
 data$Prev_Matching <- as.factor(data$Prev_Matching)
+
+# 构建逻辑回归模型（因变量：ACC，预测变量：Prev_Matching）
+acc_model <- glmer(ACC ~ Prev_Matching + (1 | Subject) + (1 | Source),
+                   family = binomial, data = data)
+
+# 输出模型摘要
+summary(acc_model)
+
 ```
 
 ```{r}

@@ -2389,11 +2389,11 @@ df[[36]] <- read.csv(
     ) %>%
   dplyr::mutate(
     MatchingExtra = str_extract(Label, "(?<=self|other)(match|nonmatch)"),
-    # 将提取的匹配类型转换为"Matching"或"Nomatching"
+    # 将提取的匹配类型转换为"Matching"或"Nonmatching"
     Matching = case_when(
       MatchingExtra == "match" ~ "Matching",
-      MatchingExtra == "nonmatch" ~ "Nomatching",
-      TRUE ~ "Nomatching"
+      MatchingExtra == "nonmatch" ~ "Nonmatching",
+      TRUE ~ "Nonmatching"
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
@@ -3358,7 +3358,7 @@ df[[51]] <- read.csv(
   dplyr::mutate(
     Matching = case_when(
       Matching == "si" ~ "Matching",
-      Matching == "no" ~ "Nomatching",
+      Matching == "no" ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
@@ -3417,7 +3417,7 @@ df[[52]] <- read.csv(
   dplyr::mutate(
     Matching = case_when(
       Matching == "yes" ~ "Matching",
-      Matching == "no" ~ "Nomatching",
+      Matching == "no" ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
@@ -3627,7 +3627,7 @@ df[[55]] <- read.csv(
   dplyr::mutate(
     Matching = case_when(
       Matching == "matching" ~ "Matching",
-      Matching == "mismatching" ~ "Nomatching",
+      Matching == "mismatching" ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
@@ -3680,7 +3680,7 @@ df[[56]] <- read.csv(
   dplyr::mutate(
     Matching = case_when(
       Matching == "MATCH" ~ "Matching",
-      Matching == "MISMATCH" ~ "Nomatching",
+      Matching == "MISMATCH" ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
@@ -3692,7 +3692,7 @@ df[[56]] <- read.csv(
     ACC = as.numeric(ACC),
     English_Identity = case_when(
       Origin_Identity == "self" ~ "Self",
-      Origin_Identity == "friend" ~ "Fried",
+      Origin_Identity == "friend" ~ "Friend",
       Origin_Identity == "other" ~ "Other",
     ),
     Standarlized_Identity = case_when(
@@ -3735,7 +3735,7 @@ df[[57]] <- read.csv(
   dplyr::mutate(
     Matching = case_when(
       Matching == "MATCH" ~ "Matching",
-      Matching == "MISMATCH" ~ "Nomatching",
+      Matching == "MISMATCH" ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
@@ -3798,7 +3798,7 @@ df[[58]] <- read.csv(
   dplyr::mutate(
     Matching = case_when(
       Matching == "match" ~ "Matching",
-      Matching == "mismatch" ~ "Nomatching",
+      Matching == "mismatch" ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
@@ -3857,7 +3857,7 @@ df[[59]] <- read.csv(
   dplyr::mutate(
     Matching = case_when(
       Matching == "match" ~ "Matching",
-      Matching == "mismatch" ~ "Nomatching",
+      Matching == "mismatch" ~ "Nonmatching",
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
@@ -4346,9 +4346,9 @@ df[[67]] <- read.csv(
     Shape = Image,
     Label = Name,
     Matching = Match,
-    Response = WaitResponse.RESP,
-    RT_sec = WaitResponse.RT,
-    ACC = WaitResponse.ACC,
+    Response = Response.keys,
+    RT_sec = Response.rt,
+    ACC = Response.corr,
     ) %>%
   dplyr::mutate(
     Matching = case_when(
@@ -4363,13 +4363,15 @@ df[[67]] <- read.csv(
       Matching == 3.2 ~ "Nonmatching",
     ),
     Origin_Identity = case_when(
-      Origin_Identity == 1 ~ "Self",
-      Origin_Identity == 2 ~ "Stranger"
+      Origin_Identity == "Self " ~ "Self",
+      Origin_Identity == "Friend" ~ "Friend",
+      Origin_Identity == "Stranger" ~ "Stranger"
     ),
     English_Identity = Origin_Identity,
     Standarlized_Identity = case_when(
       English_Identity == "Stranger" ~ "Stranger",
       English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
     ),
     Trial = trial + 1,
     Block = block + 1,
@@ -4380,7 +4382,7 @@ df[[67]] <- read.csv(
     ) %>%
   dplyr::select(
     Subject, Block, Trial,
-    Age, Gender, Handedness,
+    Age, Gender,
     Shape, Label,  Matching, 
     Origin_Identity, English_Identity, Standarlized_Identity,
     Response, RT_ms, RT_sec, ACC
