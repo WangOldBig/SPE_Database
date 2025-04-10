@@ -15,12 +15,12 @@ This project is in parallel with an on-going preregistered meta-analysis leading
 - Wanke Pan (School of Psychology, Nanjing Normal University)
 - Mengzheng Hu (School of Psychology, Nanjing Normal University)
 - Zheng Liu (Division of Applied Psychology, School of Humanities and Social Science, CUHK-Shenzhen)
-- Jie Sui ([University of Aberdeen](https://www.abdn.ac.uk/people/jie.sui))
-- Hu Chuan-Peng (School of Psychology, Nanjing Normal University, email: [hcp4715@hotmail.com](hcp4715@hotmail.com))
+- Jie Sui ([School of Psychology, University of Aberdeen](https://www.abdn.ac.uk/people/jie.sui))
+- **Hu Chuan-Peng** (**Corresponding author**, School of Psychology, Nanjing Normal University, email: [hcp4715@hotmail.com](hcp4715@hotmail.com))
 
 ### Data contributors
 
-Authors of original studies were invited and listed here, if permitted, as contributors. We will adhere to Sage’s authorship criteria for authors in our future data descriptor paper. That is, authors of our data descriptor paper must have been responsible for at least one of the following [CRediT](https://us.sagepub.com/en-us/nam/credit) roles:
+Authors of original studies were invited and listed here, if permitted, as contributors. We will adhere to Sage's authorship criteria for authors in our future data descriptor paper. That is, authors of our data descriptor paper must have been responsible for at least one of the following [CRediT](https://us.sagepub.com/en-us/nam/credit) roles:
 
 - Conceptualization
 - Methodology
@@ -29,8 +29,8 @@ Authors of original studies were invited and listed here, if permitted, as contr
 
 AND at least one of the following:
 
-- Writing – Original Draft Preparation
-- Writing – Review & Editing
+- Writing - Original Draft Preparation
+- Writing - Review & Editing
 
 Contributors
 
@@ -39,7 +39,7 @@ Contributors
 - Michele Vicovaro (Department of General Psychology, University of Padova)
 - Merryn D. Constable (Department of Psychology, Northumbria University)
 - Christian Frings (University of Trier)
-- Céline Haciahmet（University of Trier）
+- Céline Haciahmet (University of Trier)
 - Sarah Schäfer (University of Trier)
 - Bernhard Pastötter (University of Trier)
 - Judith Goris (Department of Experimental Psychology, Ghent University)
@@ -57,11 +57,12 @@ Contributors
 - Xiangping Gao (Department of Psychology, Shanghai Normal University)
 - Haoyue Qian (School of Physics and Shanghai Key Laboratory of Magnetic Resonance, East China Normal University; Department of Psychology, Shanghai Normal University)
 - Kalai Hung (Tsinghua University)
+- Michella Feldborg (University of Aberdeen)
 - Fei Wang (Tsinghua University)
 - Qiongdan Liang (Tsinghua University)
 - Yongfa Zhang (Tsinghua University)
-- Tuo Liu(Master of Science Researcher at Goethe University Frankfurt)
-- Mateusz Wozniak (Social Cognition in Human-Robot Interaction Group, Italian Institute of Technology, Genoa, Italy; Social Mind Center, Department of Cognitive Science, Central European University, Vienna, Austria; Cognition and Philosophy Lab, Department of Philosophy, Monash University, Melbourne, VIC, Australia; Institute of Psychology, Jagiellonian University, Cracow, Poland)
+- Tuo Liu(Goethe University Frankfurt)
+- Mateusz Wozniak (Social Cognition in Human-Robot Interaction Group, Italian Institute of Technology; Social Mind Center, Department of Cognitive Science, Central European University; Cognition and Philosophy Lab, Department of Philosophy, Monash University; Institute of Psychology, Jagiellonian University)
 
 ## Folder structure
 
