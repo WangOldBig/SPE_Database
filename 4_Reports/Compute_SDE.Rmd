@@ -1,0 +1,13 @@
+---
+title: "Series Dependence Effect"
+author: "czx"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+# 思路：使用单独一个Block或者文章进行
+```{r}
+
+```
+

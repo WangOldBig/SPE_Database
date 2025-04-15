@@ -349,11 +349,11 @@ df <- read_csv("Processed_Data.csv")
 df <- df %>% filter(Matching == "Matching")
 
 # 比较用的 Identity（Self 为基准）
-identities <- c("Close", "Stranger", "Celebrity", "Acquaintance", "NonPerson")
+Identities <- c("Close", "Stranger", "Celebrity", "Acquaintance", "NonPerson")
 
 # 计算每个 Source 下 Self vs. X 的 Cohen's d
 cohen_d_by_source <- df %>%
-  filter(Standarlized_Identity %in% c("Self", identities)) %>%
+  filter(Standarlized_Identity %in% c("Self", Identities)) %>%
   group_by(Source, Standarlized_Identity) %>%
   summarise(RT = list(as.numeric(RT_ms)), .groups = "drop") %>%
   pivot_wider(names_from = Standarlized_Identity, values_from = RT) %>%
@@ -401,12 +401,12 @@ dataPath <- "../1_Clean_Data"
 data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
 
 ## 需要排除的文件夹
-exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP", 
-                     "Hobbs_2023_PM", "Mcivor_2020_EJN", 
-                     "Orellana-Corrales_2021_EP", "Svensson_2021_PR", 
-                     "Wang_2016_EPHPP","Liang_2022_HBM","Hobbs_2021_PM",
-                     "Lee_2023_Cognition","Orellana-Corrales_2021_APP",
-                     "Kirk_2025_BJP","Svensson_2023_QJEP")
+# exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP", 
+#                      "Hobbs_2023_PM", "Mcivor_2020_EJN", 
+#                      "Orellana-Corrales_2021_EP", "Svensson_2021_PR", 
+#                      "Wang_2016_EPHPP","Liang_2022_HBM","Hobbs_2021_PM",
+#                      "Lee_2023_Cognition","Orellana-Corrales_2021_APP",
+#                      "Kirk_2025_BJP","Svensson_2023_QJEP")
 
 ## 过滤掉不需要的文件
 data_files <- data_files[!grepl(paste(exclude_folders, collapse = "|"), data_files)]
@@ -440,7 +440,7 @@ for (i in seq_along(data_files)) {
 
     # **存入列表**
     results_list[[counter]] <- Data %>%
-      select(Source, Subject, Trial, Matching, Standarlized_Identity, RT_ms, ACC)  # **保留 Source 变量**
+      select(Source, Subject, Trial, Block, Matching, Standarlized_Identity, RT_ms, ACC)  # **保留 Source 变量**
     
     counter <- counter + 1
   }
@@ -457,6 +457,7 @@ print("数据处理完成，已存入 `results` 变量")
 write.csv(results, "Processed_Data_for_SDE.csv", row.names = FALSE)
 ```
 
+## [包含Block]
 ```{r}
 library(dplyr)
 library(readr)
@@ -466,10 +467,10 @@ dataPath <- "../1_Clean_Data"
 data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
 
 ## 需要排除的文件夹
-exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP", 
-                     "Hobbs_2023_PM", "Mcivor_2020_EJN", 
-                     "Orellana-Corrales_2021_EP", "Svensson_2021_PR", 
-                     "Wang_2016_EPHPP")
+# exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP", 
+#                      "Hobbs_2023_PM", "Mcivor_2020_EJN", 
+#                      "Orellana-Corrales_2021_EP", "Svensson_2021_PR", 
+#                      "Wang_2016_EPHPP")
 
 ## 过滤掉不需要的文件
 data_files <- data_files[!grepl(paste(exclude_folders, collapse = "|"), data_files)]
@@ -498,8 +499,8 @@ for (i in seq_along(data_files)) {
       )
     
     # 过滤 RT 在合理范围内的行
-    Data <- Data %>%
-      filter(RT_ms > 10 & RT_ms < 5000, ACC %in% c(0, 1))  # 过滤异常值
+    # Data <- Data %>%
+    #   filter(RT_ms > 10 & RT_ms < 5000, ACC %in% c(0, 1))  # 过滤异常值
 
     # **存入列表**
     results_list[[counter]] <- Data %>%
@@ -517,7 +518,7 @@ results <- bind_rows(results_list)
 print("数据处理完成，已存入 `results` 变量")
 
 # **输出数据到 CSV**
-write.csv(results, "Processed_Data.csv", row.names = FALSE)
+write.csv(results, "Processed_Data_for_SDE.csv", row.names = FALSE)
 ```
 
 ## Test01
@@ -644,7 +645,7 @@ data$Matching <- as.factor(data$Matching)
 data$Prev_Matching <- as.factor(data$Prev_Matching)
 
 # 构建逻辑回归模型（因变量：ACC，预测变量：Prev_Matching）
-acc_model <- glmer(ACC ~ Prev_Matching + (1 | Subject) + (1 | Source),
+acc_model <- glmer(ACC ~ Prev_Matching + (1 | Subject) + (1 | Source) + (1 | Block),
                    family = binomial, data = data)
 
 # 输出模型摘要
@@ -654,7 +655,7 @@ summary(acc_model)
 
 ```{r}
 # 逻辑回归模型（因变量：ACC，预测变量：Prev_Matching）
-acc_model <- glmer(ACC ~ Prev_Matching + (1 | Subject) + (1 | Source),
+acc_model <- glmer(ACC ~ Prev_Matching + (1 | Subject) + (1 | Source) + (1 | Block),
                    family = binomial, data = data)
 
 # 输出结果
@@ -674,7 +675,7 @@ compute_autocorr <- function(data, max_lag = 7) {
       na.omit()
     
     # 计算混合模型
-    model <- glmer(ACC ~ Prev_Matching + (1 | Subject) + (1 | Source), family = binomial, data = data)
+    model <- glmer(ACC ~ Prev_Matching + (1 | Subject) + (1 | Source) + (1 | Block), family = binomial, data = data)
     
     # 提取 β 系数、标准误和 p 值
     beta <- summary(model)$coefficients["Prev_MatchingNonmatching", "Estimate"]
@@ -709,6 +710,82 @@ ggplot(autocorr_results, aes(x = Lag, y = Beta)) +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
 ```
+
+```{r}
+# 加载必要的包
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(ggplot2)
+
+# 读取数据
+data <- read_csv("Processed_Data_for_SDE.csv")
+
+# 排序，确保时间顺序正确
+data <- data %>% arrange(Source, Subject, Trial)
+
+# 将 RT_ms 转换为数值（确保格式正确）
+data$RT_ms <- as.numeric(data$RT_ms)
+
+# 移除 RT 为空 或 小于 200ms / 大于 3000ms 的异常值（可选）
+#data <- data %>% filter(RT_ms >= 200 & RT_ms <= 3000)
+
+# 确保 Matching 是因子变量
+data$Matching <- as.factor(data$Matching)
+
+# ====== 自定义函数：计算 RT 的序列位置效应 ======
+compute_rt_autocorr <- function(data, max_lag = 7) {
+  autocorr_results <- data.frame(Lag = integer(), Beta = numeric(), SE = numeric(), P_Value = numeric())
+  
+  for (lag in 1:max_lag) {
+    data_lag <- data %>%
+      group_by(Source, Subject) %>%
+      mutate(Prev_Matching = lag(Matching, lag)) %>%
+      ungroup() %>%
+      drop_na(Prev_Matching, RT_ms)
+    
+    # 建立线性混合模型（LMM）
+    model <- lmer(RT_ms ~ Prev_Matching + (1 | Subject) + (1 | Source) + (1 | Block), data = data_lag)
+    
+    # 提取 β 系数、标准误和 p 值（以 Prev_MatchingNonmatching 为参考）
+    beta <- summary(model)$coefficients["Prev_MatchingNonmatching", "Estimate"]
+    se <- summary(model)$coefficients["Prev_MatchingNonmatching", "Std. Error"]
+    p_value <- summary(model)$coefficients["Prev_MatchingNonmatching", "Pr(>|t|)"]
+    
+    # 存储结果
+    autocorr_results <- rbind(autocorr_results,
+                              data.frame(Lag = lag, Beta = beta, SE = se, P_Value = p_value))
+  }
+  
+  return(autocorr_results)
+}
+
+# 运行函数，计算 RT 的 Lag-1 ~ Lag-7 序列效应
+rt_autocorr_results <- compute_rt_autocorr(data, max_lag = 7)
+
+# 查看结果
+print(rt_autocorr_results)
+
+# ====== 可视化 Lag 的 RT 序列效应 ======
+ggplot(rt_autocorr_results, aes(x = Lag, y = Beta)) +
+  geom_point(size = 4, color = "darkred") +
+  geom_errorbar(aes(ymin = Beta - SE, ymax = Beta + SE), width = 0.2, color = "darkred") +
+  geom_line(size = 1, color = "darkred") +
+  theme_minimal(base_size = 16) +
+  labs(title = "Serial Dependence in RT (Lag-1 to Lag-7)",
+       x = "Lag (Previous Trial)",
+       y = "Effect of Prev_Matching on RT (Beta ± SEM)") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+
+```
+
+
+
+
+
+
+
+
 
 ## Test04
 ```{r}
@@ -796,6 +873,78 @@ ggplot(results, aes(x = Lag, y = Beta)) +
 ```
 
 
+## Test05
+```{r}
+library(tidyverse)
+library(lme4)
+library(data.table)
+
+# 读取数据
+df <- read.csv("Processed_Data_for_SDE.csv")
+
+# 转换变量类型
+df <- df %>%
+  mutate(
+    Subject = as.factor(Subject),
+    Source = as.factor(Source),
+    Matching = as.factor(Matching),
+    Standarlized_Identity = as.factor(Standarlized_Identity)
+  ) %>%
+  arrange(Subject, Trial)  # 按照被试 & 试次顺序排序
+
+```
+
+```{r}
+# 使用 data.table 加速滞后变量生成
+df_dt <- as.data.table(df)
+
+# 对每个被试分别生成滞后 RT_ms 变量
+for (i in 1:7) {
+  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
+}
+
+```
+
+```{r}
+#删除前7行缺失（由于滞后变量导致）
+df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3, RT_ms_n4, RT_ms_n5, RT_ms_n6, RT_ms_n7)
+```
+
+```{r}
+# 构建混合效应模型：当前RT受前1~7个RT影响
+fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + RT_ms_n6 + RT_ms_n7 + (1 | Subject) + (1 | Source) + (1 | Block), 
+            data = df_clean)
+
+summary(fit)
+
+```
+
+```{r}
+# 提取固定效应并画图
+tmp <- as.data.frame(confint(fit))
+tmp <- tmp[grep("RT_ms_n", rownames(tmp)), ]
+tmp$Estimate <- fixef(fit)[grep("RT_ms_n", names(fixef(fit)))]
+tmp$lwr <- tmp$`2.5 %`
+tmp$upr <- tmp$`97.5 %`
+tmp$History <- paste0("RT n-", 1:7)
+
+# 可视化
+ggplot(tmp, aes(x = History, y = Estimate, ymin = lwr, ymax = upr)) +
+  geom_point(size = 3) +
+  geom_errorbar(width = 0.2) +
+  theme_minimal() +
+  labs(title = "Serial Dependence of RT (n-1 to n-7)",
+       x = "Lagged RT",
+       y = "Effect on Current RT")
+
+```
+
+```{r}
+fit2 <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + RT_ms_n6 + RT_ms_n7 +
+             Matching + Standarlized_Identity + 
+             (1 | Subject), data = df_clean)
+
+```
 
 
 

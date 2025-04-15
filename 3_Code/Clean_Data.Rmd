@@ -1290,6 +1290,7 @@ df[[21]] <- read.csv(
   "../2_Raw_Data/Hu_2023/Hu_2023_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
+    BlockList.Sample != "",
     Session != 1,
     !(Subject %in% c(6205, 6209, 6223)),
   ) %>%
