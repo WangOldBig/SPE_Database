@@ -728,7 +728,7 @@ data <- data %>% arrange(Source, Subject, Trial)
 data$RT_ms <- as.numeric(data$RT_ms)
 
 # 移除 RT 为空 或 小于 200ms / 大于 3000ms 的异常值（可选）
-#data <- data %>% filter(RT_ms >= 200 & RT_ms <= 3000)
+data <- data %>% filter(RT_ms >= 200 & RT_ms <= 3000)
 
 # 确保 Matching 是因子变量
 data$Matching <- as.factor(data$Matching)

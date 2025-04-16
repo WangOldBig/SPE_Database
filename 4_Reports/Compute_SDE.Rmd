@@ -7,7 +7,405 @@ output: html_document
 
 
 # 思路：使用单独一个Block或者文章进行
+
+# 单个对当前试次的影响
+## Test03（Result）
 ```{r}
+# 加载必要的包
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(ggplot2)
+
+# 读取数据
+data <- read_csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
+
+# 按 Subject（被试）、Block（区组）、Trial（试次）排序，确保顺序正确
+data <- data %>% arrange(Subject, Block)
+
+# 计算 Lag-1 变量（上一试次的 Matching 条件）
+data <- data %>%
+  group_by(Subject, Block) %>%
+  mutate(Prev_Matching = lag(Matching)) %>%
+  ungroup()
+
+# 移除首个试次（因为没有上一试次）
+data <- na.omit(data)
+
+# 清理 ACC：将 1 以外的所有值（包括 NA）统一处理为 0
+data <- data %>%
+  mutate(ACC = ifelse(ACC == 1, 1, 0))
+
+# 确保 Matching 和 Prev_Matching 是因子变量
+data$Matching <- as.factor(data$Matching)
+data$Prev_Matching <- as.factor(data$Prev_Matching)
+
+# 构建逻辑回归模型（因变量：ACC，预测变量：Prev_Matching）
+acc_model <- glmer(ACC ~ Prev_Matching + (1 | Subject)  + (1 | Block),
+                   family = binomial, data = data)
+
+# 输出模型摘要
+summary(acc_model)
 
 ```
+
+```{r}
+# 逻辑回归模型（因变量：ACC，预测变量：Prev_Matching）
+acc_model <- glmer(ACC ~ Prev_Matching + (1 | Subject)  + (1 | Block),
+                   family = binomial, data = data)
+
+# 输出结果
+summary(acc_model)
+```
+
+```{r}
+# 计算不同 Lag（1~7） 条件下的相关系数
+compute_autocorr <- function(data, max_lag = 7) {
+  autocorr_results <- data.frame(Lag = integer(), Beta = numeric(), SE = numeric(), P_Value = numeric())
+  
+  for (lag in 1 :max_lag) {
+    data <- data %>%
+      group_by(Subject, Block) %>%
+      mutate(Prev_Matching = lag(Matching, lag)) %>%
+      ungroup() %>%
+      na.omit()
+    
+    # 计算混合模型
+    model <- glmer(ACC ~ Prev_Matching + (1 | Subject)  + (1 | Block), family = binomial, data = data)
+    
+    # 提取 β 系数、标准误和 p 值
+    beta <- summary(model)$coefficients["Prev_MatchingNonmatching", "Estimate"]
+    se <- summary(model)$coefficients["Prev_MatchingNonmatching", "Std. Error"]
+    p_value <- summary(model)$coefficients["Prev_MatchingNonmatching", "Pr(>|z|)"]
+    
+    # 存储结果
+    autocorr_results <- rbind(autocorr_results, data.frame(Lag = lag, Beta = beta, SE = se, P_Value = p_value))
+  }
+  
+  return(autocorr_results)
+}
+
+# 计算 Lag-1 ~ Lag-7 的自相关
+autocorr_results <- compute_autocorr(data, max_lag = 7)
+
+# 查看结果
+print(autocorr_results)
+```
+
+```{r}
+# 画图（仿照 Rahnev 的 NHB 图）
+ggplot(autocorr_results, aes(x = Lag, y = Beta)) +
+  geom_point(size = 4, color = "blue") +                        # 画点
+  geom_errorbar(aes(ymin = Beta - SE, ymax = Beta + SE),        # 误差条
+                width = 0.2, color = "blue") +
+  geom_line(size = 1, color = "blue") +                         # 连接线
+  theme_minimal(base_size = 16) +
+  labs(title = "Serial Dependence in Accuracy (Lag-1 to Lag-7)",
+       x = "Lag (Previous Trial)",
+       y = "Autocorrelation (Beta ± SEM)") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+
+```
+
+## RT
+```{r}
+# 加载必要的包
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(ggplot2)
+
+# 读取数据
+data <- read_csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
+
+# 排序，确保时间顺序正确
+data <- data %>% arrange(Subject, Block, Trial)
+
+# 将 RT_ms 转换为数值（确保格式正确）
+data$RT_ms <- as.numeric(data$RT_ms)
+
+# 确保 Matching 是因子变量
+data$Matching <- as.factor(data$Matching)
+
+# ====== 自定义函数：计算 RT 的序列位置效应 ======
+compute_rt_autocorr <- function(data, max_lag = 1) {
+  autocorr_results <- data.frame(Lag = integer(), Beta = numeric(), SE = numeric(), P_Value = numeric())
+  
+  for (lag in 1:max_lag) {
+    data_lag <- data %>%
+      group_by(Subject, Block) %>%
+      mutate(Prev_Matching = lag(Matching, lag)) %>%
+      ungroup() %>%
+      drop_na(Prev_Matching, RT_ms)
+    
+    # 建立线性混合模型（LMM）
+    model <- lmer(RT_ms ~ Prev_Matching + (1 | Subject) + (1 | Block), data = data_lag)
+    
+    # 提取 β 系数、标准误和 p 值（以 Prev_MatchingNonmatching 为参考）
+    beta <- summary(model)$coefficients["Prev_MatchingNonmatching", "Estimate"]
+    se <- summary(model)$coefficients["Prev_MatchingNonmatching", "Std. Error"]
+    p_value <- summary(model)$coefficients["Prev_MatchingNonmatching", "Pr(>|t|)"]
+    
+    # 存储结果
+    autocorr_results <- rbind(autocorr_results,
+                              data.frame(Lag = lag, Beta = beta, SE = se, P_Value = p_value))
+  }
+  
+  return(autocorr_results)
+}
+
+# 运行函数，计算 RT 的 Lag-1 ~ Lag-7 序列效应
+rt_autocorr_results <- compute_rt_autocorr(data, max_lag = 1)
+
+# 查看结果
+print(rt_autocorr_results)
+
+# ====== 可视化 Lag 的 RT 序列效应 ======
+ggplot(rt_autocorr_results, aes(x = Lag, y = Beta)) +
+  geom_point(size = 4, color = "darkred") +
+  geom_errorbar(aes(ymin = Beta - SE, ymax = Beta + SE), width = 0.2, color = "darkred") +
+  geom_line(size = 1, color = "darkred") +
+  theme_minimal(base_size = 16) +
+  labs(title = "Serial Dependence in RT (Lag-1 to Lag-7)",
+       x = "Lag (Previous Trial)",
+       y = "Effect of Prev_Matching on RT (Beta ± SEM)") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+
+```
+
+
+# 共同对当前试次的影响
+## Test05
+```{r}
+library(tidyverse)
+library(lme4)
+library(data.table)
+
+# 读取数据
+df <- read.csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
+
+# 转换变量类型
+df <- df %>%
+  mutate(
+    Subject = as.factor(Subject),
+    Matching = as.factor(Matching),
+    Standarlized_Identity = as.factor(Standarlized_Identity)
+  ) %>%
+  arrange(Subject, Trial)  # 按照被试 & 试次顺序排序
+
+```
+
+### Log1
+```{r}
+# 使用 data.table 加速滞后变量生成
+df_dt <- as.data.table(df)
+
+# 对每个被试分别生成滞后 RT_ms 变量
+for (i in 1:1) {
+  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
+}
+
+```
+
+```{r}
+#删除前1行缺失（由于滞后变量导致）
+df_clean <- df_dt %>% drop_na(RT_ms_n1)
+```
+
+```{r}
+# 构建混合效应模型：当前RT受前1个RT影响
+fit <- lmer(RT_ms ~ RT_ms_n1 + (1 | Subject) + (1 | Block), 
+            data = df_clean)
+summary(fit)
+```
+
+### Log2
+```{r}
+# 使用 data.table 加速滞后变量生成
+df_dt <- as.data.table(df)
+
+# 对每个被试分别生成滞后 RT_ms 变量
+for (i in 1:2) {
+  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
+}
+
+```
+
+```{r}
+#删除前2行缺失（由于滞后变量导致）
+df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2)
+```
+
+```{r}
+# 构建混合效应模型：当前RT受前1~2个RT影响
+fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + (1 | Subject) + (1 | Block), 
+            data = df_clean)
+summary(fit)
+```
+
+### Log3
+```{r}
+# 使用 data.table 加速滞后变量生成
+df_dt <- as.data.table(df)
+
+# 对每个被试分别生成滞后 RT_ms 变量
+for (i in 1:3) {
+  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
+}
+
+```
+
+```{r}
+#删除前3行缺失（由于滞后变量导致）
+df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3)
+```
+
+```{r}
+# 构建混合效应模型：当前RT受前1~3个RT影响
+fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + (1 | Subject) + (1 | Block), 
+            data = df_clean)
+summary(fit)
+```
+
+### Log4
+```{r}
+# 使用 data.table 加速滞后变量生成
+df_dt <- as.data.table(df)
+
+# 对每个被试分别生成滞后 RT_ms 变量
+for (i in 1:4) {
+  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
+}
+
+```
+
+```{r}
+#删除前4行缺失（由于滞后变量导致）
+df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3, RT_ms_n4)
+```
+
+```{r}
+# 构建混合效应模型：当前RT受前1~4个RT影响
+fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + (1 | Subject) + (1 | Block), 
+            data = df_clean)
+summary(fit)
+```
+
+### Log5
+```{r}
+# 使用 data.table 加速滞后变量生成
+df_dt <- as.data.table(df)
+
+# 对每个被试分别生成滞后 RT_ms 变量
+for (i in 1:5) {
+  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
+}
+
+```
+
+```{r}
+#删除前5行缺失（由于滞后变量导致）
+df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3, RT_ms_n4, RT_ms_n5)
+```
+
+```{r}
+# 构建混合效应模型：当前RT受前1~4个RT影响
+fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + (1 | Subject) + (1 | Block), 
+            data = df_clean)
+summary(fit)
+```
+
+### Log6
+```{r}
+# 使用 data.table 加速滞后变量生成
+df_dt <- as.data.table(df)
+
+# 对每个被试分别生成滞后 RT_ms 变量
+for (i in 1:6) {
+  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
+}
+
+```
+
+```{r}
+#删除前6行缺失（由于滞后变量导致）
+df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3, RT_ms_n4, RT_ms_n5, RT_ms_n6)
+```
+
+```{r}
+# 构建混合效应模型：当前RT受前1~4个RT影响
+fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + RT_ms_n6 + (1 | Subject) + (1 | Block), 
+            data = df_clean)
+summary(fit)
+```
+
+
+### log7
+```{r}
+# 使用 data.table 加速滞后变量生成
+df_dt <- as.data.table(df)
+
+# 对每个被试分别生成滞后 RT_ms 变量
+for (i in 1:7) {
+  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
+}
+
+```
+
+```{r}
+#删除前7行缺失（由于滞后变量导致）
+df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3, RT_ms_n4, RT_ms_n5, RT_ms_n6, RT_ms_n7)
+```
+
+```{r}
+# 构建混合效应模型：当前RT受前1~7个RT影响
+fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + RT_ms_n6 + RT_ms_n7 + (1 | Subject)s + (1 | Block), 
+            data = df_clean)
+
+summary(fit)
+
+```
+
+```{r}
+# 提取固定效应并画图
+tmp <- as.data.frame(confint(fit))
+tmp <- tmp[grep("RT_ms_n", rownames(tmp)), ]
+tmp$Estimate <- fixef(fit)[grep("RT_ms_n", names(fixef(fit)))]
+tmp$lwr <- tmp$`2.5 %`
+tmp$upr <- tmp$`97.5 %`
+tmp$History <- paste0("RT n-", 1:7)
+
+# 可视化
+ggplot(tmp, aes(x = History, y = Estimate, ymin = lwr, ymax = upr)) +
+  geom_point(size = 3) +
+  geom_errorbar(width = 0.2) +
+  theme_minimal() +
+  labs(title = "Serial Dependence of RT (n-1 to n-7)",
+       x = "Lagged RT",
+       y = "Effect on Current RT")
+
+```
+
+
+```{r}
+# 残差诊断（正态性和异方差性）
+library(performance)
+check_model(fit) # 综合诊断图
+
+# 残差Q-Q图
+qqnorm(resid(fit)); qqline(resid(fit))
+
+# 随机效应正态性检查
+ranef(fit)$Subject %>% qqnorm(); qqline(ranef(fit)$Subject)
+```
+
+```{r}
+# 检查滞后变量之间的共线性（VIF > 5 表示严重共线性）
+library(car)
+vif(fit)
+```
+
+
+
+
 

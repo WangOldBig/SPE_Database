@@ -2428,9 +2428,12 @@ write.csv(x = df[[36]], file = "../1_Clean_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_
 # Liang_2022_HBM
 ## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No  trial message)
-```{r Paper t3 Experiment 1}
+```{r Paper t3 Experiment 1 _ dlpfc}
 df[[37]] <- read.csv(
   "../2_Raw_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1_raw.csv"
+  ) %>%
+  dplyr::filter(
+    group == "dlpfc"
   ) %>%
   dplyr::select(
     Subject = subj_idx,
@@ -2438,6 +2441,7 @@ df[[37]] <- read.csv(
     Gender = gender,
     Shape = shape,
     Matching = match,
+    Session = session,
     Origin_Identity = shape,
     Response = response,
     Phase = session,
@@ -2473,16 +2477,16 @@ df[[37]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Age, Gender, 
+    Subject, Age, Gender, Session, 
     Shape, Matching, Origin_Identity, English_Identity, Standarlized_Identity, Response, Phase, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
-    Subject
+    Subject, Session, 
   )
 
-names(df)[37] <- "Liang_2021_HBM"
+names(df)[37] <- "Liang_2022_HBM_dlpfc"
 summary(df[[37]])
-write.csv(x = df[[37]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1_Clean.csv")
+write.csv(x = df[[37]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1.1_Clean.csv")
 ```
 
 # Kolvoort_2020_HBM 
@@ -3771,7 +3775,7 @@ summary(df[[57]])
 write.csv(x = df[[57]], file = "../1_Clean_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp2_Clean.csv")
 ```
 
-# Orellana-Corrales_2021_APP
+# Lee_2023_Cognition
 ## Experiment 1 (Identity = 2)
 "Self", "Friend","Other"   →   "Self","Close","Stranger" (NO Trial Level Data)
 ```{r}
@@ -3788,6 +3792,7 @@ df[[58]] <- read.csv(
     Education = education,
     Handedness = handedness,
     Block = BlockNumber,
+    
     Shape = shape,
     Label = word,
     Response = response,
@@ -3832,7 +3837,7 @@ summary(df[[58]])
 write.csv(x = df[[58]], file = "../1_Clean_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp1_Clean.csv")
 ```
 
-# Orellana-Corrales_2021_APP
+# Lee_2023_Cognition
 ## Experiment 2 (Identity = 2)
 "Self", "Friend","Other"   →   "Self","Close","Stranger" (NO Trial Level Data)
 ```{r}
@@ -4353,15 +4358,8 @@ df[[67]] <- read.csv(
     ) %>%
   dplyr::mutate(
     Matching = case_when(
-      Matching == 1 ~ "Matching",
-      Matching == 2 ~ "Matching",
-      Matching == 3 ~ "Matching",
-      Matching == 1.2 ~ "Nonmatching",
-      Matching == 1.3 ~ "Nonmatching",
-      Matching == 2.1 ~ "Nonmatching",
-      Matching == 2.3 ~ "Nonmatching",
-      Matching == 3.1 ~ "Nonmatching",
-      Matching == 3.2 ~ "Nonmatching",
+      Matching %in% c(1, 2, 3) ~ "Matching",
+      Matching %in% c(1.2, 1.3, 2.1, 2.3, 3.1, 3.2) ~ "Nonmatching"
     ),
     Origin_Identity = case_when(
       Origin_Identity == "Self " ~ "Self",
@@ -4397,9 +4395,133 @@ summary(df[[67]])
 write.csv(x = df[[67]], file = "../1_Clean_Data/Smith_2024_Cortex/Smith_2024_Cortex_Exp1_Clean.csv")
 ```
 
+# Liang_2022_HBM
+## Experiment 1 (Identity = 3)
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No  trial message)
+```{r Paper t3 Experiment 1 _ sham}
+df[[68]] <- read.csv(
+  "../2_Raw_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1_raw.csv"
+  ) %>%
+  dplyr::filter(
+    group == "sham"
+  ) %>%
+  dplyr::select(
+    Subject = subj_idx,
+    Age = age,
+    Gender = gender,
+    Shape = shape,
+    Matching = match,
+    Session = session,
+    Origin_Identity = shape,
+    Response = response,
+    Phase = session,
+    RT_sec = rt,
+    ACC = acc,
+  ) %>%
+  dplyr::mutate(
+    Origin_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "friend" ~ "Friend",
+      Origin_Identity == "stranger" ~ "Stranger",
+    ),
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 0 ~ "Nonmatching"
+    ),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    English_Identity = Origin_Identity,
+    Standarlized_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Session, 
+    Shape, Matching, Origin_Identity, English_Identity, Standarlized_Identity, Response, Phase, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::arrange(
+    Subject, Session, 
+  )
 
+names(df)[68] <- "Liang_2022_HBM_sham"
+summary(df[[68]])
+write.csv(x = df[[68]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1.2_Clean.csv")
+```
 
+# Liang_2022_HBM
+## Experiment 1 (Identity = 3)
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No  trial message)
+```{r Paper t3 Experiment 1 _ psts}
+df[[69]] <- read.csv(
+  "../2_Raw_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1_raw.csv"
+  ) %>%
+  dplyr::filter(
+    group == "psts"
+  ) %>%
+  dplyr::select(
+    Subject = subj_idx,
+    Age = age,
+    Gender = gender,
+    Shape = shape,
+    Matching = match,
+    Session = session,
+    Origin_Identity = shape,
+    Response = response,
+    Phase = session,
+    RT_sec = rt,
+    ACC = acc,
+  ) %>%
+  dplyr::mutate(
+    Origin_Identity = case_when(
+      Origin_Identity == "self" ~ "Self",
+      Origin_Identity == "friend" ~ "Friend",
+      Origin_Identity == "stranger" ~ "Stranger",
+    ),
+    Matching = case_when(
+      Matching == 1 ~ "Matching",
+      Matching == 0 ~ "Nonmatching"
+    ),
+    RT_sec = as.numeric(RT_sec),
+    RT_ms = RT_sec * 1000
+  ) %>%
+  dplyr::mutate(
+    Subject = as.numeric(Subject),
+    Matching = factor(
+      Matching, levels = c("Matching", "Nonmatching")
+    ),
+    English_Identity = Origin_Identity,
+    Standarlized_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Friend" ~ "Close",
+      English_Identity == "Stranger" ~ "Stranger",
+    ),
+    RT_ms = as.numeric(RT_ms),
+    RT_sec = as.numeric(RT_sec),
+    ACC = as.numeric(ACC),
+  ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Session, 
+    Shape, Matching, Origin_Identity, English_Identity, Standarlized_Identity, Response, Phase, RT_ms, RT_sec, ACC
+  ) %>%
+  dplyr::arrange(
+    Subject, Session, 
+  )
 
+names(df)[69] <- "Liang_2022_HBM_psts"
+summary(df[[69]])
+write.csv(x = df[[69]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1.3_Clean.csv")
+```
 
 
 
