@@ -3817,6 +3817,8 @@ df[[58]] <- read.csv(
     English_Identity = case_when(
       Origin_Identity == "you" ~ "You",
       Origin_Identity == "friend" ~ "Friend",
+      Origin_Identity == "happy" ~ "NonPerson",
+      Origin_Identity == "neutral" ~ "NonPerson",
     ),
     Standarlized_Identity = case_when(
       English_Identity == "You" ~ "Self",

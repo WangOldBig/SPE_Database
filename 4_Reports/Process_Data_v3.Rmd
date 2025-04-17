@@ -939,12 +939,99 @@ ggplot(tmp, aes(x = History, y = Estimate, ymin = lwr, ymax = upr)) +
 
 ```
 
+## Test06（Good Fit)
+### RT
 ```{r}
-fit2 <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + RT_ms_n6 + RT_ms_n7 +
-             Matching + Standarlized_Identity + 
-             (1 | Subject), data = df_clean)
+library(tidyverse)
+library(lme4)
+library(data.table)
+
+# 读取数据
+df <- read_csv("Processed_Data_for_SDE.csv")
+# 转换变量类型
+df <- df %>%
+  mutate(
+    Subject = as.factor(Subject),
+    Block = as.factor(Block),
+    Trial = as.factor(Trial),
+    Source = as.factor(Source),
+    Matching = as.factor(Matching),
+    Standarlized_Identity = as.factor(Standarlized_Identity)
+    
+  ) %>%
+  arrange(Subject, Block, Trial)  # 按照被试 & 试次顺序排序
 
 ```
 
+### Log1
+```{r}
+# 使用 data.table 加速滞后变量生成
+df_dt <- as.data.table(df)
 
+# 对每个被试分别生成滞后 RT_ms 变量
+for (i in 1:1) {
+  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
+}
+
+```
+
+```{r}
+#删除前1行缺失（由于滞后变量导致）
+df_clean <- df_dt %>% drop_na(RT_ms_n1)
+```
+
+```{r}
+# 构建混合效应模型：当前RT受前1个RT影响
+fit <- lmer(RT_ms ~ RT_ms_n1 + (1 | Subject) + (1 | Block), 
+            data = df_clean)
+summary(fit)
+```
+
+### log7
+```{r}
+# 使用 data.table 加速滞后变量生成
+df_dt <- as.data.table(df)
+
+# 对每个被试分别生成滞后 RT_ms 变量
+for (i in 1:7) {
+  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
+}
+
+```
+
+```{r}
+#删除前7行缺失（由于滞后变量导致）
+df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3, RT_ms_n4, RT_ms_n5, RT_ms_n6, RT_ms_n7)
+```
+
+```{r}
+# 构建混合效应模型：当前RT受前1~7个RT影响
+fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + RT_ms_n6 + RT_ms_n7 + (1 | Source)+ (1 | Subject) + (1 | Block), 
+            data = df_clean)
+
+coef_summary <- as.data.frame(coef(summary(fit)))
+coef_summary$p_value <- 2 * (1 - pnorm(abs(coef_summary$"t value")))
+print(coef_summary)
+summary(fit)
+```
+
+```{r}
+# 提取固定效应并画图
+tmp <- as.data.frame(confint(fit))
+tmp <- tmp[grep("RT_ms_n", rownames(tmp)), ]
+tmp$Estimate <- fixef(fit)[grep("RT_ms_n", names(fixef(fit)))]
+tmp$lwr <- tmp$`2.5 %`
+tmp$upr <- tmp$`97.5 %`
+tmp$History <- paste0("RT n-", 1:7)
+
+# 可视化
+ggplot(tmp, aes(x = History, y = Estimate, ymin = lwr, ymax = upr)) +
+  geom_point(size = 3) +
+  geom_errorbar(width = 0.2) +
+  theme_minimal() +
+  labs(title = "Serial Dependence of RT (n-1 to n-7)",
+       x = "Lagged RT",
+       y = "Effect on Current RT")
+
+```
 

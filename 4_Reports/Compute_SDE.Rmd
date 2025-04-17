@@ -175,11 +175,12 @@ ggplot(rt_autocorr_results, aes(x = Lag, y = Beta)) +
 
 
 # 共同对当前试次的影响
-## Test05
+## Test05 RT
 ```{r}
 library(tidyverse)
 library(lme4)
 library(data.table)
+library(lmerTest) 
 
 # 读取数据
 df <- read.csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
@@ -217,6 +218,11 @@ df_clean <- df_dt %>% drop_na(RT_ms_n1)
 fit <- lmer(RT_ms ~ RT_ms_n1 + (1 | Subject) + (1 | Block), 
             data = df_clean)
 summary(fit)
+
+# 获取系数表（含P值）
+coef_summary <- as.data.frame(coef(summary(fit)))
+coef_summary$p_value <- 2 * (1 - pnorm(abs(coef_summary$"t value")))
+print(coef_summary)
 ```
 
 ### Log2
@@ -241,6 +247,9 @@ df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2)
 fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + (1 | Subject) + (1 | Block), 
             data = df_clean)
 summary(fit)
+coef_summary <- as.data.frame(coef(summary(fit)))
+coef_summary$p_value <- 2 * (1 - pnorm(abs(coef_summary$"t value")))
+print(coef_summary)
 ```
 
 ### Log3
@@ -265,6 +274,9 @@ df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3)
 fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + (1 | Subject) + (1 | Block), 
             data = df_clean)
 summary(fit)
+coef_summary <- as.data.frame(coef(summary(fit)))
+coef_summary$p_value <- 2 * (1 - pnorm(abs(coef_summary$"t value")))
+print(coef_summary)
 ```
 
 ### Log4
@@ -288,6 +300,10 @@ df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3, RT_ms_n4)
 # 构建混合效应模型：当前RT受前1~4个RT影响
 fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + (1 | Subject) + (1 | Block), 
             data = df_clean)
+
+coef_summary <- as.data.frame(coef(summary(fit)))
+coef_summary$p_value <- 2 * (1 - pnorm(abs(coef_summary$"t value")))
+print(coef_summary)
 summary(fit)
 ```
 
@@ -312,6 +328,9 @@ df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3, RT_ms_n4, RT_ms_n5)
 # 构建混合效应模型：当前RT受前1~4个RT影响
 fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + (1 | Subject) + (1 | Block), 
             data = df_clean)
+coef_summary <- as.data.frame(coef(summary(fit)))
+coef_summary$p_value <- 2 * (1 - pnorm(abs(coef_summary$"t value")))
+print(coef_summary)
 summary(fit)
 ```
 
@@ -336,6 +355,9 @@ df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3, RT_ms_n4, RT_ms_n5, 
 # 构建混合效应模型：当前RT受前1~4个RT影响
 fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + RT_ms_n6 + (1 | Subject) + (1 | Block), 
             data = df_clean)
+coef_summary <- as.data.frame(coef(summary(fit)))
+coef_summary$p_value <- 2 * (1 - pnorm(abs(coef_summary$"t value")))
+print(coef_summary)
 summary(fit)
 ```
 
@@ -359,9 +381,12 @@ df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3, RT_ms_n4, RT_ms_n5, 
 
 ```{r}
 # 构建混合效应模型：当前RT受前1~7个RT影响
-fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + RT_ms_n6 + RT_ms_n7 + (1 | Subject)s + (1 | Block), 
+fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + RT_ms_n6 + RT_ms_n7 + (1 | Subject) + (1 | Block), 
             data = df_clean)
 
+coef_summary <- as.data.frame(coef(summary(fit)))
+coef_summary$p_value <- 2 * (1 - pnorm(abs(coef_summary$"t value")))
+print(coef_summary)
 summary(fit)
 
 ```
@@ -407,5 +432,188 @@ vif(fit)
 
 
 
+## Test05 ACC序列效应分析
+```{r}
+library(tidyverse)
+library(lme4)
+library(lmerTest) 
+library(data.table)
 
+# 读取数据
+df <- read.csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
+
+# 转换变量类型（增加ACC变量处理）
+df <- df %>%
+  mutate(
+    Subject = as.factor(Subject),
+    Matching = as.factor(Matching),
+    Standarlized_Identity = as.factor(Standarlized_Identity),
+    ACC = as.integer(ACC)  # 确保ACC是数值型（0/1）
+  ) %>%
+  arrange(Subject, Trial)
+```
+
+```{r}
+# 生成滞后变量（将RT_ms改为ACC）
+df_dt <- as.data.table(df)
+
+# 对每个被试生成1-7阶滞后ACC
+for (i in 1:7) {
+  df_dt[, paste0("ACC_n", i) := shift(ACC, n = i, type = "lag"), by = Subject]
+}
+
+# 删除前7行缺失值
+df_clean <- df_dt %>% 
+  drop_na(ACC_n1, ACC_n2, ACC_n3, ACC_n4, ACC_n5, ACC_n6, ACC_n7)
+```
+
+```{r}
+# 构建广义线性混合模型（GLMM）
+fit_acc <- glmer(ACC ~ ACC_n1 + ACC_n2 + ACC_n3 + ACC_n4 + ACC_n5 + ACC_n6 + ACC_n7 + 
+                 (1 | Subject) + (1 | Block),  # 保留需要随机效应
+               family = binomial,  # 二项分布族
+               data = df_clean,
+               )  # 帮助模型收敛
+
+# 显示完整结果
+summary(fit_acc)
+
+# 获取系数表（log odds）
+coef_summary_acc <- as.data.frame(coef(summary(fit_acc)))
+coef_summary_acc$p_value <- 2 * (1 - pnorm(abs(coef_summary_acc$"z value")))  # 注意改为z值
+print(coef_summary_acc)
+```
+
+```{r}
+# 提取固定效应（需要指数转换）
+tmp_acc <- as.data.frame(confint(fit_acc, method = "Wald"))  # 使用Wald近似法
+tmp_acc <- tmp_acc[grep("ACC_n", rownames(tmp_acc)), ]
+tmp_acc$Estimate <- fixef(fit_acc)[grep("ACC_n", names(fixef(fit_acc)))]
+tmp_acc$OR <- exp(tmp_acc$Estimate)  # 计算比值比
+tmp_acc$lwr <- exp(tmp_acc$`2.5 %`)
+tmp_acc$upr <- exp(tmp_acc$`97.5 %`)
+tmp_acc$History <- paste0("ACC n-", 1:7)
+
+# 可视化（显示比值比）
+ggplot(tmp_acc, aes(x = History, y = OR, ymin = lwr, ymax = upr)) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  geom_pointrange(size = 0.8, position = position_dodge(width = 0.5)) +
+  scale_y_log10() +  # 对数尺度更易解读
+  theme_minimal() +
+  labs(title = "Serial Dependence of Accuracy (n-1 to n-7)",
+       x = "Previous Trial Position",
+       y = "Odds Ratio (95% CI)")
+```
+
+```{r}
+# 共线性检查（注意GLMM的VIF解释）
+library(car)
+vif(fit_acc)
+```
+
+
+
+
+
+# 尝试整体数据
+```{r}
+library(tidyverse)
+library(lme4)
+library(data.table)
+
+# 读取数据
+df <- read_csv("Processed_Data_for_SDE.csv")
+# 转换变量类型
+df <- df %>%
+  mutate(
+    Subject = as.factor(Subject),
+    Block = as.factor(Block),
+    Trial = as.factor(Trial),
+    Source = as.factor(Source),
+    Matching = as.factor(Matching),
+    Standarlized_Identity = as.factor(Standarlized_Identity)
+    
+  ) %>%
+  arrange(Subject, Block, Trial)  # 按照被试 & 试次顺序排序
+
+```
+
+### Log1
+```{r}
+# 使用 data.table 加速滞后变量生成
+df_dt <- as.data.table(df)
+
+# 对每个被试分别生成滞后 RT_ms 变量
+for (i in 1:1) {
+  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
+}
+
+```
+
+```{r}
+#删除前1行缺失（由于滞后变量导致）
+df_clean <- df_dt %>% drop_na(RT_ms_n1)
+```
+
+```{r}
+# 构建混合效应模型：当前RT受前1个RT影响
+fit <- lmer(RT_ms ~ RT_ms_n1 + (1 | Subject) + (1 | Block), 
+            data = df_clean)
+summary(fit)
+```
+
+### log7
+```{r}
+# 使用 data.table 加速滞后变量生成
+df_dt <- as.data.table(df)
+
+# 对每个被试分别生成滞后 RT_ms 变量
+for (i in 1:7) {
+  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
+}
+
+```
+
+```{r}
+#删除前7行缺失（由于滞后变量导致）
+df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3, RT_ms_n4, RT_ms_n5, RT_ms_n6, RT_ms_n7)
+```
+
+```{r}
+# 构建混合效应模型：当前RT受前1~7个RT影响
+fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + RT_ms_n6 + RT_ms_n7 + (1 | Source)+ (1 | Subject) + (1 | Block), 
+            data = df_clean)
+
+coef_summary <- as.data.frame(coef(summary(fit)))
+coef_summary$p_value <- 2 * (1 - pnorm(abs(coef_summary$"t value")))
+print(coef_summary)
+summary(fit)
+```
+
+```{r}
+# 提取固定效应并画图
+tmp <- as.data.frame(confint(fit))
+tmp <- tmp[grep("RT_ms_n", rownames(tmp)), ]
+tmp$Estimate <- fixef(fit)[grep("RT_ms_n", names(fixef(fit)))]
+tmp$lwr <- tmp$`2.5 %`
+tmp$upr <- tmp$`97.5 %`
+tmp$History <- paste0("RT n-", 1:7)
+
+# 可视化
+ggplot(tmp, aes(x = History, y = Estimate, ymin = lwr, ymax = upr)) +
+  geom_point(size = 3) +
+  geom_errorbar(width = 0.2) +
+  theme_minimal() +
+  labs(title = "Serial Dependence of RT (n-1 to n-7)",
+       x = "Lagged RT",
+       y = "Effect on Current RT")
+
+```
+
+```{r}
+# 检查滞后变量之间的共线性（VIF > 5 表示严重共线性）
+library(car)
+vif(fit)
+```
+### ACC
 
