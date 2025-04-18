@@ -374,17 +374,17 @@ cohen_d_by_source <- df %>%
   mutate(Identity = str_replace(Identity, "Cohens_d_", "")) %>%
   drop_na(Cohens_d)
 
-# 绘制山脊图
-ggplot(cohen_d_by_source, aes(x = Cohens_d, y = Identity, fill = Identity)) +
-  geom_density_ridges(alpha = 0.8, scale = 1.2) +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "gray40") +
-  theme_ridges() +
-  labs(
-    title = "Distribution of Cohen's d (Self vs. Other) across Articles",
-    x = "Cohen's d (RT: Self - Other)",
-    y = "Identity"
-  ) +
-  theme(legend.position = "none")
+# # 绘制山脊图
+# ggplot(cohen_d_by_source, aes(x = Cohens_d, y = Identity, fill = Identity)) +
+#   geom_density_ridges(alpha = 0.8, scale = 1.2) +
+#   geom_vline(xintercept = 0, linetype = "dashed", color = "gray40") +
+#   theme_ridges() +
+#   labs(
+#     title = "Distribution of Cohen's d (Self vs. Other) across Articles",
+#     x = "Cohen's d (RT: Self - Other)",
+#     y = "Identity"
+#   ) +
+#   theme(legend.position = "none")
 
 
 ```
@@ -521,6 +521,7 @@ print("数据处理完成，已存入 `results` 变量")
 write.csv(results, "Processed_Data_for_SDE.csv", row.names = FALSE)
 ```
 
+
 ## Test01
 ```{r}
 library(dplyr)
@@ -572,6 +573,7 @@ sink()
 # 7. 保存处理后的数据
 write.csv(data_seq_clean, "Sequence_Effect_Data.csv", row.names = FALSE)
 ```
+
 
 ## Test02
 ```{r}
@@ -780,13 +782,6 @@ ggplot(rt_autocorr_results, aes(x = Lag, y = Beta)) +
 ```
 
 
-
-
-
-
-
-
-
 ## Test04
 ```{r}
 # 加载必要的包
@@ -878,6 +873,7 @@ ggplot(results, aes(x = Lag, y = Beta)) +
 library(tidyverse)
 library(lme4)
 library(data.table)
+library(lmerTest) 
 
 # 读取数据
 df <- read.csv("Processed_Data_for_SDE.csv")
@@ -915,8 +911,11 @@ df_clean <- df_dt %>% drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3, RT_ms_n4, RT_ms_n5, 
 fit <- lmer(RT_ms ~ RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + RT_ms_n6 + RT_ms_n7 + (1 | Subject) + (1 | Source) + (1 | Block), 
             data = df_clean)
 
-summary(fit)
 
+coef_summary <- as.data.frame(coef(summary(fit)))
+coef_summary$p_value <- 2 * (1 - pnorm(abs(coef_summary$"t value")))
+print(coef_summary)
+summary(fit)
 ```
 
 ```{r}
@@ -961,30 +960,6 @@ df <- df %>%
   ) %>%
   arrange(Subject, Block, Trial)  # 按照被试 & 试次顺序排序
 
-```
-
-### Log1
-```{r}
-# 使用 data.table 加速滞后变量生成
-df_dt <- as.data.table(df)
-
-# 对每个被试分别生成滞后 RT_ms 变量
-for (i in 1:1) {
-  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
-}
-
-```
-
-```{r}
-#删除前1行缺失（由于滞后变量导致）
-df_clean <- df_dt %>% drop_na(RT_ms_n1)
-```
-
-```{r}
-# 构建混合效应模型：当前RT受前1个RT影响
-fit <- lmer(RT_ms ~ RT_ms_n1 + (1 | Subject) + (1 | Block), 
-            data = df_clean)
-summary(fit)
 ```
 
 ### log7

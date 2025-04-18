@@ -62,7 +62,10 @@ The analysis revealed significant moderation effects (β = 0.42, p < .001), with
 - P1.4(横坐标是SN_RT,纵坐标是Cohen's d-Self-Non_Person in RT. )
   
 ## Serial dependence effect in SPE.
-Understanding the temporal dynamics of the Self-Prioritization Effect (SPE) can provide insights into the cognitive and perceptual mechanisms underlying self-referential processing. One crucial aspect to consider is the potential serial dependence effect, which refers to the influence of previously processed stimuli on the current response. 
+
+To examine whether reaction times (RTs) were influenced by those of previous trials, a linear mixed-effects model was fitted to 251,574 trials. The current trial’s RT (in milliseconds) was predicted by the RTs from the preceding seven trials (RTn-1 to RTn-7). Random intercepts for Subject, Block, and Source were included to account for variability at the participant, experimental block, and dataset levels. After removing the first seven trials per participant due to lagged variable calculation, a total of 232,879 valid observations were included in the analysis.
+The results revealed a significant serial dependence effect: all seven lagged RTs significantly predicted the current RT (all ps < .001). The effect was strongest for RTn-1 (β = 0.139, SE = 0.002, t = 67.06, p < .001), followed by gradually decreasing influences for RTn-2 (β = 0.092), RTn-3 (β = 0.064), RTn-4 (β = 0.067), RTn-5 (β = 0.058), RTn-6 (β = 0.056), and RTn-7 (β = 0.047). These results indicate that RTs are not independent across trials, but are influenced by a temporally decaying memory of past performance.
+
 
 - 思路：使用LMM(Linear Mixed Model)来探索在知觉匹配范式中，是否存在序列位置效应。以及序列位置效应中Identity是如何影响RT/ACC的(反应时越短，说明加工越快；正确率越高，说明加工越准确)
 - 目的：展现出不同Identity对于当前呈现刺激的影响。进而揭示SPE的认知和感知的潜在机制，为解释自我优势效应生成的本质提供思考。
