@@ -6,10 +6,12 @@ output: html_document
 ---
 
 
-# 思路：使用单独一个Block或者文章进行
-[前面一个试次的RT对当前试次RT的影响]
-# 单个对当前试次的影响        
-## Test03（Result）
+# 思路：使用单独一篇文章进行测试，跑通正确代码后迭代到全部数据
+# 选用了（1 | Subject）和（1 | Block)作为截距，减少了被试个体和不同Block引起的差异
+
+
+# 单个对当前试次的影响（逐点滞后分析）
+## ACC
 ```{r}
 # 加载必要的包
 library(tidyverse)
@@ -174,9 +176,9 @@ ggplot(rt_autocorr_results, aes(x = Lag, y = Beta)) +
 ```
 
 
-# 共同对当前试次的影响（应该要这种）
+# 共同对当前试次的影响（整体历史影响）[我们应该是偏向这种]
 
-## Test05 RT-RT
+## RT-RT(上几个试次的反应时对当前试次的反应时影响)
 ### 读取数据
 ```{r}
 library(tidyverse)
@@ -423,7 +425,8 @@ library(car)
 vif(fit)
 ```
 
-## Test05 ACC序列效应分析
+## ACC-ACC序列效应分析(上几个试次的正确率对当前试次的影响)
+### 读取数据
 ```{r}
 library(tidyverse)
 library(lme4)
@@ -504,7 +507,7 @@ vif(fit_acc)
 ```
 
 
-## Test05 Matching对RT的影响 （不显著）
+## Matching对RT的影响 （不显著）
 ### 读取数据
 ```{r}
 library(tidyverse)
@@ -513,8 +516,8 @@ library(lme4)
 library(lmerTest)
 
 # 读取数据并按被试&试次排序
-df <- read.csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
-
+#df <- read.csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
+df <- read.csv("../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp1_Clean.csv")
 df <- df %>%
   mutate(
     Subject = as.factor(Subject),
@@ -795,6 +798,107 @@ ggplot(coef_df_plot, aes(x = Lag, y = Estimate)) +
 ```
 
 
+## Identity对RT的影响[这个不太确定代码正确性，正在探索]
+```{r}
+library(tidyverse)
+library(data.table)
+library(lme4)
+library(lmerTest)
+
+# 读取数据并按被试&试次排序
+#df <- read.csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
+df <- read.csv("../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp1_Clean.csv")
+
+df <- df %>%
+  mutate(
+    Subject = as.factor(Subject),
+    Matching = as.factor(Matching),
+    Standarlized_Identity = as.factor(Standarlized_Identity)
+  ) %>%
+  arrange(Subject, Trial)
+
+# 转为 data.table 格式
+df_dt <- as.data.table(df)
+```
+
+```{r}
+# 使用 data.table 创建滞后变量
+df_dt <- as.data.table(df)
+
+for (i in 1:7) {
+  df_dt[, paste0("RT_ms_n", i) := shift(RT_ms, n = i, type = "lag"), by = Subject]
+}
+
+# 删除有缺失的前几行
+df_clean <- df_dt %>%
+  drop_na(RT_ms_n1, RT_ms_n2, RT_ms_n3, RT_ms_n4, RT_ms_n5, RT_ms_n6, RT_ms_n7)
+```
+
+```{r}
+# 含交互项的模型（每个滞后 RT × 当前身份）
+fit_identity_interaction <- lmer(
+  RT_ms ~ 
+    (RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + RT_ms_n6 + RT_ms_n7) * Standarlized_Identity +
+    (1 | Subject),
+  data = df_clean
+)
+
+summary(fit_identity_interaction)
+
+# 可选：输出系数及p值
+coef_table <- as.data.frame(coef(summary(fit_identity_interaction)))
+coef_table$p_value <- 2 * (1 - pnorm(abs(coef_table$"t value")))
+print(coef_table)
+
+```
+
+```{r}
+# 创建滞后 Matching 变量（使用 data.table）
+df_dt <- as.data.table(df)
+
+for (i in 1:2) {  
+  df_dt[, paste0("Matching_n", i) := shift(Matching, n = i, type = "lag"), by = Subject]
+}
+
+#删除缺失
+df_clean <- df_dt %>%
+  drop_na(Matching_n1)
+
+# 创建二值化的 Matching（1 = Matching, 0 = Nonmatching）
+for (i in 1:2) {
+  colname <- paste0("Matching_n", i)
+  df_clean[[paste0(colname, "_bin")]] <- ifelse(df_clean[[colname]] == "Matching", 1, 0)
+}
+```
+
+```{r}
+# 模型 1：只看当前身份对RT的影响
+fit_identity <- lmer(RT_ms ~ Standarlized_Identity + (1 | Subject), data = df_clean)
+summary(fit_identity)
+
+# 模型 2：加入前1~3次的Matching状态
+fit_lag_identity <- lmer(RT_ms ~ 
+                           Matching_n1_bin + Matching_n2_bin + Matching_n3_bin +
+                           Standarlized_Identity +
+                           (1 | Subject), data = df_clean)
+summary(fit_lag_identity)
+
+# 模型 3：考虑 Matching × Identity 的交互作用
+fit_interaction <- lmer(RT_ms ~ 
+                          (Matching_n1_bin + Matching_n2_bin + Matching_n3_bin) * Standarlized_Identity +
+                          (1 | Subject), data = df_clean)
+summary(fit_interaction)
+
+# 提取结果表格（可选）
+coef_table <- as.data.frame(coef(summary(fit_interaction)))
+coef_table$p_value <- 2 * (1 - pnorm(abs(coef_table$"t value")))
+print(coef_table)
+```
+
+
+
+
+
 # 尝试整体数据
 ```{r}
 library(tidyverse)
@@ -895,7 +999,6 @@ ggplot(tmp, aes(x = History, y = Estimate, ymin = lwr, ymax = upr)) +
 library(car)
 vif(fit)
 ```
-
 
 
 

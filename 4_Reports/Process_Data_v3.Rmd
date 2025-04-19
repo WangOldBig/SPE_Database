@@ -389,6 +389,14 @@ cohen_d_by_source <- df %>%
 
 ```
 
+## Pic1_v4
+
+
+
+
+
+
+
 
 # Copute SDE
 ## Read csv (区分公开和未公开) [只包含有Trial记录的]

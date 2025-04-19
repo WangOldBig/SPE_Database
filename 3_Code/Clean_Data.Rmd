@@ -564,6 +564,10 @@ df[[8]] <- read.csv(
       English_Identity == "Mother" ~ "Close",
       English_Identity == "Acquaintance" ~ "Acquaintance",
     ),
+    Matching = case_when(
+      Matching == "comp" ~ "Matching",
+      Matching == "incomp" ~ "Nonmatching"
+    ),
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, 
