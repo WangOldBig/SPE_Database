@@ -771,7 +771,7 @@ for (i in 1:7) {
 # 构建模型：当前RT是否受前几次Matching状态影响
 fit_matching_rt <- lmer(RT_ms ~ Matching_n1_bin + Matching_n2_bin + Matching_n3_bin +
                           Matching_n4_bin + Matching_n5_bin + Matching_n6_bin + Matching_n7_bin +
-                          (1 | Subject) , data = df_clean)
+                          (1 | Subject) + (1 | Block) , data = df_clean)
 
 # 查看模型结果
 summary(fit_matching_rt)
@@ -797,6 +797,30 @@ ggplot(coef_df_plot, aes(x = Lag, y = Estimate)) +
 
 ```
 
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tibble)
+library(stringr)
+
+coef_df_plot <- coef_df %>%
+  rownames_to_column("Lag") %>%
+  filter(str_detect(Lag, "Matching_n"))  # 只取滞后变量
+
+ggplot(coef_df_plot, aes(x = Lag, y = Estimate, group = 1)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_point(color = "steelblue", size = 2) +
+  geom_errorbar(aes(ymin = Estimate - `Std. Error`, ymax = Estimate + `Std. Error`), width = 0.2) +
+  theme_minimal() +
+  labs(title = "前几次是否Matching对当前RT的影响", x = "滞后Matching变量", y = "RT_ms预测系数") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+
+
+
 
 ## Identity对RT的影响[这个不太确定代码正确性，正在探索]
 ```{r}
@@ -806,8 +830,8 @@ library(lme4)
 library(lmerTest)
 
 # 读取数据并按被试&试次排序
-#df <- read.csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
-df <- read.csv("../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp1_Clean.csv")
+df <- read.csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
+#df <- read.csv("../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp1_Clean.csv")
 
 df <- df %>%
   mutate(
@@ -856,7 +880,7 @@ print(coef_table)
 # 创建滞后 Matching 变量（使用 data.table）
 df_dt <- as.data.table(df)
 
-for (i in 1:2) {  
+for (i in 1:7) {  
   df_dt[, paste0("Matching_n", i) := shift(Matching, n = i, type = "lag"), by = Subject]
 }
 
@@ -865,7 +889,7 @@ df_clean <- df_dt %>%
   drop_na(Matching_n1)
 
 # 创建二值化的 Matching（1 = Matching, 0 = Nonmatching）
-for (i in 1:2) {
+for (i in 1:7) {
   colname <- paste0("Matching_n", i)
   df_clean[[paste0(colname, "_bin")]] <- ifelse(df_clean[[colname]] == "Matching", 1, 0)
 }
@@ -878,14 +902,14 @@ summary(fit_identity)
 
 # 模型 2：加入前1~3次的Matching状态
 fit_lag_identity <- lmer(RT_ms ~ 
-                           Matching_n1_bin + Matching_n2_bin + Matching_n3_bin +
+                           Matching_n1_bin + Matching_n2_bin + Matching_n3_bin + Matching_n4_bin + Matching_n5_bin + Matching_n6_bin + Matching_n7_bin +
                            Standarlized_Identity +
                            (1 | Subject), data = df_clean)
 summary(fit_lag_identity)
 
 # 模型 3：考虑 Matching × Identity 的交互作用
 fit_interaction <- lmer(RT_ms ~ 
-                          (Matching_n1_bin + Matching_n2_bin + Matching_n3_bin) * Standarlized_Identity +
+                          (Matching_n1_bin + Matching_n2_bin + Matching_n3_bin + Matching_n4_bin + Matching_n5_bin + Matching_n6_bin + Matching_n7_bin) * Standarlized_Identity +
                           (1 | Subject), data = df_clean)
 summary(fit_interaction)
 
@@ -899,7 +923,7 @@ print(coef_table)
 
 
 
-# 尝试整体数据
+# 尝试整体数据[RT - 当前试次rt]
 ```{r}
 library(tidyverse)
 library(lme4)
