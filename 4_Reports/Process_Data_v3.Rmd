@@ -91,7 +91,8 @@ library(readr)
 library(stringr)
 
 # 读取已处理的数据
-data <- read_csv("Processed_Data.csv", show_col_types = FALSE)
+data <- read_csv("Processed_Data_for_SDE.csv", show_col_types = FALSE)
+#data <- read_csv("Processed_Data.csv", show_col_types = FALSE)
 
 # 处理 Source 变量，提取文章信息（支持两种格式）
 data <- data %>%

@@ -11,6 +11,7 @@ output: html_document
 
 
 # 单个对当前试次的影响（逐点滞后分析）
+
 ## ACC
 ```{r}
 # 加载必要的包
@@ -187,8 +188,8 @@ library(data.table)
 library(lmerTest) 
 
 # 读取数据
-df <- read.csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
-
+#df <- read.csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
+df <- read.csv("../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp1_Clean.csv")
 # 转换变量类型
 df <- df %>%
   mutate(
@@ -507,7 +508,7 @@ vif(fit_acc)
 ```
 
 
-## Matching对RT的影响 （不显著）
+## Matching对RT的影响 （不显著/不显著）
 ### 读取数据
 ```{r}
 library(tidyverse)
@@ -817,7 +818,11 @@ ggplot(coef_df_plot, aes(x = Lag, y = Estimate, group = 1)) +
 
 ```
 
-
+```{r}
+# 检查滞后变量之间的共线性（VIF > 5 表示严重共线性）
+library(car)
+vif(fit_matching_rt)
+```
 
 
 
@@ -863,7 +868,7 @@ df_clean <- df_dt %>%
 fit_identity_interaction <- lmer(
   RT_ms ~ 
     (RT_ms_n1 + RT_ms_n2 + RT_ms_n3 + RT_ms_n4 + RT_ms_n5 + RT_ms_n6 + RT_ms_n7) * Standarlized_Identity +
-    (1 | Subject),
+    (1 | Block) + (1 | Subject),
   data = df_clean
 )
 
@@ -920,10 +925,7 @@ print(coef_table)
 ```
 
 
-
-
-
-# 尝试整体数据[RT - 当前试次rt]
+## 尝试整体数据[RT - 当前试次rt]
 ```{r}
 library(tidyverse)
 library(lme4)
@@ -1024,13 +1026,89 @@ library(car)
 vif(fit)
 ```
 
+## 尝试整体数据 Matching对RT的影响 
+### 读取数据
+```{r}
+library(tidyverse)
+library(data.table)
+library(lme4)
+library(lmerTest)
 
+# 读取数据并按被试&试次排序
+df <- read.csv("Processed_Data_for_SDE.csv")
+df <- df %>%
+  mutate(
+    Subject = as.factor(Subject),
+    Matching = as.factor(Matching),
+    Standarlized_Identity = as.factor(Standarlized_Identity)
+  ) %>%
+  arrange(Subject, Trial)
 
+# 转为 data.table 格式
+df_dt <- as.data.table(df)
+```
 
+### Log7
+```{r}
+# 创建前1～7次的 Matching 滞后变量
+for (i in 1:7) {
+  df_dt[, paste0("Matching_n", i) := shift(Matching, n = i, type = "lag"), by = Subject]
+}
+```
 
+```{r}
+df_clean <- df_dt %>%
+  drop_na(Matching_n1, Matching_n2, Matching_n3, Matching_n4, Matching_n5, Matching_n6, Matching_n7)
+```
 
+```{r}
+# 创建数值型的滞后变量用于回归
+for (i in 1:7) {
+  colname <- paste0("Matching_n", i)
+  df_clean[[paste0(colname, "_bin")]] <- ifelse(df_clean[[colname]] == "Matching", 1, 0)
+}
+```
 
+```{r}
+# 构建模型：当前RT是否受前几次Matching状态影响
+fit_matching_rt <- lmer(RT_ms ~ Matching_n1_bin + Matching_n2_bin + Matching_n3_bin +
+                          Matching_n4_bin + Matching_n5_bin + Matching_n6_bin + Matching_n7_bin +
+                          (1 | Source) + (1 | Subject) + (1 | Block) , data = df_clean)
 
+# 查看模型结果
+summary(fit_matching_rt)
+
+# 提取估计值 + 自定义 p 值
+coef_df <- as.data.frame(coef(summary(fit_matching_rt)))
+coef_df$p_value <- 2 * (1 - pnorm(abs(coef_df$"t value")))
+print(coef_df)
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tibble)
+library(stringr)
+
+coef_df_plot <- coef_df %>%
+  rownames_to_column("Lag") %>%
+  filter(str_detect(Lag, "Matching_n"))  # 只取滞后变量
+
+ggplot(coef_df_plot, aes(x = Lag, y = Estimate, group = 1)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_point(color = "steelblue", size = 2) +
+  geom_errorbar(aes(ymin = Estimate - `Std. Error`, ymax = Estimate + `Std. Error`), width = 0.2) +
+  theme_minimal() +
+  labs(title = "前几次是否Matching对当前RT的影响", x = "滞后Matching变量", y = "RT_ms预测系数") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+```{r}
+# 检查滞后变量之间的共线性（VIF > 5 表示严重共线性）
+library(car)
+vif(fit_matching_rt)
+```
 
 
 
