@@ -1025,6 +1025,40 @@ ggplot(tmp, aes(x = History, y = Estimate, ymin = lwr, ymax = upr)) +
 library(car)
 vif(fit)
 ```
+#### Test
+```{r}
+# 假设你已经有一个 mixed-effects 模型 fit
+
+# 提取固定效应并准备数据
+tmp <- as.data.frame(confint(fit))  # 置信区间
+tmp <- tmp[grep("RT_ms_n", rownames(tmp)), ]  # 仅提取滞后变量
+tmp$Estimate <- fixef(fit)[grep("RT_ms_n", names(fixef(fit)))]
+tmp$lwr <- tmp$`2.5 %`
+tmp$upr <- tmp$`97.5 %`
+tmp$History <- paste0("RT n-", 1:7)  # 自定义标签
+
+# 确保x轴顺序正确
+tmp$History <- factor(tmp$History, levels = paste0("RT n-", 1:7))
+
+# 可视化：点 + 误差条 + 连线
+library(ggplot2)
+ggplot(tmp, aes(x = History, y = Estimate, group = 1)) +
+  geom_line(color = "steelblue", size = 1) +        # 连线
+  geom_point(size = 3, color = "steelblue") +       # 数据点
+  geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.2) +  # 置信区间
+  theme_minimal() +
+  labs(title = "Serial Dependence of RT (n-1 to n-7)",
+       x = "Lagged RT",
+       y = "Effect on Current RT") +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10)
+  )
+
+```
+
+
 
 ## 尝试整体数据 Matching对RT的影响 
 ### 读取数据
