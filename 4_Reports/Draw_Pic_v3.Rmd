@@ -574,8 +574,82 @@ p1 <- ggplot(df, aes(x = Cohens_d_RT, y = Comparison,  # 交换x/y轴映射
 print(p1)
 ```
 
+```{r}
+library(tidyverse)
+library(effectsize)
+library(ggridges)
+
+# 读取数据
+df <- read_csv("Processed_Data.csv")
+
+# 只保留 Matching 条件
+df_match <- df %>%
+  filter(Matching == "Matching")
+
+# 分别提取 Self 和 Others 的数据
+df_self <- df_match %>%
+  filter(Standarlized_Identity == "Self") %>%
+  rename(RT_self = RT_ms) %>%
+  select(Source, Subject, RT_self)
+
+df_others <- df_match %>%
+  filter(Standarlized_Identity != "Self") %>%
+  group_by(Source, Subject) %>%
+  summarise(RT_others = mean(RT_ms), .groups = "drop")
+
+# 合并 Self 与 Others 数据
+df_combined <- inner_join(df_self, df_others, by = c("Source", "Subject"))
+
+# 计算每篇文章的 Cohens'd（Self vs Others）
+df_d_all <- df_combined %>%
+  group_by(Source) %>%
+  summarise(
+    cohens_d = cohens_d(RT_self, RT_others, paired = TRUE)$Cohens_d,
+    .groups = "drop"
+  )
+
+# 为山脊图准备每位被试的 d 值（方便可视化分布）
+df_subject_d <- df_combined %>%
+  mutate(d = RT_self - RT_others) %>%  # 差值越大表示 Self 越快
+  group_by(Source) %>%
+  mutate(Cohens_d = cohens_d(RT_self, RT_others, paired = TRUE)$Cohens_d) %>%
+  ungroup()
+
+```
 
 
+```{r}
+ggplot(df_subject_d, aes(x = d, y = fct_reorder(Source, Cohens_d), fill = Source)) +
+  geom_density_ridges(alpha = 0.6, scale = 1.2) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.8) +
+  theme_minimal(base_size = 13) +
+  labs(
+    title = "Distribution of RT Differences (Self - Others)",
+    x = "RT Difference (ms)",
+    y = "Article (Source)",
+    fill = "Source"
+  ) +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.y = element_text(face = "bold")
+  )
+ggplot(df_subject_d, aes(x = d, y = fct_reorder(Source, Cohens_d), fill = Source)) +
+  geom_density_ridges(alpha = 0.6, scale = 1.2) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.8) +
+  theme_minimal(base_size = 13) +
+  labs(
+    title = "Distribution of RT Differences (Self - Others)",
+    x = "RT Difference (ms)",
+    y = "Article (Source)",
+    fill = "Source"
+  ) +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.y = element_text(face = "bold")
+  )
+```
 
 
 

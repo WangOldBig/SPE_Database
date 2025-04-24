@@ -188,8 +188,8 @@ library(data.table)
 library(lmerTest) 
 
 # 读取数据
-#df <- read.csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
-df <- read.csv("../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp1_Clean.csv")
+df <- read.csv("../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
+#df <- read.csv("../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp1_Clean.csv")
 # 转换变量类型
 df <- df %>%
   mutate(
@@ -424,6 +424,26 @@ ggplot(tmp, aes(x = History, y = Estimate, ymin = lwr, ymax = upr)) +
 # 检查滞后变量之间的共线性（VIF > 5 表示严重共线性）
 library(car)
 vif(fit)
+```
+
+```{r}
+# 提取固定效应并画图
+tmp <- as.data.frame(confint(fit))
+tmp <- tmp[grep("RT_ms_n", rownames(tmp)), ]
+tmp$Estimate <- fixef(fit)[grep("RT_ms_n", names(fixef(fit)))]
+tmp$lwr <- tmp$`2.5 %`
+tmp$upr <- tmp$`97.5 %`
+tmp$History <- paste0("RT n-", 1:7)
+
+# 可视化
+ggplot(tmp, aes(x = History, y = Estimate, ymin = lwr, ymax = upr)) +
+  geom_point(size = 3) +
+  geom_errorbar(width = 0.2) +
+  theme_minimal() +
+  labs(title = "Serial Dependence of RT (n-1 to n-7)",
+       x = "Lagged RT",
+       y = "Effect on Current RT")
+
 ```
 
 ## ACC-ACC序列效应分析(上几个试次的正确率对当前试次的影响)
@@ -925,7 +945,7 @@ print(coef_table)
 ```
 
 
-## 尝试整体数据[RT - 当前试次rt]
+## 尝试整体数据[RT - 当前试次RT]
 ```{r}
 library(tidyverse)
 library(lme4)
@@ -1060,7 +1080,7 @@ ggplot(tmp, aes(x = History, y = Estimate, group = 1)) +
 
 
 
-## 尝试整体数据 Matching对RT的影响 
+## 尝试整体数据[Matching - 当前试次RT] 
 ### 读取数据
 ```{r}
 library(tidyverse)
