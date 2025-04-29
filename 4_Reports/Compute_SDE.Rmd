@@ -945,6 +945,119 @@ print(coef_table)
 ```
 
 
+
+## 上一试次和下一试次是否一致对当前试次RT的影响
+```{r}
+# 加载数据处理和混合模型所需的R包
+library(dplyr)      # 数据处理
+library(lme4)       # 线性混合模型
+
+# 读取 CSV 数据
+data <- read.csv("Processed_Data_for_SDE.csv", stringsAsFactors = FALSE)
+head(data)  # 查看前几行数据结构
+```
+
+```{r}
+# 按 Subject、Block、Trial 排序，并按组计算上一试次 Matching
+data <- data %>%
+  arrange(Subject, Block, Trial) %>%                 # 排序
+  group_by(Subject, Block) %>% 
+  mutate(Prev_Matching = lag(Matching)) %>%          # 上一试次的 Matching 值
+  ungroup()
+```
+
+#### log1
+```{r}
+# 创建一致性变量：一致 (Consistent) 或不一致 (Inconsistent)
+data <- data %>%
+  mutate(Matching_Consistency = ifelse(Matching == Prev_Matching,
+                                       "Consistent", "Inconsistent"))
+# 去掉第一试次（Prev_Matching 为 NA 的情况）
+data_clean <- data %>% filter(!is.na(Prev_Matching))
+```
+
+```{r}
+# 拟合模型1：RT_ms ~ Matching_Consistency + (1|Subject)
+model1 <- lmer(RT_ms ~ Matching_Consistency + (1 | Subject), data = data_clean)
+summary(model1)
+```
+#### log7
+```{r}
+library(dplyr)
+
+# 假设你的数据已经按 Subject、Block、Trial 排好序
+data <- data %>%
+  arrange(Subject, Block, Trial) %>%
+  group_by(Subject, Block) %>%
+  mutate(
+    lag1 = lag(Matching, 1),
+    lag2 = lag(Matching, 2),
+    lag3 = lag(Matching, 3),
+    lag4 = lag(Matching, 4),
+    lag5 = lag(Matching, 5),
+    lag6 = lag(Matching, 6),
+    lag7 = lag(Matching, 7)
+  ) %>%
+  ungroup()
+
+```
+
+```{r}
+for (i in 1:7) {
+  data[[paste0("lag", i, "_same")]] <- ifelse(data$Matching == data[[paste0("lag", i)]], 1,
+                                              ifelse(is.na(data[[paste0("lag", i)]]), NA, 0))
+}
+
+```
+
+```{r}
+data_lag <- data %>%
+  filter(!is.na(lag7_same))  # 保证所有 lag1 ~ lag7 都有值
+```
+
+```{r}
+library(lme4)
+
+# 构建线性混合模型
+model_lag <- lmer(RT_ms ~ lag1_same + lag2_same + lag3_same + lag4_same + 
+                    lag5_same + lag6_same + lag7_same + (1 | Subject),
+                  data = data_lag)
+
+summary(model_lag)
+```
+
+```{r}
+library(broom.mixed)
+
+# 提取固定效应
+coefs <- broom.mixed::tidy(model_lag, effects = "fixed")
+
+# 仅保留 lag 变量
+library(ggplot2)
+coefs_lag <- coefs %>% filter(grepl("lag[1-7]_same", term))
+
+ggplot(coefs_lag, aes(x = term, y = estimate)) +
+  geom_col(fill = "steelblue") +
+  geom_errorbar(aes(ymin = estimate - std.error, ymax = estimate + std.error), width = 0.2) +
+  labs(title = "Lag1 ~ Lag7 Matching 一致性对RT的影响", x = "Lag", y = "回归系数 (ms)") +
+  theme_minimal()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 尝试整体数据[RT - 当前试次RT]
 ```{r}
 library(tidyverse)
