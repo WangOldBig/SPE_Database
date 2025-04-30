@@ -144,7 +144,8 @@ df[[1]] <- read.csv(
     Age_Participant1 = Participant.1.Age,
     Age_Participant2 = Participant.2.Age,
     Shape = Shape,
-    Origin_Identity = Label,
+    Label_Identity = Label,
+    Origin_Identity = Shape,
     ShapeLoc = ShapeLoc,
     StrangerShape = StrangerShape,
     P1Shape = P1Shape,
@@ -175,7 +176,7 @@ df[[1]] <- read.csv(
     Subject, Block, Trial, 
     Age_Participant1, Age_Participant2, 
     StrangerShape, P1Shape, P2Shape, 
-    Shape, Matching, Origin_Identity, ShapeLoc, 
+    Shape, Matching, Label_Identity, Origin_Identity, ShapeLoc, 
     Response, RT_ms, RT_sec, ACC, Phase
   ) %>%
   dplyr::arrange(
@@ -202,8 +203,9 @@ df[[2]] <- read.csv(
     Gender = X2..Gender..M.F.,
     First_Lanugage = X5..First.Lanugage,
     Shape = Shape,
-    Origin_Identity = Label,
-    English_Identity = Label,
+    Label_Identity = Label,
+    Origin_Identity = Shape,
+    English_Identity = Shape,
     Matching = Condition,
     Response = resp,
     Colour = Colour,
@@ -240,7 +242,8 @@ df[[2]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Block, Trial, Gender, Age, Handedness, First_Lanugage,
-    Shape, Matching, Origin_Identity, English_Identity, Standarlized_Identity, Standarlized_Identity,Response, ShapeLoc, Colour,
+    Shape, Matching, Label_Identity, Origin_Identity, English_Identity, 
+    Standarlized_Identity,Response, ShapeLoc, Colour,
     ShapeColour, textColour,Stimuli_Type, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
@@ -266,8 +269,9 @@ df[[3]] <- read.csv(
     Gender = X2..Gender,
     First_Lanugage = X5..First.Language,
     Shape = Shape,
-    Origin_Identity = Label,
-    English_Identity = Label,
+    Label_Identity = Label,
+    Origin_Identity = Shape,
+    English_Identity = Shape,
     Matching = Condition,
     FaceIdentity = FaceIdentity,
     Stimulus = Stimulus,
@@ -302,10 +306,12 @@ df[[3]] <- read.csv(
       English_Identity == "Self" ~ "Self",
       English_Identity == "Stranger" ~ "Stranger"
     ),
+    
   ) %>%
   dplyr::select(
     Subject, Block, Trial, Gender, Age, Handedness, First_Lanugage,
-    Shape, Matching, Origin_Identity, English_Identity, Standarlized_Identity,Response, ShapeLoc, FaceIdentity, Stimulus,
+    Shape, Matching, Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity,
+    Response, ShapeLoc, FaceIdentity, Stimulus,
     Strength, textColour, Stimuli_Type, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
