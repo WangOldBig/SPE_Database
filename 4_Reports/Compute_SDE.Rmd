@@ -176,6 +176,59 @@ ggplot(rt_autocorr_results, aes(x = Lag, y = Beta)) +
 
 ```
 
+## Matching四种条件的序列依赖效应
+```{r}
+# 1. 载入包 & 读入数据
+library(dplyr)
+df <- read.csv("Processed_Data_for_SDE.csv", stringsAsFactors = FALSE)
+
+# 2. 按 Source + Subject 分组，生成上一试次 Matching 信息，并构造四水平因子 Seq4
+df_seq <- df %>%
+  group_by(Source, Subject) %>%
+  # 如果你的数据里已有 Trial 列，可用 arrange(Trial)；否则假设原顺序即为试次顺序
+  mutate(
+    lag1 = lag(Matching),
+    Seq4 = paste0(
+      ifelse(lag1 == "Matching",    "M",  "NM"),
+      "_to_",
+      ifelse(Matching == "Matching", "M",  "NM")
+    )
+  ) %>%
+  # 去掉第一条（lag1 为 NA）
+  filter(!is.na(lag1)) %>%
+  ungroup()
+
+# 3. 将 Seq4 设为因子，并指定水平顺序（可选）
+df_seq <- df_seq %>%
+  mutate(
+    Seq4 = factor(Seq4,
+                  levels = c("M_to_M", "M_to_NM", "NM_to_M", "NM_to_NM"))
+  )
+
+# 4. 汇总：四种序列下的平均 RT_ms 和平均 ACC
+df_summary <- df_seq %>%
+  group_by(Seq4) %>%
+  summarise(
+    mean_RT  = mean(RT_ms, na.rm = TRUE),
+    mean_ACC = mean(ACC,   na.rm = TRUE),
+    n_trials = n()
+  )
+
+print(df_summary)
+
+# —— 如果还想直接用 LMM 建模这四个条件 —— 
+# （需要先安装并载入 lme4 / lmerTest）
+library(lme4); library(lmerTest)
+fit_seq4 <- lmer(
+  RT_ms ~ Seq4 +
+    (1 | Source) + (1 | Subject) + (1 | Block),
+  data = df_seq
+)
+summary(fit_seq4)
+
+```
+
+
 
 # 共同对当前试次的影响（整体历史影响）[我们应该是偏向这种]
 
