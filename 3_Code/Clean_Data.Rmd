@@ -4249,70 +4249,6 @@ summary(df[[65]])
 write.csv(x = df[[65]], file = "../1_Clean_Data/Orellana-Corrales_2021_APP/Orellana-Corrales_2021_APP_Exp2_Clean.csv")
 ```
 
-# Haciahmet_2022_Psy
-## Experiment 1 (Identity = 2)
-"Self", "Stranger"    →   "Self","Stranger"
-```{r Paper t1 Experiment 1}
-df[[66]] <- read.csv(
-  "../2_Raw_Data/Haciahmet_2023_Psy/Haciahmet_2023_Psy_Exp1_raw.csv"
-  ) %>%
-  dplyr::filter(
-    Procedure.Trial. == "BlockProc"
-  ) %>%
-  dplyr::select(
-    Subject = Subject,
-    Block = BlockNr,
-    Trial = SubTrial,
-    Age = Alter,
-    Gender = Geschlecht,
-    Handedness = Hand,
-    Origin_Identity = Target,
-    Shape = TargetImage,
-    Label = LabelText,
-    Matching = Condition,
-    Response = WaitResponse.RESP,
-    RT_ms = WaitResponse.RT,
-    ACC = WaitResponse.ACC,
-    ) %>%
-  dplyr::mutate(
-    Shape = case_when(
-      Shape == ".\\Stimuli\\circle.png" ~ "circle.png",
-      Shape == ".\\Stimuli\\triangle.png" ~ "triangle.png"
-    ),
-    Matching = case_when(
-      Matching == 1 ~ "Matching",
-      Matching == 2 ~ "Nonmatching"
-    ),
-    Origin_Identity = case_when(
-      Origin_Identity == 1 ~ "Self",
-      Origin_Identity == 2 ~ "Stranger"
-    ),
-    English_Identity = Origin_Identity,
-    Standarlized_Identity = case_when(
-      English_Identity == "Stranger" ~ "Stranger",
-      English_Identity == "Self" ~ "Self",
-    ),
-    ) %>%
-  dplyr::mutate(
-    as.numeric(as.character(RT_ms)),
-    RT_sec = RT_ms / 1000
-    ) %>%
-  dplyr::select(
-    Subject, Block, Trial,
-    Age, Gender, Handedness,
-    Shape, Label,  Matching, 
-    Origin_Identity, English_Identity, Standarlized_Identity,
-    Response, RT_ms, RT_sec, ACC
-    ) %>%
-  dplyr::arrange(
-    Subject, Block, Trial
-    )
-
-names(df)[66] <- "Haciahmet_2023_Psy_Exp1"
-summary(df[[66]])
-write.csv(x = df[[66]], file = "../1_Clean_Data/Haciahmet_2022_Psy/Haciahmet_2022_Psy_Exp1_Clean.csv")
-```
-
 # Smith_2024_Cortex
 ## Experiment 1 (Identity = 2)
 "Self","Friend","Stranger"    →   ""Self","Close","Stranger"
@@ -4348,7 +4284,7 @@ rm(data_path,file_list,i,output_path,temp_data,all_data,combined_data)
 
 
 ```{r}
-df[[67]] <- read.csv(
+df[[66]] <- read.csv(
   "../2_Raw_Data/Smith_2024_Cortex/Smith_2024_Cortex_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
@@ -4402,16 +4338,16 @@ df[[67]] <- read.csv(
     Subject, Block, Trial
     )
 
-names(df)[67] <- "Smith_2024_Cortex_Exp1"
-summary(df[[67]])
-write.csv(x = df[[67]], file = "../1_Clean_Data/Smith_2024_Cortex/Smith_2024_Cortex_Exp1_Clean.csv")
+names(df)[66] <- "Smith_2024_Cortex_Exp1"
+summary(df[[66]])
+write.csv(x = df[[66]], file = "../1_Clean_Data/Smith_2024_Cortex/Smith_2024_Cortex_Exp1_Clean.csv")
 ```
 
 # Liang_2022_HBM
 ## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No  trial message)
 ```{r Paper t3 Experiment 1 _ sham}
-df[[68]] <- read.csv(
+df[[67]] <- read.csv(
   "../2_Raw_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
@@ -4466,16 +4402,16 @@ df[[68]] <- read.csv(
     Subject, Session, 
   )
 
-names(df)[68] <- "Liang_2022_HBM_sham"
-summary(df[[68]])
-write.csv(x = df[[68]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1.2_Clean.csv")
+names(df)[67] <- "Liang_2022_HBM_sham"
+summary(df[[67]])
+write.csv(x = df[[67]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1.2_Clean.csv")
 ```
 
 # Liang_2022_HBM
 ## Experiment 1 (Identity = 3)
 "Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No  trial message)
 ```{r Paper t3 Experiment 1 _ psts}
-df[[69]] <- read.csv(
+df[[68]] <- read.csv(
   "../2_Raw_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1_raw.csv"
   ) %>%
   dplyr::filter(
@@ -4530,9 +4466,9 @@ df[[69]] <- read.csv(
     Subject, Session, 
   )
 
-names(df)[69] <- "Liang_2022_HBM_psts"
-summary(df[[69]])
-write.csv(x = df[[69]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1.3_Clean.csv")
+names(df)[68] <- "Liang_2022_HBM_psts"
+summary(df[[68]])
+write.csv(x = df[[68]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1.3_Clean.csv")
 ```
 
 
