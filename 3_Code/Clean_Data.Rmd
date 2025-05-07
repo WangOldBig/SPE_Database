@@ -115,6 +115,20 @@ read.mat <- function(list) {
 }
 ```
 
+## 人口统计学变量筛选（年龄、性别）
+```{r}
+# 找出哪些数据框含有 Age 和 Gender 变量
+has_age_gender <- sapply(df, function(data) {
+  any(grepl("age", names(data), ignore.case = TRUE)) & 
+  any(grepl("gender", names(data), ignore.case = TRUE))
+})
+
+# 提取这些符合条件的数据名称
+names_with_age_gender <- names(df)[has_age_gender]
+print(names_with_age_gender)
+```
+
+
 
 # Clean Coding
 # Loading package
@@ -1042,6 +1056,9 @@ write.csv(x = df[[15]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp3_Clean
 ```{r Paper n13 Experiment 4}
 df[[16]] <- read.csv(
   "../2_Raw_Data/Navon_2021/Navon_2021_Exp4_raw.csv"
+  ) %>%
+  dplyr::filter(
+  Procedure.SubTrial. == "MMProc"
   ) %>%
   dplyr::select(
     Subject,
