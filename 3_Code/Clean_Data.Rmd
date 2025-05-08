@@ -115,7 +115,8 @@ read.mat <- function(list) {
 }
 ```
 
-## 人口统计学变量筛选（年龄、性别）
+## 人口统计学变量筛选工具（年龄、性别）
+### v1
 ```{r}
 # 找出哪些数据框含有 Age 和 Gender 变量
 has_age_gender <- sapply(df, function(data) {
@@ -128,7 +129,27 @@ names_with_age_gender <- names(df)[has_age_gender]
 print(names_with_age_gender)
 ```
 
+### v2
+```{r}
+# 创建一个空的数据框，用于存储结果
+results <- data.frame(Source = character(), Age = logical(), Gender = logical(), stringsAsFactors = FALSE)
 
+# 遍历df中的每个数据框
+for (source_name in names(df)) {
+  data <- df[[source_name]]
+  
+  # 检查是否含有年龄和性别变量
+  has_age <- any(grepl("age", names(data), ignore.case = TRUE))
+  has_gender <- any(grepl("gender", names(data), ignore.case = TRUE))
+  
+  # 添加到结果数据框
+  results <- rbind(results, data.frame(Source = source_name, Age = has_age, Gender = has_gender))
+}
+
+# 将结果保存为CSV文件
+write.csv(results, "Demographic_Variables_Age_Gender.csv", row.names = FALSE)
+
+```
 
 # Clean Coding
 # Loading package
@@ -337,9 +358,9 @@ summary(df[[3]])
 write.csv(x = df[[3]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp2_Clean.csv")
 ```
 
-# Haoyue Qian_2019_QJEP 
+# Haoyue Qian_2019_QJEP  
 ## Experiment 1 (Identity = 3)
-"Self", "Familiar"("Celebrity"), "Stranger"   →   "Self","Celebrity","Stranger" （No  trial message)
+"Self", "Familiar"("Celebrity"), "Stranger"   →   "Self","Celebrity","Stranger" （No  trial message) （未直接给出Shape和Label)
 ```{r Paper p51 Experiment 1}
 df[[4]] <- read.csv(
   "../2_Raw_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp1_raw.csv"
@@ -401,7 +422,7 @@ write.csv(x = df[[4]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp
 
 # Haoyue Qian_2019_QJEP 
 ## Experiment 2 (Identity = 2)
-"Self", "Familiar"("Celebrity")   →   "Self","Celebrity","Stranger" （No trial message)
+"Self", "Familiar"("Celebrity")   →   "Self","Celebrity","Stranger" （No trial message)（未直接给出Shape和Label)
 ```{r Paper p51 Experiment 2}
 df[[5]] <- read.csv(
   "../2_Raw_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp2_raw.csv"
@@ -455,7 +476,7 @@ write.csv(x = df[[5]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp
 
 # Sarah Schaefer_2019_CP 
 ## Experiment 1 (Identity = 4)
-"Self", "Mother","none", "Acquaintance"   →   "Self","Close","Acquaintance,"Non_Person"（No  trial message)
+"Self", "Mother","none", "Acquaintance"   →   "Self","Close","Acquaintance,"Non_Person"（No  trial message) (Flanker?)
 ```{r Paper p54 Experiment 1}
 df[[6]] <- read.csv(
   "../2_Raw_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp1_raw.csv"
@@ -469,8 +490,11 @@ df[[6]] <- read.csv(
       FLbed == "comp" ~ "Matching",
       FLbed == "incomp" ~ "Nonmatching"
     ),
-    Origin_Identity = flanker,
+    Shape = 1,
+    Label = flanker,
+    Origin_Identity = target,
     Shape = FLform,
+    Label = Tform,
     Age = Age,
     Handedness = hand,
     Gender = Sex,
@@ -623,23 +647,24 @@ df[[9]] <- read.csv(
     Trial = TrialList.Sample,
   ) %>%
   dplyr::mutate(
-    Shape = case_when(
+    Origin_Identity = case_when(
       Shape == "shape1.jpg" ~ "Self",
       Shape == "shape2.jpg" ~ "Friend",
       Shape == "shape3.jpg" ~ "Stranger",
       is.na(Shape) ~ NA_character_,
       TRUE ~ Shape
     ),
-    Origin_Identity = case_when(
+    Label_Identity = case_when(
       Identity == "You" ~ "Self",
       Identity == "Friend" ~ "Friend",
       Identity == "Stranger" ~ "Stranger",
       is.na(Identity) ~ NA_character_,
       TRUE ~ Identity
     ),
+    Label = Identity,
     Matching = case_when(
-      Shape == Identity ~ "Matching",
-      Shape != Identity ~ "Nonmatching"
+      Origin_Identity == Label_Identity ~ "Matching",
+      Origin_Identity != Label_Identity ~ "Nonmatching"
     ),
     Face_Gender = Face_Gender,
     RT_ms = as.numeric(RT_ms),
@@ -665,8 +690,8 @@ df[[9]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Block, Trial, Face_Gender,
-    Matching, Origin_Identity, English_Identity, Standarlized_Identity, 
+    Subject, Block, Trial, Face_Gender, Shape, Label,
+    Matching, Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity, 
     RT_ms, RT_sec, ACC, 
   ) %>%
   dplyr::arrange(
@@ -699,14 +724,14 @@ df[[10]] <- read.csv(
     Trial = TrialList.Sample,
   ) %>%
   dplyr::mutate(
-    Shape = case_when(
+    Origin_Identity = case_when(
       Shape == "shape1.jpg" ~ "Self",
       Shape == "shape2.jpg" ~ "Friend",
       Shape == "shape3.jpg" ~ "Stranger",
       is.na(Shape) ~ NA_character_,
       TRUE ~ Shape
     ),
-    Origin_Identity = case_when(
+    Label_Identity = case_when(
       Identity == "You" ~ "Self",
       Identity == "Friend" ~ "Friend",
       Identity == "Stranger" ~ "Stranger",
@@ -720,9 +745,10 @@ df[[10]] <- read.csv(
       English_Identity == "Stranger" ~ "Stranger",
     ),
     Matching = case_when(
-      Shape == Identity ~ "Matching",
-      Shape != Identity ~ "Nonmatching"
+      Origin_Identity == Label_Identity ~ "Matching",
+      Origin_Identity != Label_Identity ~ "Nonmatching"
     ),
+    Label = Identity,
     Face_Gender = Face_Gender,
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000
@@ -738,8 +764,8 @@ df[[10]] <- read.csv(
     ACC = as.numeric(ACC),
   ) %>%
   dplyr::select(
-    Subject, Block, Trial, 
-    Matching, Origin_Identity, English_Identity, Standarlized_Identity, 
+    Subject, Block, Trial, Shape, Label,
+    Matching, Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity, 
     RT_ms, RT_sec, ACC, Face_Gender
   ) %>%
   dplyr::arrange(
