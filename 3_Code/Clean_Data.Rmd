@@ -127,6 +127,7 @@ has_age_gender <- sapply(df, function(data) {
 # 提取这些符合条件的数据名称
 names_with_age_gender <- names(df)[has_age_gender]
 print(names_with_age_gender)
+rm(has_age_gender, names_with_age_gender)
 ```
 
 ### v2
@@ -148,8 +149,77 @@ for (source_name in names(df)) {
 
 # 将结果保存为CSV文件
 write.csv(results, "Demographic_Variables_Age_Gender.csv", row.names = FALSE)
-
+rm(has_age, has_gender, source_name)
 ```
+
+### v3
+## Read csv (区分公开和未公开)
+```{r}
+library(dplyr)
+library(readr)
+
+## 设置数据路径
+dataPath <- "../1_Clean_Data"
+data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
+
+## 需要排除的文件夹
+# exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP", 
+#                      "Hobbs_2023_PM", "Mcivor_2020_EJN", 
+#                      "Orellana-Corrales_2021_EP", "Svensson_2021_PR", 
+#                      "Wang_2016_EPHPP","Liang_2022_HBM","Hobbs_2021_PM",
+#                      "Lee_2023_Cognition","Orellana-Corrales_2021_APP",
+#                      "Kirk_2025_BJP","Svensson_2023_QJEP")
+
+## 过滤掉不需要的文件
+#data_files <- data_files[!grepl(paste(exclude_folders, collapse = "|"), data_files)]
+
+## 预分配存储变量（列表存储数据）
+results_list <- list()
+
+## 计数器
+counter <- 1
+
+## 读取 CSV 文件并处理数据
+for (i in seq_along(data_files)) {
+  file_name <- basename(data_files[i])  # 提取文件名（假设文件名代表文章名称）
+  
+  Data <- read_csv(data_files[i], show_col_types = FALSE) %>%
+    mutate(across(where(is.character), as.character))  # 确保字符变量类型一致
+  
+  # 确保数据包含所需变量
+  if (all(c("RT_ms", "ACC", "Standarlized_Identity", "Subject", "Matching", "Gender", "Age") %in% names(Data))) {
+    
+    # 生成唯一标识每篇文章的 Subject ID，并添加 Source 变量
+    Data <- Data %>%
+      mutate(
+        Subject = paste0(file_name, "_", Subject),
+        Source = file_name  # **新增变量，标记来源文章**
+      )
+    
+    # 过滤 RT 在合理范围内的行
+    # Data <- Data %>%
+    #   filter(RT_ms > 10 & RT_ms < 5000, ACC %in% c(0, 1))  # 过滤异常值
+
+    # **存入列表**
+    results_list[[counter]] <- Data %>%
+      select(Source, Subject, Age, Gender, Matching, Standarlized_Identity, RT_ms, ACC)  # **保留 Source 变量**
+    
+    counter <- counter + 1
+  }
+  print(paste('完成数据集', i, '处理'))
+}
+
+# **合并所有数据**
+results <- bind_rows(results_list)
+
+# **检查合并后的数据**
+print("数据处理完成，已存入 `results` 变量")
+
+# **输出数据到 CSV**
+write.csv(results, "Processed_Data_by_age&gender.csv", row.names = FALSE)
+rm(data_files, dataPath, file_name, has_age, has_age_gender, has_gender,i,names_with_age_gender,source_name)
+```
+
 
 # Clean Coding
 # Loading package
@@ -779,7 +849,7 @@ write.csv(x = df[[10]], file = "../1_Clean_Data/Wozniak_2018_PLOS/Wozniak_2018_P
 
 # Marius Golubickis_2021_AP
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"（No  trial message)
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"（No  trial message) 
 ```{r Paper n4 Experiment 1}
 df[[11]] <- read.csv(
   "../2_Raw_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp1_raw.csv"
@@ -790,8 +860,9 @@ df[[11]] <- read.csv(
       type == "match" ~ "Matching",
       type == "nonmatch" ~ "Nonmatching"
     ),
-    blocktype = blocktype,
-    Origin_Identity = label,
+    Blocktype = blocktype,
+    Label_Identity = label,
+    Origin_Identity = shape,
     RT_ms = as.numeric(latency),
     RT_sec = RT_ms / 1000,
     ACC = as.numeric(correct)
@@ -812,7 +883,7 @@ df[[11]] <- read.csv(
     ),
   ) %>%
   dplyr::select(
-    Subject, Matching, Origin_Identity, English_Identity, Standarlized_Identity, RT_ms, RT_sec, ACC, blocktype
+    Subject, Matching, Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity, RT_ms, RT_sec, ACC, Blocktype
   ) %>%
   dplyr::arrange(
     Subject
@@ -823,6 +894,7 @@ summary(df[[11]])
 write.csv(x = df[[11]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp1_Clean.csv")
 ```
 
+# Marius Golubickis_2021_AP
 ## Experiment 2 (Identity = 3)
 "Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
 ```{r Paper n4 Experiment 2}
@@ -836,7 +908,8 @@ df[[12]] <- read.csv(
       type == "nonmatch" ~ "Nonmatching"
     ),
     Blocktype = blocktype,
-    Origin_Identity = label,
+    Label_Identity = label,
+    Origin_Identity = shape,
     RT_ms = as.numeric(latency),
     RT_sec = RT_ms / 1000,
     ACC = as.numeric(correct),
@@ -889,6 +962,7 @@ df[[13]] <- read.csv(
     Gender = Sex,
     Age = Age,
     Label = Word,
+    Label_Identity = Word,
     CloseShape,
     MediumShape,
     FarShape,
@@ -925,11 +999,16 @@ df[[13]] <- read.csv(
       English_Identity == "Friend" ~ "Close",
       English_Identity == "Stranger" ~ "Stranger",
     ),
+    Label_Identity == case_when(
+      Label == "Self" ~ "Self",
+      Label == "Friend" ~ "Close",
+      Label == "Stranger" ~ "Stranger",
+    ),
   ) %>%
   dplyr::select(
     Subject, Gender, Age, Handedness, First_Lanugage,
     Shape, Label, Matching, 
-    Origin_Identity, English_Identity, Standarlized_Identity, 
+    Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity, 
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
@@ -943,7 +1022,7 @@ write.csv(x = df[[13]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp1_Clean
 
 # Mayan Navon_2021
 ## Experiment 2 (Identity = 3)
-"Father", "Close", "Stranger"   →   "Close","Close","Stranger"（No  trial message)
+"Father", "Close", "Stranger"   →   "Close","Close","Stranger"（No  trial message) （No Label）
 ```{r Paper n13 Experiment 2}
 df[[14]] <- read.csv(
   "../2_Raw_Data/Navon_2021/Navon_2021_Exp2_raw.csv"
@@ -1011,7 +1090,7 @@ write.csv(x = df[[14]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp2_Clean
 
 # Mayan Navon_2021
 ## Experiment 3 (Identity = 3) 
-"Self", "Father", "Stranger"    →   "Self","Close","Stranger"（No  trial message)
+"Self", "Father", "Stranger"    →   "Self","Close","Stranger"（No  trial message) 
 ```{r Paper n13 Experiment 3}
 df[[15]] <- read.csv(
   "../2_Raw_Data/Navon_2021/Navon_2021_Exp3_raw.csv"
@@ -1027,6 +1106,9 @@ df[[15]] <- read.csv(
     Age = Age,
     Shape = Stimulus,
     Label = Word,
+    Label_Identity = Word,
+    Trial = MMTrialList.Sample,
+    
     CloseShape,
     MediumShape,
     FarShape,
@@ -1064,8 +1146,8 @@ df[[15]] <- read.csv(
     ),
   ) %>%
   dplyr::select(
-    Subject, Gender, Age, Handedness, First_Lanugage, 
-    Matching, Origin_Identity, English_Identity, Standarlized_Identity, Response, RT_ms, RT_sec, ACC
+    Subject, Gender, Age, Handedness, First_Lanugage, Shape, Label,
+    Matching, Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity, Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
     Subject
@@ -1093,7 +1175,8 @@ df[[16]] <- read.csv(
     Gender = Sex,
     Age = Age,
     Shape = Stimulus,
-    Word = Word,
+    Label = Word,
+    Label_Identity = Word,
     CloseShape,
     MediumShape,
     FarShape,
@@ -1132,8 +1215,8 @@ df[[16]] <- read.csv(
     ),
     ) %>%
   dplyr::select(
-    Subject, Gender, Age, Handedness, First_Lanugage, 
-    Shape, Word, Matching, Origin_Identity, English_Identity, Standarlized_Identity, Response, RT_ms, RT_sec, ACC
+    Subject, Gender, Age, Handedness, First_Lanugage, Shape, Label, 
+    Matching, Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity, Response, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::arrange(
     Subject
@@ -1766,7 +1849,8 @@ temp <- read.csv(
       ACC == "missed" ~ NA
     ),
     RT_sec = as.numeric(RT_sec),
-    RT_ms = RT_sec * 1000
+    RT_ms = RT_sec * 1000,
+    Age = as.numeric(Age)
   ) 
 
 Subject_ID <- temp %>% # nolint
