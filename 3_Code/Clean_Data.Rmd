@@ -2455,7 +2455,7 @@ df[[34]] <- read.csv(
     Subject,
     )
 
-names(df)[34] <- "Sui_2023_CC"
+names(df)[34] <- "Sui_2023_CC_Exp1"
 summary(df[[34]])
 write.csv(x = df[[34]], file = "../1_Clean_Data/Sui_2023_CC/Sui_2023_CC_Exp1_Clean.csv")
 ```
@@ -2542,28 +2542,30 @@ df[[35]] <- temp %>%
 
 rm(temp, Subject_ID)
 
-names(df)[35] <- "Hobbs_2023_PM"
+names(df)[35] <- "Hobbs_2023_PM_Exp1"
 summary(df[[35]])
 write.csv(x = df[[35]], file = "../1_Clean_Data/Hobbs_2023_PM/Hobbs_2023_PM_Exp1_Clean.csv")
 ```
 
 # Mcivor_2020_EJN 
 ## Experiment 1 (Identity = 2)
-"Self", "Other"   →   "Self","Stranger"
+"Self", "Other"   →   "Self","Stranger" (Practice to be Continue）
 ```{r Paper p45 Experiment 1}
 df[[36]] <- read.csv(
   "../2_Raw_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_Exp1_raw.csv"
   ) %>%
-  mutate(Running.SubTrial. = str_to_lower(Running.SubTrial.)) %>%
-  filter(Running.SubTrial. == "testphase"
+  dplyr::filter(
+    Running.SubTrial. == "Testphase",
   ) %>%
   dplyr::select(
     Subject = Subject,
     Block = Testphase.Cycle,
     Trial = Testphase.Sample,
+    #Trial_Type = Running.SubTrial.,
     Age = Age,
     Handedness = Handedness,
     Gender = Sex,
+    
     Happyshapeother = Happyshapeother,
     Happyshapeself = Happyshapeself,
     Neutralshapeother = Neutralshapeother,
@@ -2572,15 +2574,23 @@ df[[36]] <- read.csv(
     Sadshapeself = Sadshapeself,
     Othershape = Othershape,
     Selfshape = Selfshape,
-    Label = CellLabel,
-    Origin_Identity = Label2,
+    
+    CellLabel = CellLabel,
+    
+    Emotiveshape = Emotiveshape,
+    Shape = Emotiveshape,
+    #Practice_Label = Label,
+    Label = Label2,
+    Label_Identity = Label2,
+    
+    Origin_Identity = Emotiveshape,
     Response = ITI2.RESP,
     Matching = CellLabel,
     RT_ms = ITI2.RT,
     ACC = ITI2.ACC,
     ) %>%
   dplyr::mutate(
-    MatchingExtra = str_extract(Label, "(?<=self|other)(match|nonmatch)"),
+    MatchingExtra = str_extract(CellLabel, "(?<=self|other)(match|nonmatch)"),
     # 将提取的匹配类型转换为"Matching"或"Nonmatching"
     Matching = case_when(
       MatchingExtra == "match" ~ "Matching",
@@ -2589,27 +2599,66 @@ df[[36]] <- read.csv(
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
-    ) %>%
+    #Label = ifelse(grepl("Learningphase1", Trial_Type), Practice_Label, Label_Identity)
+    
+  )%>%
+  dplyr::rowwise() %>%
+  dplyr::mutate(
+    Origin_Identity = case_when(
+      Emotiveshape == Happyshapeself ~ "Self",
+      Emotiveshape == Neutralshapeself ~ "Self",
+      Emotiveshape == Sadshapeself ~ "Self",
+      
+      Emotiveshape == Happyshapeother ~ "Other",
+      Emotiveshape == Neutralshapeother ~ "Other",
+      Emotiveshape == Sadshapeother ~ "Other",
+      
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  dplyr::ungroup()%>%
+  
   dplyr::mutate(
     Subjcet = as.numeric(Subject),
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    
+    Emotion = case_when(
+      Shape %in% Happyshapeother ~ "Happy",
+      Shape %in% Happyshapeself ~ "Happy",
+      Shape %in% Neutralshapeother ~ "Neutral",
+      Shape %in% Neutralshapeself ~ "Neutral",
+      Shape %in% Sadshapeother ~ "Sad",
+      Shape %in% Sadshapeself ~ "Sad",
+      TRUE ~ NA_character_
+    ),
+    
+    # Origin_Identity = case_when(
+    #   Shape %in% Happyshapeself | Shape %in% Neutralshapeself | Shape %in% Sadshapeself ~ "Self",
+    #   Shape %in% Happyshapeother | Shape %in% Neutralshapeother | Shape %in% Sadshapeother ~ "Stranger",
+    #   TRUE ~ NA_character_
+    # ),
     English_Identity = Origin_Identity,
     Standarlized_Identity = case_when(
       English_Identity == "Self" ~ "Self",
       English_Identity == "Other" ~ "Stranger",
+    ),          
+    Label_Identity = case_when(
+      Label_Identity == "Self" ~ "Self",
+      Label_Identity == "Other" ~ "Stranger",
     ),
+  
     ) %>%
   dplyr::select(
     Subject, Block, Trial, Age, Gender, Handedness,
-    Label, Origin_Identity, English_Identity, Standarlized_Identity,
+    Shape, Label, Emotion, Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity,
     Matching, Response, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::arrange(
     Subject, Block, Trial
     )
-names(df)[36] <- "Mcivor_2020_EJN"
+names(df)[36] <- "Mcivor_2020_EJN_Exp1"
 summary(df[[36]])
 write.csv(x = df[[36]], file = "../1_Clean_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_Exp1_Clean.csv")
 ```
