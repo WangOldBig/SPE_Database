@@ -1437,7 +1437,7 @@ write.csv(x = df[[20]], file = "../1_Clean_Data/Xu_2021_CP/Xu_2021_CP_Exp1_Clean
 
 # Hu_2023  
 ## Experiment 1 (Identity = 2)
-"Self", "Stranger"    →   "Self","Stranger"(to be  Continue) [Identity-Label]
+"Self", "Stranger"    →   "Self","Stranger"
 ```{r Paper s2 Experiment 1}
 df[[21]] <- read.csv(
   "../2_Raw_Data/Hu_2023/Hu_2023_Exp1_raw.csv"
@@ -1454,8 +1454,10 @@ df[[21]] <- read.csv(
     Gender = Sex,
     Shape = Target,
     Label = Label,
+    Morality = morality,
+    Label_Identity = identity,
     Matching = CorrectAnswer,
-    Origin_Identity = identity,
+    Origin_Identity = Shape,
     RT = Target.RT,
     ACC = Target.ACC,
     Block = BlockList.Sample,
@@ -1466,9 +1468,24 @@ df[[21]] <- read.csv(
       Matching == "m" ~ "Matching",
       Matching == "k" ~ "Nonmatching"
     ),
+    Label_Identity = case_when(
+      Label_Identity == "self" ~ "Self",
+      Label_Identity == "other" ~ "Stranger"
+    ),
+    
     Origin_Identity = case_when(
-      Origin_Identity == "self" ~ "Self",
-      Origin_Identity == "other" ~ "Stranger"
+      Origin_Identity == "Goodother" ~ "Stranger",
+      Origin_Identity == "Normalother" ~ "Stranger",
+      Origin_Identity == "Badother" ~ "Stranger",
+      
+      Origin_Identity == "Goodself" ~ "Self",
+      Origin_Identity == "Normalself" ~ "Self",
+      Origin_Identity == "Badself" ~ "Self",
+    ),
+    English_Identity = Origin_Identity,
+    Standarlized_Identity = case_when(
+      English_Identity == "Self" ~ "Self",
+      English_Identity == "Stranger" ~ "Stranger",
     ),
     RT_ms = as.numeric(RT),
     RT_sec = RT_ms / 1000,
@@ -1481,16 +1498,11 @@ df[[21]] <- read.csv(
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
-    English_Identity = Origin_Identity,
-    Standarlized_Identity = case_when(
-      English_Identity == "Self" ~ "Self",
-      English_Identity == "Stranger" ~ "Stranger",
-    ),
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness, 
-    Block, Trial, Shape, Label, Matching, 
-    Origin_Identity, English_Identity, Standarlized_Identity, RT_ms, RT_sec, ACC
+    Block, Trial, Shape, Label, Morality, Matching, 
+    Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
     Subject, Block, Trial
@@ -2665,7 +2677,7 @@ write.csv(x = df[[36]], file = "../1_Clean_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_
 
 # Liang_2022_HBM
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No  trial message)
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No  trial message) (No Label message)
 ```{r Paper t3 Experiment 1 _ dlpfc}
 df[[37]] <- read.csv(
   "../2_Raw_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1_raw.csv"
@@ -2692,6 +2704,7 @@ df[[37]] <- read.csv(
       Origin_Identity == "friend" ~ "Friend",
       Origin_Identity == "stranger" ~ "Stranger",
     ),
+    
     Matching = case_when(
       Matching == 1 ~ "Matching",
       Matching == 0 ~ "Nonmatching"
@@ -2751,6 +2764,7 @@ df[[38]] <- read.csv(
     Response = respkeymap,
     RT_ms = reac_time,
     ACC = accuracy,
+    Delay = delay1,
   ) %>%
   dplyr::mutate(
     Matching = case_when(
@@ -2781,7 +2795,7 @@ df[[38]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Block, Trial, Age, Handedness, First_Language, Education, Countryself, Countryparents, 
-    Shape, Label, Matching, Origin_Identity, English_Identity, Standarlized_Identity,
+    Shape, Label, Delay, Matching, Origin_Identity, English_Identity, Standarlized_Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
@@ -4573,7 +4587,7 @@ write.csv(x = df[[66]], file = "../1_Clean_Data/Smith_2024_Cortex/Smith_2024_Cor
 
 # Liang_2022_HBM
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No  trial message)
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No  trial message)(No  trial message) 
 ```{r Paper t3 Experiment 1 _ sham}
 df[[67]] <- read.csv(
   "../2_Raw_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1_raw.csv"
@@ -4637,7 +4651,7 @@ write.csv(x = df[[67]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Ex
 
 # Liang_2022_HBM
 ## Experiment 1 (Identity = 3)
-"Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No  trial message)
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No  trial message)(No  trial message) 
 ```{r Paper t3 Experiment 1 _ psts}
 df[[68]] <- read.csv(
   "../2_Raw_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1_raw.csv"

@@ -308,7 +308,6 @@ all_d <- df %>%
   mutate(Identity = str_remove(Identity, "d_"))
 ```
 
-
 ```{r}
 ggplot(all_d, aes(x = Cohens_d, y = Identity, fill = Identity)) +
   geom_density_ridges(alpha = 0.7, scale = 1.2) +
@@ -375,17 +374,17 @@ cohen_d_by_source <- df %>%
   mutate(Identity = str_replace(Identity, "Cohens_d_", "")) %>%
   drop_na(Cohens_d)
 
-# # 绘制山脊图
-# ggplot(cohen_d_by_source, aes(x = Cohens_d, y = Identity, fill = Identity)) +
-#   geom_density_ridges(alpha = 0.8, scale = 1.2) +
-#   geom_vline(xintercept = 0, linetype = "dashed", color = "gray40") +
-#   theme_ridges() +
-#   labs(
-#     title = "Distribution of Cohen's d (Self vs. Other) across Articles",
-#     x = "Cohen's d (RT: Self - Other)",
-#     y = "Identity"
-#   ) +
-#   theme(legend.position = "none")
+# 绘制山脊图
+ggplot(cohen_d_by_source, aes(x = Cohens_d, y = Identity, fill = Identity)) +
+  geom_density_ridges(alpha = 0.8, scale = 1.2) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray40") +
+  theme_ridges() +
+  labs(
+    title = "Distribution of Cohen's d (Self vs. Other) across Articles",
+    x = "Cohen's d (RT: Self - Other)",
+    y = "Identity"
+  ) +
+  theme(legend.position = "none")
 
 
 ```

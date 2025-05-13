@@ -64,6 +64,10 @@ Contributors
 - Tuo Liu(Goethe University Frankfurt)
 - Mateusz Wozniak (Social Cognition in Human-Robot Interaction Group, Italian Institute of Technology; Social Mind Center, Department of Cognitive Science, Central European University; Cognition and Philosophy Lab, Department of Philosophy, Monash University; Institute of Psychology, Jagiellonian University)
 
+## Data Version
+- Version 1.0.0.
+- 
+
 ## Folder structure
 
 ```
