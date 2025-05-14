@@ -115,6 +115,32 @@ read.mat <- function(list) {
 }
 ```
 
+## Two_Shape_Identity_Tools
+```{r Shape_Identity小工具}
+Two_Shape_Identity_Tools <- function(data, shape_col, id1_col, id2_col, s1_col, s2_col) {
+  # 确保列名正确
+  if (!all(c(shape_col, id1_col, id2_col, s1_col, s2_col) %in% names(data))) {
+    stop("指定的列名在数据集中不存在，请检查变量名称。")
+  }
+  
+  # 逐行判断 Shape_Identity
+  data <- data %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(
+      Origin_Identity = case_when(
+        !!sym(shape_col) == !!sym(s1_col) ~ !!sym(id1_col),
+        !!sym(shape_col) == !!sym(s2_col) ~ !!sym(id2_col),
+        TRUE ~ NA_character_
+      )
+    ) %>%
+    dplyr::ungroup()
+  
+  return(data)
+}
+
+```
+
+
 ## 人口统计学变量筛选工具（年龄、性别）
 ### v1
 ```{r}
@@ -2818,7 +2844,9 @@ df_Ps1_E1 <- read.csv(
     Subject = Participant.Public.ID,
     Trial = Trial.Number,
     Match = P_Orginal,
+    Face = Model,
     Label = Label,
+    Label_Identity = Label,
     Origin_Identity = P_Group,
     Response = Response,
     RT_ms = Reaction.Time,
@@ -2828,6 +2856,10 @@ df_Ps1_E1 <- read.csv(
     Matching = case_when(
       Match == "JA" ~ "Matching",
       Match == "NEIN" ~ "Nonmatching"
+    ),
+    Label_Identity == case_when(
+      Label_Identity == "Me" ~ "Self",
+      Label_Identity == "Stranger" ~ "Stranger",
     ),
     English_Identity = case_when(
       Origin_Identity == "User" ~ "Self",
@@ -2872,9 +2904,11 @@ df[[39]] <- df_Ps1_E1 %>%
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    
   ) %>%
   dplyr::select(
-    Subject, Trial, Matching, Label, Response, Origin_Identity, English_Identity, Standarlized_Identity, RT_ms, RT_sec, ACC
+    Subject, Trial, Matching, Face, Label, Response, 
+    Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
     Subject, Trial
@@ -2889,7 +2923,7 @@ write.csv(x = df[[39]], file = "../1_Clean_Data/Liu_2023_CP/Liu_2023_CP_Exp1_Cle
 
 # Orellana-Corrales_2021_EP
 ## Experiment 1 (Identity = 2)
-"Self", "Stranger"    →   "Self","Stranger"
+"Self", "Stranger"    →   "Self","Stranger"(Practice Need Code)
 ```{r Paper n14 Experiment 1}
 df[[40]] <- read.csv(
 "../2_Raw_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp1_raw.csv"
@@ -2902,17 +2936,38 @@ df[[40]] <- read.csv(
     Block = manipCheck.Cycle,
     Trial = manipCheck.Sample,
     Age = Age,
+    S1 = S1,
+    S2 = S2,
+    ID1 = ID1,
+    ID2 = ID2,
     Handedness = Handedness,
     Gender = Sex,
     Condition = Condition,
     Matching = match,
     Shape = shape,
-    Label = label,    
+    Label = label,
+    Label_Identity = label,
     Origin_Identity = label,
     Response = match03.RESP,
     RT_ms = match03.RT,
     ACC = match03.ACC,
   ) %>%
+  #   dplyr::rowwise() %>% #使用原始代码清理
+  #     dplyr::mutate(
+  #       Shape_Identity = case_when(
+  #         Shape == S1 ~ ID1, # Shape 属于 S1，则使用 ID1
+  #         Shape == S2 ~ ID2, # Shape 属于 S2，则使用 ID2
+  #         TRUE ~ NA_character_ # 如果都不匹配，返回 NA
+  #       )
+  # ) %>%
+  # dplyr::ungroup()%>%
+  Two_Shape_Identity_Tools(   #使用函数清理
+    shape_col = "Shape", 
+    id1_col = "ID1", 
+    id2_col = "ID2", 
+    s1_col = "S1", 
+    s2_col = "S2"
+  )%>%
   dplyr::mutate(
     Matching = case_when(
       Matching == "match" ~ "Matching",
@@ -2920,6 +2975,10 @@ df[[40]] <- read.csv(
     ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
+    Label_Identity = case_when(
+      Label_Identity == "Fremder" ~ "Stranger",
+      Label_Identity == "Ich" ~ "Self",
+    ),
     English_Identity = case_when(
       Origin_Identity == "Fremder" ~ "Stranger",
       Origin_Identity == "Ich" ~ "Self",
@@ -2941,14 +3000,14 @@ df[[40]] <- read.csv(
   dplyr::select(
     Subject, Block, Trial, 
     Age, Gender, Handedness, 
-    Shape, Label, Origin_Identity, English_Identity, Standarlized_Identity, Matching,  
+    Shape, Label, Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity, Matching,  
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
     Subject, Block, Trial  
   )
 
-names(df)[40] <- "Orellana-Corrales_2021_EP"
+names(df)[40] <- "Orellana-Corrales_2021_EP_Exp1"
 summary(df[[40]])
 write.csv(x = df[[40]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp1_Clean.csv")
 ```
