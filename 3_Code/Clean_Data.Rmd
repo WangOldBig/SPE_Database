@@ -115,7 +115,7 @@ read.mat <- function(list) {
 }
 ```
 
-## Two_Shape_Identity_Tools
+## Two_Shape_Identity_Tools  (Testing)
 ```{r Shape_Identity小工具}
 Two_Shape_Identity_Tools <- function(data, shape_col, id1_col, id2_col, s1_col, s2_col) {
   # 确保列名正确
@@ -2923,7 +2923,7 @@ write.csv(x = df[[39]], file = "../1_Clean_Data/Liu_2023_CP/Liu_2023_CP_Exp1_Cle
 
 # Orellana-Corrales_2021_EP
 ## Experiment 1 (Identity = 2)
-"Self", "Stranger"    →   "Self","Stranger"(Practice Need Code)
+"Self", "Stranger"    →   "Self","Stranger"(Practice Need Code) (匹配的条件对不上)
 ```{r Paper n14 Experiment 1}
 df[[40]] <- read.csv(
 "../2_Raw_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp1_raw.csv"
@@ -3156,6 +3156,7 @@ df[[43]] <- read.csv(
     Matching = Label,
     Shape = Target,
     Label = Label,
+    Label_Identity = Label,
     Origin_Identity = Shape,
     Response = Target.RESP,
     RT_ms = Target.RT,
@@ -3170,6 +3171,11 @@ df[[43]] <- read.csv(
     Matching = case_when(
       Matching == Origin_Identity ~ "Matching",
       Matching != Origin_Identity ~ "Nonmatching"),
+    Label_Identity = case_when(
+      Label_Identity == "Ikzelf" ~ "Self",
+      Label_Identity == "Bekende" ~ "Friend",
+      Label_Identity == "Vreemde" ~ "Stranger"
+    ),
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
   ) %>%
@@ -3190,7 +3196,7 @@ df[[43]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Block, Trial,
-    Shape, Label, Matching, Origin_Identity, English_Identity, Standarlized_Identity,
+    Shape, Label, Matching, Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity,
     Response, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::arrange(
