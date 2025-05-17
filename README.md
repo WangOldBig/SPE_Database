@@ -65,8 +65,35 @@ Contributors
 - Mateusz Wozniak (Social Cognition in Human-Robot Interaction Group, Italian Institute of Technology; Social Mind Center, Department of Cognitive Science, Central European University; Cognition and Philosophy Lab, Department of Philosophy, Monash University; Institute of Psychology, Jagiellonian University)
 
 ## Data Version
-- Version 1.0.0.
-- 
+### Version 0.1.2 — 2025-06-16
+*New features/changes*
+* [Feature 1]: [Brief description of the new feature or change].
+* [Feature 2]: [Brief description of the new feature or change].
+* [Feature 3]: [Brief description of the new feature or change].
+
+*Bugs/glitches discovered after the release*
+* [Bug 1]: [Brief description of the bug and its impact] (#[Issue Number]).
+* [Bug 2]: [Brief description of the bug and its impact] (#[Issue Number]).
+
+---
+### Version 0.1.0  — 2025-05-16
+*New features/changes*
+* [Feature 1]: [Brief description of the new feature or change].
+* [Feature 2]: [Brief description of the new feature or change].
+* [Feature 3]: [Brief description of the new feature or change].
+  
+*Bugs/glitches discovered after the release*
+* [Bug 1]: [Brief description of the bug and its impact] (#[Issue Number]).
+* [Bug 2]: [Brief description of the bug and its impact] (#[Issue Number]).
+
+---
+### Unreleased
+*Planned*  
+  * [Planned Feature 1]: [Brief description of the planned feature or improvement].
+  * [Planned Feature 2]: [Brief description of the planned feature or improvement].
+
+
+
 
 ## Folder structure
 
