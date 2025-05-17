@@ -65,32 +65,38 @@ Contributors
 - Mateusz Wozniak (Social Cognition in Human-Robot Interaction Group, Italian Institute of Technology; Social Mind Center, Department of Cognitive Science, Central European University; Cognition and Philosophy Lab, Department of Philosophy, Monash University; Institute of Psychology, Jagiellonian University)
 
 ## Data Version
+
 ### Version 0.1.2 — 2025-06-16
-*New features/changes*
-* [Feature 1]: [Brief description of the new feature or change].
-* [Feature 2]: [Brief description of the new feature or change].
-* [Feature 3]: [Brief description of the new feature or change].
 
-*Bugs/glitches discovered after the release*
-* [Bug 1]: [Brief description of the bug and its impact] (#[Issue Number]).
-* [Bug 2]: [Brief description of the bug and its impact] (#[Issue Number]).
+**New features/changes**  
+* **[Data Filtering]**: Performed initial data filtering using R, retaining behavioral variables required for calculating the Self-Prioritization Effect (SPE), including Matching, Shape/Face/Voice, Label, Identity (Shape_Identity standardized as: NonPerson, Self, Close, Acquaintance, Celebrity, Stranger), RT_ms, and ACC. Demographic variables (e.g., gender, age, handedness) were also retained when available.  
+* **[SPE Analysis]**: Conducted exploratory analysis of SPE using Clean_Data, calculating sequential dependency effects and analyzing the impact of different Identity categories on RT and ACC.  
+* **[Visualization]**: Visualized the distribution of SPE for each participant, providing a clear view of SPE performance across different Identity categories.  
 
----
-### Version 0.1.0  — 2025-05-16
-*New features/changes*
-* [Feature 1]: [Brief description of the new feature or change].
-* [Feature 2]: [Brief description of the new feature or change].
-* [Feature 3]: [Brief description of the new feature or change].
-  
-*Bugs/glitches discovered after the release*
-* [Bug 1]: [Brief description of the bug and its impact] (#[Issue Number]).
-* [Bug 2]: [Brief description of the bug and its impact] (#[Issue Number]).
+**Bugs/glitches discovered after the release**  
+* **[Insufficient Preprocessing]**: Data filtering was performed rather than full preprocessing, which may lead to invalid values during data exploration (e.g., ACC values may include -1 for no response, 2 for incorrect key press). Users must perform their own preprocessing based on their analysis goals. Details of each article's Clean_Data are available in the Codebook within the Clean_Data folder.  
 
 ---
-### Unreleased
-*Planned*  
-  * [Planned Feature 1]: [Brief description of the planned feature or improvement].
-  * [Planned Feature 2]: [Brief description of the planned feature or improvement].
+
+### Version 0.1.0 — 2025-05-16
+
+**New features/changes**  
+* **[Data Structure Setup]**: Established the initial data structure of the SPE database, including behavioral and demographic data.  
+* **[Data Integration]**: Integrated raw data from multiple published articles, including behavioral variables (e.g., RT, ACC) and demographic variables.  
+* **[README File]**: Provided a basic README file explaining the database structure and usage guidelines.  
+
+**Bugs/glitches discovered after the release**  
+* **[Inconsistent Variable Names]**: Some raw data files contained inconsistent variable names, causing issues during data integration.  
+* **[Missing Demographic Variables]**: Certain articles lacked demographic variables, resulting in incomplete metadata.  
+
+---
+
+### Unreleased  
+
+**Planned**  
+* **[Label_Identity Cleanup]**: Re-clean the Label_Identity variable from the raw data for more accurate classification.  
+* **[Metadata in JSON Format]**: Transition metadata storage from .md to .json format for each article, providing a more structured and machine-readable format.  
+
 
 
 
