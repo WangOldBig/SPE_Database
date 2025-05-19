@@ -8,11 +8,42 @@ output: html_document
 # Tools in coding
 ## Variation 变量名称查询工具
 ```{r}
+# 读取数据
+data <- read.csv("../2_Raw_Data/Martinez-Perez_2024_CC/Martinez-Perez_2024_CC_Exp2_raw.csv")
+
+# 创建空列表保存结果
+variable_summary <- list()
+
+# 遍历数据框的每一列
+for (var_name in names(data)) {
+  var_data <- data[[var_name]]
+  
+  # 判断变量类型
+  if (is.numeric(var_data)) {
+    summary_value <- paste0("Range: ", min(var_data, na.rm = TRUE), " - ", max(var_data, na.rm = TRUE))
+  } else if (is.factor(var_data) || is.character(var_data)) {
+    summary_value <- paste0("Unique values: ", paste(unique(var_data), collapse = ", "))
+  } else {
+    summary_value <- "Unknown type"
+  }
+
+  # 将结果添加到列表
+  variable_summary[[var_name]] <- summary_value
+}
+
+# 将结果转换为数据框并输出
+variable_summary_df <- data.frame(Variable = names(variable_summary), Description = unlist(variable_summary))
+print(variable_summary_df)
+rm(variable_summary,variable_summary_df,summary_value,var_data,var_name)
+```
+
+
+```{r}
 # 设置工作目录，即文件所在的文件夹
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Hu_2023/Hu_2023_Exp1_raw.csv")
+data <- read.csv("../2_Raw_Data/Martinez-Perez_2024_CC/Martinez-Perez_2024_CC_Exp2_raw.csv")
 
 # 打印变量名称
 print(names(data))
@@ -3355,14 +3386,14 @@ df[[45]] <- read.csv(
     Subject, Block, Trial
   )
 
-names(df)[45] <- "Feldborg_2021_ERPH"
+names(df)[45] <- "Feldborg_2021_ERPH_Exp1"
 summary(df[[45]])
 write.csv(x = df[[45]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1_Clean.csv")
 ```
 
 # Martinez-Perez_2024_CC
 ## Experiment 2 (Identity = 3)
-"self", "best friend","stranger"    →   "Self","Close","Stranger"
+"self", "best friend","stranger"    →   "Self","Close","Stranger" (Practice to be continue)
 ```{r Paper t27 Experiment 2}
 df[[46]] <- read.csv(
   "../2_Raw_Data/Martinez-Perez_2024_CC/Martinez-Perez_2024_CC_Exp2_raw.csv"
@@ -3375,14 +3406,29 @@ df[[46]] <- read.csv(
     Age = Edad,
     Gender = Sexo,
     Handedness = Mano,
+    Block = bloqueExperimental.Cycle,
+    Trial = bloqueExperimental.Sample,
     Shape = Figura,
+    Self_Shape = tuF,
+    Stranger_Shape = extranoF,
+    Friend_Shape = amigoF,
     Label = Etiqueta,
-    Origin_Identity = Etiqueta,
+    Label_Identity = Etiqueta,
     Matching = TipoEnsayo,
     Response = Blanco1.RESP,
     RT_ms = Blanco1.RT,
     ACC = Blanco1.ACC,
   ) %>%
+  dplyr::rowwise() %>%
+  dplyr::mutate(
+    Origin_Identity = case_when(
+      Shape == Self_Shape ~ "Self",
+      Shape == Stranger_Shape ~ "Stranger",
+      Shape == Friend_Shape ~ "Friend",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  dplyr::ungroup()%>%
   dplyr::mutate(
     Matching = case_when(
       Matching == "Matched" ~ "Matching",
@@ -3392,10 +3438,15 @@ df[[46]] <- read.csv(
     RT_ms = as.numeric(RT_ms),
     RT_sec = RT_ms / 1000,
     RT_sec = as.numeric(RT_sec),
+    Label_Identity = case_when(
+      Label_Identity == "tu" ~ "Self",
+      Label_Identity == "extrano" ~ "Stranger",
+      Label_Identity == "amigo" ~ "Friend",
+    ),
     English_Identity = case_when(
-      Origin_Identity == "tu" ~ "Self",
-      Origin_Identity == "extrano" ~ "Stranger",
-      Origin_Identity == "amigo" ~ "Friend",
+      Origin_Identity == "Self" ~ "Self",
+      Origin_Identity == "Stranger" ~ "Stranger",
+      Origin_Identity == "Friend" ~ "Friend",
     ),
     Standarlized_Identity = case_when(
       English_Identity == "Self" ~ "Self",
@@ -3403,11 +3454,17 @@ df[[46]] <- read.csv(
       English_Identity == "Stranger" ~ "Stranger",
     ),
   ) %>%
+  dplyr::select(
+    Subject, Age, Gender, Handedness,
+    Block, Trial, Shape, Label, Matching,
+    Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity,
+    Response, RT_ms, RT_sec, ACC
+  ) %>%
   dplyr::arrange(
-    Subject, Origin_Identity
+    Subject, Block, Trial
     )
 
-names(df)[46] <- "Martinez-Perez_2024_CC"
+names(df)[46] <- "Martinez-Perez_2024_CC_Exp2"
 summary(df[[46]])
 write.csv(x = df[[46]], file = "../1_Clean_Data/Martinez-Perez_2024_CC/Martinez-Perez_2024_CC_Exp2_Clean.csv")
 ```
@@ -3426,6 +3483,7 @@ df[[47]] <- read.csv(
     Handedness = Handedness,
     Shape = Stimulus,
     Label = Label,
+    Label_Identity = Label,
     Origin_Identity = Shape,
     Matching = Match,
     RT_ms = Target.RT,
@@ -3447,6 +3505,11 @@ df[[47]] <- read.csv(
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    Label_Identity = case_when(
+      Label_Identity == "self" ~ "Self",
+      Label_Identity == "friend" ~ "Close",
+      Label_Identity == "stranger" ~ "Stranger",
+    ),
     English_Identity = Origin_Identity,
     Standarlized_Identity = case_when(
       English_Identity == "Self" ~ "Self",
@@ -3456,14 +3519,14 @@ df[[47]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender, Handedness,
-    Shape, Label, Origin_Identity, English_Identity, Standarlized_Identity, Matching, 
+    Shape, Label, Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity, Matching, 
     Response, RT_ms, RT_sec, ACC,
   ) %>%
   dplyr::arrange(
     Subject, Shape, Label, Matching, 
   )
 
-names(df)[47] <- "Wang_2016_EPHPP"
+names(df)[47] <- "Wang_2016_EPHPP_Exp1"
 summary(df[[47]])
 write.csv(x = df[[47]], file = "../1_Clean_Data/Wang_2016_EPHPP/Wang_2016_EPHPP_Exp1_Clean.csv")
 ```
