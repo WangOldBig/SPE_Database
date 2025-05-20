@@ -3531,9 +3531,9 @@ summary(df[[47]])
 write.csv(x = df[[47]], file = "../1_Clean_Data/Wang_2016_EPHPP/Wang_2016_EPHPP_Exp1_Clean.csv")
 ```
 
-# Sui_2014 (Unpublish)
+# Sui_2014 (Unpublish)(Matching 分布不对，没明白Session和Group的区别)
 ## Experiment 1 (Identtiy = 3)
-"Self", "Friend", "Stranger"    →   "Self","Close","Stranger"
+"Self", "Friend", "Stranger"    →   "Self","Close","Stranger" (No Trial Message) (Practice Unknown)
 ```{r Paper s3 Experiment 1}
 df[[48]] <- read.csv(
   "../2_Raw_Data/Sui_2014/Sui_2014_Exp1_raw.csv"
@@ -3547,18 +3547,20 @@ df[[48]] <- read.csv(
     Shape = SelfRelated,
     Origin_Identity = SelfRelated,
     Label = Question, 
+    Label_Identity = Question, 
     RT_ms = RT,
     ACC = ACC,
   ) %>%
   dplyr::mutate(
-    Label = case_when(
-      Label == "You" ~ "Self",
-      TRUE ~ Label),
     Matching = case_when(
       Shape == Label ~ "Matching",
       Shape != Label ~ "Nonmatching"),
     RT_sec = RT_ms / 1000,
-    Identity = Shape
+    Label_Identity = case_when(
+      Label_Identity == "You" ~ "Self",
+      Label_Identity == "Friend" ~ "Close",
+      Label_Identity == "Stranger" ~ "Stranger",
+    ),
   ) %>%
   dplyr::mutate(
     Subject = as.numeric(Subject),
@@ -3578,17 +3580,19 @@ df[[48]] <- read.csv(
   ) %>%
   dplyr::select(
     Subject, Age, Gender,  
-    Matching, Origin_Identity, English_Identity, Standarlized_Identity, Session, RT_ms, RT_sec, ACC
+    Group, Session, Matching, Shape , Label, 
+    Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity,
+    RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Origin_Identity, English_Identity, Standarlized_Identity, Session
+    Subject, Group, Session
   )
 
-names(df)[48] <- "Sui_2014"
+names(df)[48] <- "Sui_2014_Exp1"
 summary(df[[48]])
 write.csv(x = df[[48]], file = "../1_Clean_Data/Sui_2014/Sui_2014_Exp1_Clean.csv")
 ```
@@ -3624,6 +3628,11 @@ df[[49]] <- read.mat(
       Shape == Label ~ "Matching",
       Shape != Label ~ "Nonmatching"
       ),
+    Label_Identity = case_when(
+      Label == 1 ~ "Self",
+      Label == 2 ~ "Close", #Origin Label = Friend
+      Label == 3 ~ "Stranger"
+    ),
     Origin_Identity = case_when(
       Shape == 1 ~ "Self",
       Shape == 2 ~ "Friend",
@@ -3652,19 +3661,20 @@ df[[49]] <- read.mat(
     Gender = sex,
   ) %>%
   dplyr::select(
-    Subject, Age, Gender, Handedness, Matching, Origin_Identity, English_Identity, Standarlized_Identity, Session, RT_ms, RT_sec, ACC
+    Subject, Age, Gender, Handedness, 
+    Matching, Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity, Session, RT_ms, RT_sec, ACC
   ) %>%
   dplyr::mutate(
     RT_sec = round(RT_sec, 3),
     RT_ms = round(RT_ms, 0)
   ) %>%
   dplyr::arrange(
-    Subject, Matching, Origin_Identity, English_Identity, Standarlized_Identity, Session
+    Subject, Session
   )
 
 rm(list_mat_e1, mat_data)
 
-names(df)[49] <- "Sui_2015"
+names(df)[49] <- "Sui_2015_Exp1"
 summary(df[[49]])
 write.csv(x = df[[49]], file = "../1_Clean_Data/Sui_2015/Sui_2015_Exp1_Clean.csv")
 ```
@@ -3696,6 +3706,11 @@ df[[50]] <- read.mat(list = list_mat_e2) %>%
     Matching = case_when(
       Shape == Label ~ "Matching",
       Shape != Label ~ "Nonmatching"
+    ),
+    Label_Identity = case_when(
+      Label == 1 ~ "Self",
+      Label == 2 ~ "Close", #Origin Label = Friend
+      Label == 3 ~ "Stranger"
     ),
     Origin_Identity = case_when(
       Shape == 1 ~ "Self",
