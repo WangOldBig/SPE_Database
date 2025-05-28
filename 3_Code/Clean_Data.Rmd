@@ -4230,7 +4230,7 @@ write.csv(x = df[[57]], file = "../1_Clean_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp2
 
 # Lee_2023_Cognition
 ## Experiment 1 (Identity = 2)
-"Self", "Friend","Other"   →   "Self","Close","Stranger" (NO Trial Level Data)
+"Self", "Friend","Other"   →   "Self","Close","Stranger" (No Trial Level Data)
 ```{r}
 df[[58]] <- read.csv(
   "../2_Raw_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp1_raw.csv"
@@ -4247,7 +4247,7 @@ df[[58]] <- read.csv(
     Block = BlockNumber,
     
     Shape = shape,
-    Label = Label,
+    Label = word,
     Response = response,
     Origin_Identity = Association,
     Matching = condition,
