@@ -4230,8 +4230,8 @@ write.csv(x = df[[57]], file = "../1_Clean_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp2
 
 # Lee_2023_Cognition
 ## Experiment 1 (Identity = 2)
-"Self", "Friend","Other"   →   "Self","Close","Stranger" (No Trial Level Data)
-```{r}
+"Self", "Friend","Other"   →   "Self","Close","Stranger" (No Trial Message)
+```{r Paper u5 Experiment 1}
 df[[58]] <- read.csv(
   "../2_Raw_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp1_raw.csv"
   ) %>%
@@ -4245,10 +4245,10 @@ df[[58]] <- read.csv(
     Education = education,
     Handedness = handedness,
     Block = BlockNumber,
-    
-    Shape = shape,
+    Shape = stim1,
     Label = word,
     Response = response,
+    Label_Identity = stim2,
     Origin_Identity = Association,
     Matching = condition,
     RT_ms = RT,
@@ -4267,6 +4267,12 @@ df[[58]] <- read.csv(
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    Label_Identity = case_when(
+      Label_Identity == "you" ~ "You",
+      Label_Identity == "friend" ~ "Friend",
+      Label_Identity == "happy" ~ "NonPerson",
+      Label_Identity == "neutral" ~ "NonPerson",
+    ),
     English_Identity = case_when(
       Origin_Identity == "you" ~ "You",
       Origin_Identity == "friend" ~ "Friend",
@@ -4280,7 +4286,7 @@ df[[58]] <- read.csv(
     ) %>%
   dplyr::select(
     Subject, Age, Gender, Education, Handedness, Block,
-    Origin_Identity, English_Identity, Standarlized_Identity,
+    Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity,
     Matching, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::arrange(
@@ -4294,8 +4300,8 @@ write.csv(x = df[[58]], file = "../1_Clean_Data/Lee_2023_Cognition/Lee_2023_Cogn
 
 # Lee_2023_Cognition
 ## Experiment 2 (Identity = 2)
-"Self", "Friend","Other"   →   "Self","Close","Stranger" (NO Trial Level Data)
-```{r}
+"Self", "Friend","Other"   →   "Self","Close","Stranger" (NO Trial Message)
+```{r Paper u5 Experiment 2}
 df[[59]] <- read.csv(
   "../2_Raw_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp2_raw.csv"
   ) %>%
@@ -4307,9 +4313,10 @@ df[[59]] <- read.csv(
     Age = age,
     Gender = sex,
     Education = education,
-    Handedness = handedness,
+    Handedness = handedness, 
     Shape = stim1,
     Response = TaskType,
+    Label_Identity = stim2,
     Origin_Identity = Association,
     Matching = Condition,
     RT_ms = RT,
@@ -4328,6 +4335,10 @@ df[[59]] <- read.csv(
     RT_ms = as.numeric(RT_ms),
     RT_sec = as.numeric(RT_sec),
     ACC = as.numeric(ACC),
+    Label_Identity = case_when(
+      Label_Identity == "self" ~ "Self",
+      Label_Identity == "friend" ~ "Friend",
+    ),
     English_Identity = case_when(
       Origin_Identity == "self" ~ "Self",
       Origin_Identity == "friend" ~ "Friend",
@@ -4339,7 +4350,7 @@ df[[59]] <- read.csv(
     ) %>%
   dplyr::select(
     Subject, Age, Gender, Education, Handedness, 
-    Origin_Identity, English_Identity, Standarlized_Identity,
+    Label_Identity, Origin_Identity, English_Identity, Standarlized_Identity,
     Matching, RT_ms, RT_sec, ACC
     ) %>%
   dplyr::arrange(
@@ -4353,9 +4364,9 @@ write.csv(x = df[[59]], file = "../1_Clean_Data/Lee_2023_Cognition/Lee_2023_Cogn
 
 # Sui_2014_APP
 ## Experiment 1 (Identtiy = 3)
-"Self", "Mother", "Stranger" → "Self","Close","Stranger" 
+"Self", "Mother", "Stranger" → "Self","Close","Stranger"  (No Shape/Label)
 1:1:1
-```{r paper s5 }
+```{r paper s5 Experiment 1}
 df[[60]] <- read.csv(
   "../2_Raw_Data/Sui_2014_APP/Sui_2014_APP_Exp1_raw.csv"
   ) %>%
@@ -4407,10 +4418,11 @@ summary(df[[60]])
 write.csv(x = df[[60]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp1_Clean.csv")
 ```
 
+# Sui_2014_APP
 ## Experiment 2 (Identtiy = 3)
-"Self", "Mother", "Stranger"
+"Self", "Mother", "Stranger" (No Shape/Label)
 1:3:3
-```{r}
+```{r paper s5 Experiment 2}
 df[[61]] <- read.csv(
   "../2_Raw_Data/Sui_2014_APP/Sui_2014_APP_Exp2_raw.csv"
   ) %>%
@@ -4462,10 +4474,11 @@ summary(df[[61]])
 write.csv(x = df[[61]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp2_Clean.csv")
 ```
 
+# Sui_2014_APP
 ## Experiment 3 (Identtiy = 3)
-"Self", "Mother", "Stranger"
+"Self", "Mother", "Stranger" (No Shape/Label)
 3:1:3
-```{r}
+```{r paper s5 Experiment 3}
 df[[62]] <- read.csv(
   "../2_Raw_Data/Sui_2014_APP/Sui_2014_APP_Exp3_raw.csv"
   ) %>%
@@ -4517,10 +4530,11 @@ summary(df[[62]])
 write.csv(x = df[[62]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp3_Clean.csv")
 ```
 
+# Sui_2014_APP
 ## Experiment 4 (Identtiy = 3)
-"Self", "Mother", "Stranger"
+"Self", "Mother", "Stranger" (No Shape/Label)
 3:3:1
-```{r}
+```{r paper s5 Experiment 4}
 df[[63]] <- read.csv(
   "../2_Raw_Data/Sui_2014_APP/Sui_2014_APP_Exp4_raw.csv"
   ) %>%
