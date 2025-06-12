@@ -245,7 +245,7 @@ for (i in seq_along(data_files)) {
     mutate(across(where(is.character), as.character))  # 确保字符变量类型一致
   
   # 确保数据包含所需变量
-  if (all(c("RT_ms", "ACC", "Standarlized_Identity", "Subject", "Matching", "Gender", "Age") %in% names(Data))) {
+  if (all(c("RT_ms", "ACC", "English_Identity","Standarlized_Identity","Label_Identity", "Subject", "Matching", "Gender", "Age") %in% names(Data))) {
     
     # 生成唯一标识每篇文章的 Subject ID，并添加 Source 变量
     Data <- Data %>%
@@ -256,7 +256,8 @@ for (i in seq_along(data_files)) {
           str_detect(tolower(Gender), "female|f\\b|frau|mujer") ~ "Female",
           str_detect(tolower(Gender), "male|m\\b|mann|hombre") ~ "Male",
           str_detect(tolower(Gender), "other|different") ~ "Other",
-        )
+        ),
+        
         )
         # 清洗 ACC：只保留 0 和 1，其他一律设为 0
         # ACC = ifelse(ACC %in% c(0, 1), ACC, 0)
@@ -268,7 +269,7 @@ for (i in seq_along(data_files)) {
 
     # **存入列表**
     results_list[[counter]] <- Data %>%
-      select(Source, Subject, Age, Gender, Matching, Standarlized_Identity, RT_ms, ACC)  # **保留 Source 变量**
+      select(Source, Subject, Age, Gender, Matching, Standarlized_Identity, English_Identity, Label_Identity, RT_ms, ACC)  # **保留 Source 变量**
     
     counter <- counter + 1
   }
