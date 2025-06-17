@@ -221,15 +221,15 @@ dataPath <- "../1_Clean_Data"
 data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
 
 ## 需要排除的文件夹
-exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP",
-                     "Hobbs_2023_PM", "Mcivor_2020_EJN",
-                     "Orellana-Corrales_2021_EP", "Svensson_2021_PR",
-                     "Wang_2016_EPHPP","Liang_2022_HBM","Hobbs_2021_PM",
-                     "Lee_2023_Cognition","Orellana-Corrales_2021_APP",
-                     "Kirk_2025_BJP","Svensson_2023_QJEP")
+# exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP",
+#                      "Hobbs_2023_PM", "Mcivor_2020_EJN",
+#                      "Orellana-Corrales_2021_EP", "Svensson_2021_PR",
+#                      "Wang_2016_EPHPP","Liang_2022_HBM","Hobbs_2021_PM",
+#                      "Lee_2023_Cognition","Orellana-Corrales_2021_APP",
+#                      "Kirk_2025_BJP","Svensson_2023_QJEP")
 
 ## 过滤掉不需要的文件
-data_files <- data_files[!grepl(paste(exclude_folders, collapse = "|"), data_files)]
+# data_files <- data_files[!grepl(paste(exclude_folders, collapse = "|"), data_files)]
 
 ## 预分配存储变量（列表存储数据）
 results_list <- list()
@@ -257,14 +257,18 @@ for (i in seq_along(data_files)) {
           str_detect(tolower(Gender), "male|m\\b|mann|hombre") ~ "Male",
           str_detect(tolower(Gender), "other|different") ~ "Other",
         ),
+
+        ACC = case_when(
+            ACC %in% c(2, 3, 4) & is.na(RT_ms) ~ NA_real_,   # 未作答 → NA
+            ACC %in% c(2, 3, 4) & !is.na(RT_ms) ~ 0,         # 错误 → 0
+            TRUE ~ ACC                                        # 其他保持不变
+          ),
         
         )
-        # 清洗 ACC：只保留 0 和 1，其他一律设为 0
-        # ACC = ifelse(ACC %in% c(0, 1), ACC, 0)
         # 过滤 RT 在合理范围内的行
-        Data <- Data %>%
-        filter(RT_ms > 0 )  # 过滤异常值
-    
+        # Data <- Data %>%
+        # filter(RT_ms > 0 )  # 过滤异常值
+        
 
 
     # **存入列表**
@@ -423,7 +427,7 @@ df[[2]] <- read.csv(
   )
 names(df)[2] <- "Constable_2020_CE Exp 1"
 summary(df[[2]])
-write.csv(x = df[[2]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp1_Clean.csv")
+write.csv(x = df[[2]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Merryn Dale Constable_2020_CE (Dark Light Box)
@@ -492,7 +496,7 @@ df[[3]] <- read.csv(
 
 names(df)[3] <- "Constable_2020_CE Exp 2"
 summary(df[[3]])
-write.csv(x = df[[3]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp2_Clean.csv")
+write.csv(x = df[[3]], file = "../1_Clean_Data/Constable_2020_CE/Constable_2020_CE_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Haoyue Qian_2019_QJEP  
@@ -554,7 +558,7 @@ df[[4]] <- read.csv(
 
 names(df)[4] <- "Qian_2019_QJEP Exp 1"
 summary(df[[4]])
-write.csv(x = df[[4]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp1_Clean.csv")
+write.csv(x = df[[4]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Haoyue Qian_2019_QJEP 
@@ -608,7 +612,7 @@ df[[5]] <- read.csv(
 
 names(df)[5] <- "Qian_2019_QJEP Exp 2"
 summary(df[[5]])
-write.csv(x = df[[5]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp2_Clean.csv")
+write.csv(x = df[[5]], file = "../1_Clean_Data/Qian_2019_QJEP/Qian_2019_QJEP_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Sarah Schaefer_2019_CP 
@@ -670,7 +674,7 @@ df[[6]] <- read.csv(
 
 names(df)[6] <- "Schaefer_2019_CP Exp 1"
 summary(df[[6]])
-write.csv(x = df[[6]], file = "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp1_Clean.csv")
+write.csv(x = df[[6]], file = "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Sarah Schaefer_2019_CP 
@@ -705,7 +709,7 @@ df[[7]] <- read.csv(
 
 names(df)[7] <- "Schaefer_2019_CP Exp 2"
 summary(df[[7]])
-write.csv(x = df[[7]], file = "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp2_Clean.csv")
+write.csv(x = df[[7]], file = "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Sarah Schaefer_2019_CP 
@@ -759,7 +763,7 @@ df[[8]] <- read.csv(
   )
 names(df)[8] <- "Schaefer_2019_CP Exp 3"
 summary(df[[8]])
-write.csv(x = df[[8]], file = "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp3_Clean.csv")
+write.csv(x = df[[8]], file = "../1_Clean_Data/Schaefer_2019_CP/Schaefer_2019_CP_Exp3_Clean.csv",row.names = FALSE)
 ```
 
 # Mateusz Wozniak_2018_PLOS (Face)
@@ -837,7 +841,7 @@ df[[9]] <- read.csv(
 
 names(df)[9] <- "Wozniak_2018_PLOS Exp 1"
 summary(df[[9]])
-write.csv(x = df[[9]], file = "../1_Clean_Data/Wozniak_2018_PLOS/Wozniak_2018_PLOS_Exp1_Clean.csv")
+write.csv(x = df[[9]], file = "../1_Clean_Data/Wozniak_2018_PLOS/Wozniak_2018_PLOS_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Mateusz Wozniak_2018_PLOS
@@ -911,7 +915,7 @@ df[[10]] <- read.csv(
 
 names(df)[10] <- "Wozniak_2018_PLOS Exp 2"
 summary(df[[10]])
-write.csv(x = df[[10]], file = "../1_Clean_Data/Wozniak_2018_PLOS/Wozniak_2018_PLOS_Exp2_Clean.csv")
+write.csv(x = df[[10]], file = "../1_Clean_Data/Wozniak_2018_PLOS/Wozniak_2018_PLOS_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Marius Golubickis_2021_AP
@@ -958,7 +962,7 @@ df[[11]] <- read.csv(
 
 names(df)[11] <- "Golubickis_2021_AP Exp 1"
 summary(df[[11]])
-write.csv(x = df[[11]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp1_Clean.csv")
+write.csv(x = df[[11]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Marius Golubickis_2021_AP
@@ -1007,7 +1011,7 @@ df[[12]] <- read.csv(
 
 names(df)[12] <- "Golubickis_2021_AP Exp 2"
 summary(df[[12]])
-write.csv(x = df[[12]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp2_Clean.csv", row.names = FALSE)
+write.csv(x = df[[12]], file = "../1_Clean_Data/Golubickis_2021_AP/Golubickis_2021_AP_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Mayan Navon_2021
@@ -1084,7 +1088,7 @@ df[[13]] <- read.csv(
 
 names(df)[13] <- "Mayan Navon_2021 Exp 1"
 summary(df[[13]])
-write.csv(x = df[[13]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp1_Clean.csv")
+write.csv(x = df[[13]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Mayan Navon_2021
@@ -1152,7 +1156,7 @@ df[[14]] <- read.csv(
 
 names(df)[14] <- "Mayan Navon_2021 Exp 2"
 summary(df[[14]])
-write.csv(x = df[[14]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp2_Clean.csv")
+write.csv(x = df[[14]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Mayan Navon_2021
@@ -1222,7 +1226,7 @@ df[[15]] <- read.csv(
 
 names(df)[15] <- "Mayan Navon_2021 Exp 3"
 summary(df[[15]])
-write.csv(x = df[[15]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp3_Clean.csv")
+write.csv(x = df[[15]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp3_Clean.csv",row.names = FALSE)
 ```
 
 # Mayan Navon_2021
@@ -1291,7 +1295,7 @@ df[[16]] <- read.csv(
 
 names(df)[16] <- "Mayan Navon_2021 Exp 4"
 summary(df[[16]])
-write.csv(x = df[[16]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp4_Clean.csv")
+write.csv(x = df[[16]], file = "../1_Clean_Data/Navon_2021/Navon_2021_Exp4_Clean.csv",row.names = FALSE)
 ```
 
 # Saga L. Svensson_2021_PR
@@ -1342,7 +1346,7 @@ df[[17]] <- read.csv(
 
 names(df)[17] <- "Svensson_2021_PR Exp 1"
 summary(df[[17]])
-write.csv(x = df[[17]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_PR_Exp1_Clean.csv")
+write.csv(x = df[[17]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_PR_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Saga L. Svensson_2021_PR
@@ -1393,7 +1397,7 @@ df[[18]] <- read.csv(
 
 names(df)[18] <- "Svensson_2021_PR Exp 2"
 summary(df[[18]])
-write.csv(x = df[[18]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_PR_Exp2_Clean.csv")
+write.csv(x = df[[18]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_PR_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Saga L. Svensson_2021_PR
@@ -1444,7 +1448,7 @@ df[[19]] <- read.csv(
 
 names(df)[19] <- "Svensson_2021_PR Exp 3"
 summary(df[[19]])
-write.csv(x = df[[19]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_PR_Exp3_Clean.csv")
+write.csv(x = df[[19]], file = "../1_Clean_Data/Svensson_2021_PR/Svensson_2021_PR_Exp3_Clean.csv",row.names = FALSE)
 ```
 
 # Xu_2021_CP
@@ -1499,7 +1503,7 @@ df[[20]] <- read.csv(
 
 names(df)[20] <- "Xu_2021_CP Exp 1"
 summary(df[[20]])
-write.csv(x = df[[20]], file = "../1_Clean_Data/Xu_2021_CP/Xu_2021_CP_Exp1_Clean.csv")
+write.csv(x = df[[20]], file = "../1_Clean_Data/Xu_2021_CP/Xu_2021_CP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Hu_2023  
@@ -1582,7 +1586,7 @@ df[[21]] <- read.csv(
 
 names(df)[21] <- "Hu_2023_Exp1"
 summary(df[[21]])
-write.csv(x = df[[21]], file = "../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv")
+write.csv(x = df[[21]], file = "../1_Clean_Data/Hu_2023/Hu_2023_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Constable_2019_EPHPP
@@ -1653,7 +1657,7 @@ df[[22]] <- read.csv(
     )
 names(df)[22] <- "Constable_2019_EPHPP_Exp1"
 summary(df[[22]])
-write.csv(x = df[[22]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp1/Constable_2019_EPHPP_Exp1_Clean.csv")
+write.csv(x = df[[22]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp1/Constable_2019_EPHPP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Constable_2019_EPHPP
@@ -1728,7 +1732,7 @@ df[[23]] <- read.csv(
 
 names(df)[23] <- "Constable_2019_EPHPP_Exp2"
 summary(df[[23]])
-write.csv(x = df[[23]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_Clean.csv")
+write.csv(x = df[[23]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp2/Constable_2019_EPHPP_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Constable_2019_EPHPP
@@ -1803,7 +1807,7 @@ df[[24]] <- read.csv(
 
 names(df)[24] <- "Constable_2019_EPHPP_Exp3"
 summary(df[[24]])
-write.csv(x = df[[24]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp3/Constable_2019_EPHPP_Exp3_Clean.csv")
+write.csv(x = df[[24]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp3/Constable_2019_EPHPP_Exp3_Clean.csv",row.names = FALSE)
 ```
 
 # Constable_2019_EPHPP
@@ -1868,7 +1872,7 @@ df[[25]] <- read.csv(
     )
 names(df)[25] <- "Constable_2019_EPHPP_Exp4"
 summary(df[[25]])
-write.csv(x = df[[25]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp4/Constable_2019_EPHPP_Exp4_Clean.csv")
+write.csv(x = df[[25]], file = "../1_Clean_Data/Constable_2019_EPHPP/Exp4/Constable_2019_EPHPP_Exp4_Clean.csv",row.names = FALSE)
 ```
 
 # Vicovaro_2022_EPHPP
@@ -1932,7 +1936,7 @@ df[[26]] <- read.csv(
 
 names(df)[26] <- "Vicovaro_2022_EPHPP_Exp1"
 summary(df[[26]])
-write.csv(x = df[[26]], file = "../1_Clean_Data/Vicovaro_2022_EPHPP/Vicovaro_2022_EPHPP_Exp1_Clean.csv")
+write.csv(x = df[[26]], file = "../1_Clean_Data/Vicovaro_2022_EPHPP/Vicovaro_2022_EPHPP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Vicovaro_2022_EPHPP
@@ -2018,7 +2022,7 @@ df[[27]] <- temp %>%
   )
 names(df)[27] <- "Vicovaro_2022_EPHPP_Exp2"
 summary(df[[27]])
-write.csv(x = df[[27]], file = "../1_Clean_Data/Vicovaro_2022_EPHPP/Vicovaro_2022_EPHPP_Exp2_Clean.csv")
+write.csv(x = df[[27]], file = "../1_Clean_Data/Vicovaro_2022_EPHPP/Vicovaro_2022_EPHPP_Exp2_Clean.csv",row.names = FALSE)
 rm(Subject_ID,temp)
 ```
 
@@ -2090,7 +2094,7 @@ df[[28]] <- read.csv(
 
 names(df)[28] <- "Perrykkad_2022_BMC_Exp1"
 summary(df[[28]])
-write.csv(x = df[[28]], file = "../1_Clean_Data/Perrykkad_2022_BMC/Perrykkad_2022_BMC_Exp1_Clean.csv")
+write.csv(x = df[[28]], file = "../1_Clean_Data/Perrykkad_2022_BMC/Perrykkad_2022_BMC_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Hu_2020_CP
@@ -2158,7 +2162,7 @@ df[[29]] <- read.csv(
 
 names(df)[29] <- "Hu_2020_CP_Exp1"
 summary(df[[29]])
-write.csv(x = df[[29]], file = "../1_Clean_Data/Hu_2020_CP/Hu_2020_CP_Exp1_Clean.csv")
+write.csv(x = df[[29]], file = "../1_Clean_Data/Hu_2020_CP/Hu_2020_CP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Wozniak_2022_PR
@@ -2245,7 +2249,7 @@ df[[30]] <- read.csv("../2_Raw_Data/Wozniak_2022_PR/Wozniak_2022_PR_Exp1_raw.csv
 
 names(df)[30] <- "Wozniak_2022_PR_Exp 1"
 summary(df[[30]])
-write.csv(x = df[[30]], file = "../1_Clean_Data/Wozniak_2022_PR/Wozniak_2022_PR_Exp1_Clean.csv")
+write.csv(x = df[[30]], file = "../1_Clean_Data/Wozniak_2022_PR/Wozniak_2022_PR_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Wozniak_2022_PR
@@ -2337,7 +2341,7 @@ df[[31]] <- read.csv("../2_Raw_Data/Wozniak_2022_PR/Wozniak_2022_PR_Exp2_raw.csv
 
 names(df)[31] <- "Wozniak_2022_PR_Exp 2"
 summary(df[[31]])
-write.csv(x = df[[31]], file = "../1_Clean_Data/Wozniak_2022_PR/Wozniak_2022_PR_Exp2_Clean.csv")
+write.csv(x = df[[31]], file = "../1_Clean_Data/Wozniak_2022_PR/Wozniak_2022_PR_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Wozniak_2022_PR
@@ -2425,7 +2429,7 @@ df[[32]] <- read.csv("../2_Raw_Data/Wozniak_2022_PR/Wozniak_2022_PR_Exp3_raw.csv
 
 names(df)[32] <- "Wozniak_2022_PR_Exp 3"
 summary(df[[32]])
-write.csv(x = df[[32]], file = "../1_Clean_Data/Wozniak_2022_PR/Wozniak_2022_PR_Exp3_Clean.csv")
+write.csv(x = df[[32]], file = "../1_Clean_Data/Wozniak_2022_PR/Wozniak_2022_PR_Exp3_Clean.csv",row.names = FALSE)
 ```
 
 # Haciahmet_2023_Psychophysiology
@@ -2488,7 +2492,7 @@ df[[33]] <- read.csv(
 
 names(df)[33] <- "Haciahmet_2023_Psy"
 summary(df[[33]])
-write.csv(x = df[[33]], file = "../1_Clean_Data/Haciahmet_2023_Psy/Haciahmet_2023_Psy_Exp1_Clean.csv")
+write.csv(x = df[[33]], file = "../1_Clean_Data/Haciahmet_2023_Psy/Haciahmet_2023_Psy_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Sui_2023_CC
@@ -2541,7 +2545,7 @@ df[[34]] <- read.csv(
 
 names(df)[34] <- "Sui_2023_CC_Exp1"
 summary(df[[34]])
-write.csv(x = df[[34]], file = "../1_Clean_Data/Sui_2023_CC/Sui_2023_CC_Exp1_Clean.csv")
+write.csv(x = df[[34]], file = "../1_Clean_Data/Sui_2023_CC/Sui_2023_CC_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Hobbs_2023_PM 
@@ -2628,7 +2632,7 @@ rm(temp, Subject_ID)
 
 names(df)[35] <- "Hobbs_2023_PM_Exp1"
 summary(df[[35]])
-write.csv(x = df[[35]], file = "../1_Clean_Data/Hobbs_2023_PM/Hobbs_2023_PM_Exp1_Clean.csv")
+write.csv(x = df[[35]], file = "../1_Clean_Data/Hobbs_2023_PM/Hobbs_2023_PM_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Mcivor_2020_EJN 
@@ -2744,7 +2748,7 @@ df[[36]] <- read.csv(
     )
 names(df)[36] <- "Mcivor_2020_EJN_Exp1"
 summary(df[[36]])
-write.csv(x = df[[36]], file = "../1_Clean_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_Exp1_Clean.csv")
+write.csv(x = df[[36]], file = "../1_Clean_Data/Mcivor_2020_EJN/Mcivor_2020_EJN_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Liang_2022_HBM
@@ -2809,7 +2813,7 @@ df[[37]] <- read.csv(
 
 names(df)[37] <- "Liang_2022_HBM_dlpfc"
 summary(df[[37]])
-write.csv(x = df[[37]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1.1_Clean.csv")
+write.csv(x = df[[37]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1.1_Clean.csv",row.names = FALSE)
 ```
 
 # Kolvoort_2020_HBM 
@@ -2876,7 +2880,7 @@ df[[38]] <- read.csv(
 
 names(df)[38] <- "Kolvoort_2020_HBM"
 summary(df[[38]])
-write.csv(x = df[[38]], file = "../1_Clean_Data/Kolvoort_2020_HBM/Kolvoort_2020_HBM_Exp1_Clean.csv")
+write.csv(x = df[[38]], file = "../1_Clean_Data/Kolvoort_2020_HBM/Kolvoort_2020_HBM_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Liu_2023_CP
@@ -2964,7 +2968,7 @@ rm(df_Subject_ID, df_Ps1_E1)
 
 names(df)[39] <- "Liu_2023_CP"
 summary(df[[39]])
-write.csv(x = df[[39]], file = "../1_Clean_Data/Liu_2023_CP/Liu_2023_CP_Exp1_Clean.csv")
+write.csv(x = df[[39]], file = "../1_Clean_Data/Liu_2023_CP/Liu_2023_CP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Orellana-Corrales_2021_EP
@@ -3055,7 +3059,7 @@ df[[40]] <- read.csv(
 
 names(df)[40] <- "Orellana-Corrales_2021_EP_Exp1"
 summary(df[[40]])
-write.csv(x = df[[40]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp1_Clean.csv")
+write.csv(x = df[[40]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Orellana-Corrales_2021_EP
@@ -3120,7 +3124,7 @@ df[[41]] <- read.csv(
 
 names(df)[41] <- "Orellana-Corrales_2021_Exp2"
 summary(df[[41]])
-write.csv(x = df[[41]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp2_Clean.csv")
+write.csv(x = df[[41]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Orellana-Corrales_2021_EP
@@ -3185,7 +3189,7 @@ df[[42]] <- read.csv(
 
 names(df)[42] <- "Orellana-Corrales_2021_Exp3"
 summary(df[[42]])
-write.csv(x = df[[42]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp3_Clean.csv")
+write.csv(x = df[[42]], file = "../1_Clean_Data/Orellana-Corrales_2021_EP/Orellana-Corrales_2021_EP_Exp3_Clean.csv",row.names = FALSE)
 ```
 
 # Amodeo_2024_CABN
@@ -3251,7 +3255,7 @@ df[[43]] <- read.csv(
 
 names(df)[43] <- "Amodeo_2024_CABN"
 summary(df[[43]])
-write.csv(x = df[[43]], file = "../1_Clean_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_Clean.csv")
+write.csv(x = df[[43]], file = "../1_Clean_Data/Amodeo_2024_CABN/Amodeo_2024_CABN_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Zhang_2023_NI
@@ -3322,7 +3326,7 @@ df[[44]] <- read.csv(
 
 names(df)[44] <- "Zhang_2023_NI"
 summary(df[[44]])
-write.csv(x = df[[44]], file = "../1_Clean_Data/Zhang_2023_NI/Zhang_2023_NI_Exp1_Clean.csv")
+write.csv(x = df[[44]], file = "../1_Clean_Data/Zhang_2023_NI/Zhang_2023_NI_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Feldborg_2021_ERPH
@@ -3398,7 +3402,7 @@ df[[45]] <- read.csv(
 
 names(df)[45] <- "Feldborg_2021_ERPH_Exp1"
 summary(df[[45]])
-write.csv(x = df[[45]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1_Clean.csv")
+write.csv(x = df[[45]], file = "../1_Clean_Data/Feldborg_2021_ERPH/Feldborg_2021_ERPH_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Martinez-Perez_2024_CC
@@ -3476,7 +3480,7 @@ df[[46]] <- read.csv(
 
 names(df)[46] <- "Martinez-Perez_2024_CC_Exp2"
 summary(df[[46]])
-write.csv(x = df[[46]], file = "../1_Clean_Data/Martinez-Perez_2024_CC/Martinez-Perez_2024_CC_Exp2_Clean.csv")
+write.csv(x = df[[46]], file = "../1_Clean_Data/Martinez-Perez_2024_CC/Martinez-Perez_2024_CC_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Wang_2016_EPHPP
@@ -3538,7 +3542,7 @@ df[[47]] <- read.csv(
 
 names(df)[47] <- "Wang_2016_EPHPP_Exp1"
 summary(df[[47]])
-write.csv(x = df[[47]], file = "../1_Clean_Data/Wang_2016_EPHPP/Wang_2016_EPHPP_Exp1_Clean.csv")
+write.csv(x = df[[47]], file = "../1_Clean_Data/Wang_2016_EPHPP/Wang_2016_EPHPP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Sui_2014 (Unpublish)(Matching 分布不对，没明白Session和Group的区别)
@@ -3604,7 +3608,7 @@ df[[48]] <- read.csv(
 
 names(df)[48] <- "Sui_2014_Exp1"
 summary(df[[48]])
-write.csv(x = df[[48]], file = "../1_Clean_Data/Sui_2014/Sui_2014_Exp1_Clean.csv")
+write.csv(x = df[[48]], file = "../1_Clean_Data/Sui_2014/Sui_2014_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Sui_2015 (Unpublish)
@@ -3686,7 +3690,7 @@ rm(list_mat_e1, mat_data)
 
 names(df)[49] <- "Sui_2015_Exp1"
 summary(df[[49]])
-write.csv(x = df[[49]], file = "../1_Clean_Data/Sui_2015/Sui_2015_Exp1_Clean.csv")
+write.csv(x = df[[49]], file = "../1_Clean_Data/Sui_2015/Sui_2015_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Sui_2015
@@ -3761,7 +3765,7 @@ rm(list_mat_e2, mat_data)
 
 names(df)[50] <- "Sui_2015_Exp2"
 summary(df[[50]])
-write.csv(x = df[[50]], file = "../1_Clean_Data/Sui_2015/Sui_2015_Exp2_Clean.csv")
+write.csv(x = df[[50]], file = "../1_Clean_Data/Sui_2015/Sui_2015_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Dalmaso_2024_CC
@@ -3830,7 +3834,7 @@ df[[51]] <- read.csv(
 
 names(df)[51] <- "Dalmaso_2024_CC_Exp1"
 summary(df[[51]])
-write.csv(x = df[[51]], file = "../1_Clean_Data/Dalmaso_2024_CC/Dalmaso_2024_CC_Exp1_Clean.csv")
+write.csv(x = df[[51]], file = "../1_Clean_Data/Dalmaso_2024_CC/Dalmaso_2024_CC_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Dalmaso_2024_CC
@@ -3890,7 +3894,7 @@ df[[52]] <- read.csv(
 
 names(df)[52] <- "Dalmaso_2024_CC_Exp2"
 summary(df[[52]])
-write.csv(x = df[[52]], file = "../1_Clean_Data/Dalmaso_2024_CC/Dalmaso_2024_CC_Exp2_Clean.csv")
+write.csv(x = df[[52]], file = "../1_Clean_Data/Dalmaso_2024_CC/Dalmaso_2024_CC_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Bukowski_2021_AP
@@ -3956,7 +3960,7 @@ df[[53]] <- read.csv("../2_Raw_Data/Bukowski_2021_AP/Bukowski_2021_AP_Exp1_raw.c
 
 names(df)[53] <- "Bukowski_2021_AP_Exp1"
 summary(df[[53]])
-write.csv(x = df[[53]], file = "../1_Clean_Data/Bukowski_2021_AP/Bukowski_2021_AP_Exp1_Clean.csv")
+write.csv(x = df[[53]], file = "../1_Clean_Data/Bukowski_2021_AP/Bukowski_2021_AP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Bukowski_2021_AP
@@ -4020,7 +4024,7 @@ df[[54]] <- read.csv("../2_Raw_Data/Bukowski_2021_AP/Bukowski_2021_AP_Exp2_raw.c
 
 names(df)[54] <- "Bukowski_2021_AP_Exp2"
 summary(df[[54]])
-write.csv(x = df[[54]], file = "../1_Clean_Data/Bukowski_2021_AP/Bukowski_2021_AP_Exp2_Clean.csv")
+write.csv(x = df[[54]], file = "../1_Clean_Data/Bukowski_2021_AP/Bukowski_2021_AP_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Wozniak_2020_PLOS
@@ -4098,7 +4102,7 @@ df[[55]] <- read.csv(
 
 names(df)[55] <- "Svensson_2023_QJEP"
 summary(df[[55]])
-write.csv(x = df[[55]], file = "../1_Clean_Data/Svensson_2023_QJEP/Svensson_2023_QJEP_Exp1_Clean.csv")
+write.csv(x = df[[55]], file = "../1_Clean_Data/Svensson_2023_QJEP/Svensson_2023_QJEP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Kirk_2025_BJP
@@ -4162,7 +4166,7 @@ df[[56]] <- read.csv(
 
 names(df)[56] <- "Kirk_2025_BJP_Exp1"
 summary(df[[56]])
-write.csv(x = df[[56]], file = "../1_Clean_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp1_Clean.csv")
+write.csv(x = df[[56]], file = "../1_Clean_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Kirk_2025_BJP (Sound)
@@ -4226,7 +4230,7 @@ df[[57]] <- read.csv(
     )
 names(df)[57] <- "Kirk_2025_BJP_Exp2"
 summary(df[[57]])
-write.csv(x = df[[57]], file = "../1_Clean_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp2_Clean.csv")
+write.csv(x = df[[57]], file = "../1_Clean_Data/Kirk_2025_BJP/Kirk_2025_BJP_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Lee_2023_Cognition
@@ -4296,7 +4300,7 @@ df[[58]] <- read.csv(
 
 names(df)[58] <- "Lee_2023_Cognition_Exp1"
 summary(df[[58]])
-write.csv(x = df[[58]], file = "../1_Clean_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp1_Clean.csv")
+write.csv(x = df[[58]], file = "../1_Clean_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Lee_2023_Cognition
@@ -4360,7 +4364,7 @@ df[[59]] <- read.csv(
 
 names(df)[59] <- "Lee_2023_Cognition_Exp2"
 summary(df[[59]])
-write.csv(x = df[[59]], file = "../1_Clean_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp2_Clean.csv")
+write.csv(x = df[[59]], file = "../1_Clean_Data/Lee_2023_Cognition/Lee_2023_Cognition_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Sui_2014_APP
@@ -4416,7 +4420,7 @@ df[[60]] <- read.csv(
 
 names(df)[60] <- "Sui_2014_APP_Exp1"
 summary(df[[60]])
-write.csv(x = df[[60]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp1_Clean.csv")
+write.csv(x = df[[60]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Sui_2014_APP
@@ -4472,7 +4476,7 @@ df[[61]] <- read.csv(
 
 names(df)[61] <- "Sui_2014_APP_Exp2"
 summary(df[[61]])
-write.csv(x = df[[61]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp2_Clean.csv")
+write.csv(x = df[[61]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Sui_2014_APP
@@ -4528,7 +4532,7 @@ df[[62]] <- read.csv(
 
 names(df)[62] <- "Sui_2014_APP_Exp3"
 summary(df[[62]])
-write.csv(x = df[[62]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp3_Clean.csv")
+write.csv(x = df[[62]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp3_Clean.csv",row.names = FALSE)
 ```
 
 # Sui_2014_APP
@@ -4584,7 +4588,7 @@ df[[63]] <- read.csv(
 
 names(df)[63] <- "Sui_2014_APP_Exp4"
 summary(df[[63]])
-write.csv(x = df[[63]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp4_Clean.csv")
+write.csv(x = df[[63]], file = "../1_Clean_Data/Sui_2014_APP/Sui_2014_APP_Exp4_Clean.csv",row.names = FALSE)
 ```
 
 # Orellana-Corrales_2021_APP
@@ -4662,7 +4666,7 @@ df[[64]] <- read.csv(
 
 names(df)[64] <- "Orellana-Corrales_2021_APP_Exp1"
 summary(df[[64]])
-write.csv(x = df[[64]], file = "../1_Clean_Data/Orellana-Corrales_2021_APP/Orellana-Corrales_2021_APP_Exp1_Clean.csv")
+write.csv(x = df[[64]], file = "../1_Clean_Data/Orellana-Corrales_2021_APP/Orellana-Corrales_2021_APP_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Orellana-Corrales_2021_APP
@@ -4721,7 +4725,7 @@ df[[65]] <- read.csv(
 
 names(df)[65] <- "Orellana-Corrales_2021_APP_Exp2"
 summary(df[[65]])
-write.csv(x = df[[65]], file = "../1_Clean_Data/Orellana-Corrales_2021_APP/Orellana-Corrales_2021_APP_Exp2_Clean.csv")
+write.csv(x = df[[65]], file = "../1_Clean_Data/Orellana-Corrales_2021_APP/Orellana-Corrales_2021_APP_Exp2_Clean.csv",row.names = FALSE)
 ```
 
 # Smith_2024_Cortex
@@ -4815,7 +4819,7 @@ df[[66]] <- read.csv(
 
 names(df)[66] <- "Smith_2024_Cortex_Exp1"
 summary(df[[66]])
-write.csv(x = df[[66]], file = "../1_Clean_Data/Smith_2024_Cortex/Smith_2024_Cortex_Exp1_Clean.csv")
+write.csv(x = df[[66]], file = "../1_Clean_Data/Smith_2024_Cortex/Smith_2024_Cortex_Exp1_Clean.csv",row.names = FALSE)
 ```
 
 # Liang_2022_HBM
@@ -4879,7 +4883,7 @@ df[[67]] <- read.csv(
 
 names(df)[67] <- "Liang_2022_HBM_sham"
 summary(df[[67]])
-write.csv(x = df[[67]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1.2_Clean.csv")
+write.csv(x = df[[67]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1.2_Clean.csv",row.names = FALSE)
 ```
 
 # Liang_2022_HBM
@@ -4943,7 +4947,7 @@ df[[68]] <- read.csv(
 
 names(df)[68] <- "Liang_2022_HBM_psts"
 summary(df[[68]])
-write.csv(x = df[[68]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1.3_Clean.csv")
+write.csv(x = df[[68]], file = "../1_Clean_Data/Liang_2022_HBM/Liang_2022_HBM_Exp1.3_Clean.csv",row.names = FALSE)
 ```
 
 
