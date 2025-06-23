@@ -1018,3 +1018,194 @@ ggplot(tmp, aes(x = History, y = Estimate, ymin = lwr, ymax = upr)) +
 
 ```
 
+
+
+## Test_Age log?
+```{r}
+# 加载必要的包
+library(tidyverse)
+library(e1071)      # 用于 skewness
+library(ggplot2)    # 可视化
+library(ggpubr)     # QQ图
+library(readr)      # 读取CSV
+
+# 读取数据
+data_v1 <- read_csv("../3_Code/Processed_Data_by_age&gender.csv")
+
+  # 查看前几行
+head(data_v1)
+
+# 绘制直方图
+ggplot(data_v1, aes(x = RT_ms)) +
+  geom_histogram(bins = 50, fill = "steelblue", color = "black") +
+  theme_minimal() +
+  labs(title = "Histogram of RT_ms")
+
+# 强制转换为数值（非数值将变成 NA）
+data_v1$RT_ms <- as.numeric(data_v1$RT_ms)
+
+# 偏度
+skew_val <- skewness(data$RT_ms, na.rm = TRUE)
+cat("Skewness of RT_ms:", skew_val, "\n")
+
+
+```
+
+```{r}
+# 添加 log 变量
+data_v1$log_RT_ms <- log(data_v1$RT_ms)
+
+# 检查分布
+ggplot(data_v1, aes(x = log_RT_ms)) +
+  geom_histogram(bins = 50, fill = "darkgreen", color = "black") +
+  theme_minimal() +
+  labs(title = "Histogram of log(RT_ms)")
+
+# 计算 log 后偏度
+library(e1071)
+skewness(data_v1$log_RT_ms, na.rm = TRUE)
+
+```
+
+```{r}
+# 加载必要的包
+library(tidyverse)
+library(e1071)      # 用于 skewness
+library(ggplot2)    # 可视化
+library(ggpubr)     # QQ图
+library(readr)      # 读取CSV
+
+# 读取数据
+data_v1 <- read_csv("../3_Code/Processed_Data_by_age&gender.csv")
+
+  # 查看前几行
+head(data_v1)
+
+# 绘制直方图
+ggplot(data_v1, aes(x = Age)) +
+  geom_histogram(bins = 50, fill = "steelblue", color = "black") +
+  theme_minimal() +
+  labs(title = "Histogram of Age")
+
+# 强制转换为数值（非数值将变成 NA）
+data_v1$RT_ms <- as.numeric(data_v1$RT_ms)
+
+# 偏度
+skew_val <- skewness(data$Age, na.rm = TRUE)
+cat("Skewness of RT_ms:", skew_val, "\n")
+
+
+```
+
+
+```{r}
+library(dplyr)
+library(effsize)
+library(ggplot2)
+library(readr)
+library(tidyr)
+
+# 读取并筛选 Nonmatching 条件
+data <- read_csv("../3_Code/Processed_Data_Filtered_with_logRT.csv", show_col_types = FALSE)
+
+data_filtered <- data %>%
+  filter(Matching == "Nonmatching", Standarlized_Identity %in% c("Self", "Stranger"))
+
+# 获取唯一被试并打乱顺序
+set.seed(42)
+all_subjects <- unique(data_filtered$Subject)
+shuffled_subjects <- sample(all_subjects)
+
+# 设定每步的样本量
+sample_sizes <- seq(60, length(shuffled_subjects), by = 40)
+
+# 初始化结果存储
+result_df <- data.frame(SampleSize = integer(), Cohens_d = numeric())
+
+# 循环逐步增加样本量计算效应量
+for (n in sample_sizes) {
+  selected_subjects <- shuffled_subjects[1:n]
+  sample_data <- data_filtered %>%
+    filter(Subject %in% selected_subjects)
+
+  summary_data <- sample_data %>%
+    group_by(Subject, Standarlized_Identity) %>%
+    summarise(MeanRT = mean(RT_ms, na.rm = TRUE), .groups = "drop") %>%
+    pivot_wider(names_from = Standarlized_Identity, values_from = MeanRT)
+
+  if (all(c("Self", "Stranger") %in% colnames(summary_data))) {
+    temp <- summary_data %>% filter(!is.na(Self) & !is.na(Stranger))
+    if (nrow(temp) >= 2) {
+      d <- cohen.d(temp$Self, temp$Stranger, paired = TRUE)$estimate
+      result_df <- rbind(result_df, data.frame(SampleSize = n, Cohens_d = d))
+    }
+  }
+}
+
+
+# 绘制样本量 vs Cohen's d 的折线图
+ggplot(result_df, aes(x = SampleSize, y = Cohens_d)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_point(color = "darkred", size = 2) +
+  theme_minimal() +
+  labs(title = "SPE效应量随样本量变化（Cohen's d, Nonmatching）",
+       x = "样本量（被试数）", y = "效应量 Cohen's d")
+```
+
+
+```{r}
+library(dplyr)
+library(effsize)
+library(ggplot2)
+library(readr)
+library(tidyr)
+
+# 读取并筛选 Nonmatching 条件
+data <- read_csv("../3_Code/Processed_Data_Filtered_with_logRT.csv", show_col_types = FALSE)
+
+data_filtered <- data %>%
+  filter(Matching == "Nonmatching", Standarlized_Identity %in% c("Self", "Close"))
+
+# 获取唯一被试并打乱顺序
+set.seed(42)
+all_subjects <- unique(data_filtered$Subject)
+shuffled_subjects <- sample(all_subjects)
+
+# 设定每步的样本量
+sample_sizes <- seq(60, length(shuffled_subjects), by = 10)
+
+# 初始化结果存储
+result_df <- data.frame(SampleSize = integer(), Cohens_d = numeric())
+
+# 循环逐步增加样本量计算效应量
+for (n in sample_sizes) {
+  selected_subjects <- shuffled_subjects[1:n]
+  sample_data <- data_filtered %>%
+    filter(Subject %in% selected_subjects)
+
+  summary_data <- sample_data %>%
+    group_by(Subject, Standarlized_Identity) %>%
+    summarise(MeanRT = mean(RT_ms, na.rm = TRUE), .groups = "drop") %>%
+    pivot_wider(names_from = Standarlized_Identity, values_from = MeanRT)
+
+  if (all(c("Self", "Close") %in% colnames(summary_data))) {
+    temp <- summary_data %>% filter(!is.na(Self) & !is.na(Close))
+    if (nrow(temp) >= 2) {
+      d <- cohen.d(temp$Self, temp$Close, paired = TRUE)$estimate
+      result_df <- rbind(result_df, data.frame(SampleSize = n, Cohens_d = d))
+    }
+  }
+}
+
+
+# 绘制样本量 vs Cohen's d 的折线图
+ggplot(result_df, aes(x = SampleSize, y = Cohens_d)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_point(color = "darkred", size = 2) +
+  theme_minimal() +
+  labs(title = "SPE效应量随样本量变化（Cohen's d, Nonmatching）",
+       x = "样本量（被试数）", y = "效应量 Cohen's d")
+```
+
+
+

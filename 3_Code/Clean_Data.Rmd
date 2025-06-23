@@ -43,10 +43,11 @@ rm(variable_summary,variable_summary_df,summary_value,var_data,var_name)
 setwd("D:/GitHub_programe/GitHub/SPE_Database/3_Code")
 
 # 读取CSV文件
-data <- read.csv("../2_Raw_Data/Martinez-Perez_2024_CC/Martinez-Perez_2024_CC_Exp2_raw.csv")
+data <- read.csv("../2_Raw_Data/Zhang_2023_NI/Zhang_2023_NI_Exp1_raw.csv")
 
 # 打印变量名称
 print(names(data))
+n_distinct(data$Subject)
 ```
 
 ## Matlab tools
@@ -220,16 +221,16 @@ library(stringr)
 dataPath <- "../1_Clean_Data"
 data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
 
-## 需要排除的文件夹
-# exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP",
-#                      "Hobbs_2023_PM", "Mcivor_2020_EJN",
-#                      "Orellana-Corrales_2021_EP", "Svensson_2021_PR",
-#                      "Wang_2016_EPHPP","Liang_2022_HBM","Hobbs_2021_PM",
-#                      "Lee_2023_Cognition","Orellana-Corrales_2021_APP",
-#                      "Kirk_2025_BJP","Svensson_2023_QJEP")
+# 需要排除的文件夹
+exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP",
+                     "Hobbs_2023_PM", "Mcivor_2020_EJN",
+                     "Orellana-Corrales_2021_EP", "Svensson_2021_PR",
+                     "Wang_2016_EPHPP","Liang_2022_HBM","Hobbs_2021_PM",
+                     "Lee_2023_Cognition","Orellana-Corrales_2021_APP",
+                     "Kirk_2025_BJP","Svensson_2023_QJEP")
 
 ## 过滤掉不需要的文件
-# data_files <- data_files[!grepl(paste(exclude_folders, collapse = "|"), data_files)]
+data_files <- data_files[!grepl(paste(exclude_folders, collapse = "|"), data_files)]
 
 ## 预分配存储变量（列表存储数据）
 results_list <- list()
@@ -266,8 +267,8 @@ for (i in seq_along(data_files)) {
         
         )
         # 过滤 RT 在合理范围内的行
-        # Data <- Data %>%
-        # filter(RT_ms > 0 )  # 过滤异常值
+        Data <- Data %>%
+        filter(RT_ms > 0 )  # 过滤异常值
         
 
 
@@ -289,6 +290,124 @@ print("数据处理完成，已存入 `results` 变量")
 # **输出数据到 CSV**
 write.csv(results, "Processed_Data_by_age&gender.csv", row.names = FALSE)
 rm(data_files, dataPath, file_name, i)
+```
+
+### v4
+## Clean by Age
+```{r}
+library(dplyr)
+library(readr)
+library(stringr)
+
+## 设置数据路径
+dataPath <- "../1_Clean_Data"
+data_files <- list.files(path = dataPath, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
+
+# 需要排除的文件夹
+exclude_folders <- c("Bukowski_2021_AP", "Golubickis_2021_AP",
+                     "Hobbs_2023_PM", "Mcivor_2020_EJN",
+                     "Orellana-Corrales_2021_EP", "Svensson_2021_PR",
+                     "Wang_2016_EPHPP","Liang_2022_HBM","Hobbs_2021_PM",
+                     "Lee_2023_Cognition","Orellana-Corrales_2021_APP",
+                     "Kirk_2025_BJP","Svensson_2023_QJEP")
+
+# 过滤掉不需要的文件
+data_files <- data_files[!grepl(paste(exclude_folders, collapse = "|"), data_files)]
+
+# 预分配存储变量
+results_list <- list()
+counter <- 1
+
+# 合并数据集
+for (i in seq_along(data_files)) {
+  file_name <- basename(data_files[i])
+
+  Data <- read_csv(data_files[i], show_col_types = FALSE) %>%
+    mutate(across(where(is.character), as.character))
+
+  if (all(c("RT_ms", "ACC", "English_Identity", "Standarlized_Identity", "Label_Identity",
+            "Subject", "Matching", "Gender", "Age") %in% names(Data))) {
+    
+    Data <- Data %>%
+      mutate(
+        Subject = paste0(file_name, "_", Subject),
+        Source = file_name,
+        Gender = case_when(
+          str_detect(tolower(Gender), "female|f\\b|frau|mujer") ~ "Female",
+          str_detect(tolower(Gender), "male|m\\b|mann|hombre") ~ "Male",
+          str_detect(tolower(Gender), "other|different") ~ "Other",
+          TRUE ~ Gender
+        ),
+        ACC = case_when(
+          ACC %in% c(2, 3, 4) & is.na(RT_ms) ~ NA_real_,  # 未作答
+          ACC %in% c(2, 3, 4) & !is.na(RT_ms) ~ 0,         # 错误
+          TRUE ~ ACC
+        )
+      ) %>%
+      filter(RT_ms > 0)
+
+    results_list[[counter]] <- Data %>%
+      select(Source, Subject, Age, Gender, Matching, Standarlized_Identity,
+             English_Identity, Label_Identity, RT_ms, ACC)
+    counter <- counter + 1
+  }
+  print(paste('完成数据集', i, '处理'))
+}
+
+# 合并所有数据
+results <- bind_rows(results_list)
+write_csv(results, "Processed_Data_by_age&gender.csv")
+print("初步处理完成：Processed_Data_by_age&gender.csv 已保存")
+
+### ========== 第二步：剔除准确率低的被试 ==========
+
+# 计算每个被试的正确率
+acc_summary <- results %>%
+  group_by(Subject) %>%
+  summarise(
+    Total = n(),
+    Correct = sum(ACC == 1, na.rm = TRUE),
+    Accuracy = Correct / Total
+  )
+
+# 找出准确率低于 50% 的被试
+excluded_subjects <- acc_summary %>%
+  filter(Accuracy < 0.5)
+
+# 保存排除的被试信息
+write_csv(excluded_subjects, "Exclude_Sub.csv")
+print("准确率低于50%的被试已排除并保存到 Exclude_Sub.csv")
+
+# 保留其余被试数据
+filtered_data <- results %>%
+  filter(!(Subject %in% excluded_subjects$Subject))
+
+# ========== 新增：剔除 Age 为 0 的行 ==========
+filtered_data <- filtered_data %>%
+  filter(Age != 0)
+
+### ========== 第三步：剔除RT_ms < 200的试次 ==========
+
+filtered_data <- filtered_data %>%
+  filter(RT_ms >= 200)
+
+### ========== 第四步：log化RT_ms ==========
+
+filtered_data <- filtered_data %>%
+  mutate(log_RT_ms = log(RT_ms))
+
+# 检查 log_RT_ms 的基本情况
+summary(filtered_data$log_RT_ms)
+
+### ========== 第五步：保存最终数据 ==========
+
+write_csv(filtered_data, "Processed_Data_Filtered_with_logRT.csv")
+print("最终数据已保存为 Processed_Data_Filtered_with_logRT.csv")
+
+```
+
+```{r}
+
 ```
 
 
