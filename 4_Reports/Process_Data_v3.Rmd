@@ -1207,5 +1207,480 @@ ggplot(result_df, aes(x = SampleSize, y = Cohens_d)) +
        x = "样本量（被试数）", y = "效应量 Cohen's d")
 ```
 
+```{r}
+library(dplyr)
+library(effsize)
+library(ggplot2)
+library(readr)
+library(tidyr)
+
+# 读取并筛选 Matching 条件
+data <- read_csv("../3_Code/Processed_Data_Filtered_with_logRT.csv", show_col_types = FALSE)
+
+data_filtered <- data %>%
+  filter(Matching == "Matching", Standarlized_Identity %in% c("Self", "Stranger"))
+
+# # 计算每个被试的平均 RT（Self vs. Stranger）
+# per_subject_diff <- data_filtered %>%
+#   group_by(Subject, Standarlized_Identity) %>%
+#   summarise(MeanRT = mean(RT_ms, na.rm = TRUE), .groups = "drop") %>%
+#   pivot_wider(names_from = Standarlized_Identity, values_from = MeanRT) %>%
+#   filter(!is.na(Self) & !is.na(Stranger)) %>%
+#   mutate(Diff_SelfMinusStranger = Self - Stranger)
+# 
+# # 保存为 CSV
+# write_csv(per_subject_diff, "Per_Subject_SPE_Diff.csv")
+
+# 获取唯一被试并打乱顺序
+set.seed(42)
+all_subjects <- unique(data_filtered$Subject)
+shuffled_subjects <- sample(all_subjects)
+
+# 设定每步的样本量
+sample_sizes <- seq(60, length(shuffled_subjects), by = 40)
+
+# 初始化结果存储
+result_df <- data.frame(SampleSize = integer(), Cohens_d = numeric())
+
+# 循环逐步增加样本量计算效应量
+for (n in sample_sizes) {
+  selected_subjects <- shuffled_subjects[1:n]
+  sample_data <- data_filtered %>%
+    filter(Subject %in% selected_subjects)
+
+  summary_data <- sample_data %>%
+    group_by(Subject, Standarlized_Identity) %>%
+    summarise(MeanRT = mean(RT_ms, na.rm = TRUE), .groups = "drop") %>%
+    pivot_wider(names_from = Standarlized_Identity, values_from = MeanRT)
+
+  if (all(c("Self", "Stranger") %in% colnames(summary_data))) {
+    temp <- summary_data %>% filter(!is.na(Self) & !is.na(Stranger))
+    if (nrow(temp) >= 2) {
+      d <- cohen.d(temp$Self, temp$Stranger, paired = TRUE)$estimate
+      result_df <- rbind(result_df, data.frame(SampleSize = n, Cohens_d = d))
+    }
+  }
+}
+
+# APA 风格图形设置
+ggplot(result_df, aes(x = SampleSize, y = Cohens_d)) +
+  geom_line(color = "black", size = 1.2) +
+  geom_point(color = "black", size = 2.5) +
+  theme_classic(base_size = 14, base_family = "serif") +
+  labs(
+    title = "Effect Size (Cohen's d) by Sample Size (Matching Condition)",
+    x = "Sample Size (Number of Participants)",
+    y = "Cohen's d (Self vs. Stranger)"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.title = element_text(face = "bold"),
+    axis.line = element_line(color = "black", size = 0.8),
+    axis.ticks = element_line(color = "black"),
+    panel.grid = element_blank()
+  )
+
+ggsave("SPE_CohensD_by_SampleSize_APA.tiff", dpi = 300, width = 6, height = 4, units = "in")
+
+```
+
+```{r}
+library(dplyr)
+library(effsize)
+library(ggplot2)
+library(readr)
+library(tidyr)
+
+# 读取并筛选 Nonmatching 条件
+data <- read_csv("../3_Code/Processed_Data_Filtered_with_logRT.csv", show_col_types = FALSE)
+
+data_filtered <- data %>%
+  filter(Matching == "Nonmatching", Standarlized_Identity %in% c("Self", "Stranger"))
+
+# # 计算每个被试的平均 RT（Self vs. Stranger）
+# per_subject_diff <- data_filtered %>%
+#   group_by(Subject, Standarlized_Identity) %>%
+#   summarise(MeanRT = mean(RT_ms, na.rm = TRUE), .groups = "drop") %>%
+#   pivot_wider(names_from = Standarlized_Identity, values_from = MeanRT) %>%
+#   filter(!is.na(Self) & !is.na(Stranger)) %>%
+#   mutate(Diff_SelfMinusStranger = Self - Stranger)
+# 
+# # 保存为 CSV
+# write_csv(per_subject_diff, "Per_Subject_SPE_Diff.csv")
+
+# 获取唯一被试并打乱顺序
+set.seed(42)
+all_subjects <- unique(data_filtered$Subject)
+shuffled_subjects <- sample(all_subjects)
+
+# 设定每步的样本量
+sample_sizes <- seq(60, length(shuffled_subjects), by = 40)
+
+# 初始化结果存储
+result_df <- data.frame(SampleSize = integer(), Cohens_d = numeric())
+
+# 循环逐步增加样本量计算效应量
+for (n in sample_sizes) {
+  selected_subjects <- shuffled_subjects[1:n]
+  sample_data <- data_filtered %>%
+    filter(Subject %in% selected_subjects)
+
+  summary_data <- sample_data %>%
+    group_by(Subject, Standarlized_Identity) %>%
+    summarise(MeanRT = mean(RT_ms, na.rm = TRUE), .groups = "drop") %>%
+    pivot_wider(names_from = Standarlized_Identity, values_from = MeanRT)
+
+  if (all(c("Self", "Stranger") %in% colnames(summary_data))) {
+    temp <- summary_data %>% filter(!is.na(Self) & !is.na(Stranger))
+    if (nrow(temp) >= 2) {
+      d <- cohen.d(temp$Stranger, temp$Self, paired = TRUE)$estimate
+      result_df <- rbind(result_df, data.frame(SampleSize = n, Cohens_d = d))
+    }
+  }
+}
+
+# APA 风格图形设置
+ggplot(result_df, aes(x = SampleSize, y = Cohens_d)) +
+  geom_line(color = "black", size = 1.2) +
+  geom_point(color = "black", size = 2.5) +
+  theme_classic(base_size = 14, base_family = "serif") +
+  labs(
+    title = "Effect Size by Sample Size",
+    x = "Sample Size (Number of Participants)",
+    y = "Cohen's d (Self vs. Stranger)"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.title = element_text(face = "bold"),
+    axis.line = element_line(color = "black", size = 0.8),
+    axis.ticks = element_line(color = "black"),
+    panel.grid = element_blank()
+  )
+
+ggsave("SPE_CohensD_by_SampleSize_APA-N.tiff", dpi = 300, width = 6, height = 4, units = "in")
+
+```
+
+```{r}
+library(dplyr)
+library(effsize)
+library(ggplot2)
+library(readr)
+library(tidyr)
+
+# 读取并筛选 Matching 条件
+data <- read_csv("../3_Code/Processed_Data_Filtered_with_logRT.csv", show_col_types = FALSE)
+
+data_filtered <- data %>%
+  filter(Matching == "Matching", Standarlized_Identity %in% c("Self", "Stranger"))
+
+# # 计算每个被试的平均 RT（Self vs. Stranger）
+# per_subject_diff <- data_filtered %>%
+#   group_by(Subject, Standarlized_Identity) %>%
+#   summarise(MeanRT = mean(RT_ms, na.rm = TRUE), .groups = "drop") %>%
+#   pivot_wider(names_from = Standarlized_Identity, values_from = MeanRT) %>%
+#   filter(!is.na(Self) & !is.na(Stranger)) %>%
+#   mutate(Diff_SelfMinusStranger = Self - Stranger)
+# 
+# # 保存为 CSV
+# write_csv(per_subject_diff, "Per_Subject_SPE_Diff.csv")
+
+# 获取唯一被试并打乱顺序
+set.seed(42)
+all_subjects <- unique(data_filtered$Subject)
+shuffled_subjects <- sample(all_subjects)
+
+# 设定每步的样本量
+sample_sizes <- seq(60, length(shuffled_subjects), by = 40)
+
+# 初始化结果存储
+result_df <- data.frame(SampleSize = integer(), Cohens_d = numeric())
+
+# 循环逐步增加样本量计算效应量
+for (n in sample_sizes) {
+  selected_subjects <- shuffled_subjects[1:n]
+  sample_data <- data_filtered %>%
+    filter(Subject %in% selected_subjects)
+
+  summary_data <- sample_data %>%
+    group_by(Subject, Standarlized_Identity) %>%
+    summarise(MeanRT = mean(RT_ms, na.rm = TRUE), .groups = "drop") %>%
+    pivot_wider(names_from = Standarlized_Identity, values_from = MeanRT)
+
+  if (all(c("Self", "Stranger") %in% colnames(summary_data))) {
+    temp <- summary_data %>% filter(!is.na(Self) & !is.na(Stranger))
+    if (nrow(temp) >= 2) {
+      d <- cohen.d(temp$Stranger, temp$Self, paired = TRUE)$estimate
+      result_df <- rbind(result_df, data.frame(SampleSize = n, Cohens_d = d))
+    }
+  }
+}
+
+# APA 风格图形设置
+ggplot(result_df, aes(x = SampleSize, y = Cohens_d)) +
+  geom_line(color = "black", size = 1.2) +
+  geom_point(color = "black", size = 2.5) +
+  theme_classic(base_size = 14, base_family = "serif") +
+  labs(
+    title = "Effect Size (Cohen's d) by Sample Size (Matching Condition)",
+    x = "Sample Size (Number of Participants)",
+    y = "Cohen's d (Self vs. Stranger)"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.title = element_text(face = "bold"),
+    axis.line = element_line(color = "black", size = 0.8),
+    axis.ticks = element_line(color = "black"),
+    panel.grid = element_blank()
+  )
+
+ggsave("SPE_CohensD_by_SampleSize_APA-M.tiff", dpi = 300, width = 6, height = 4, units = "in")
+
+```
+
+###Bootstrap Nonmatching
+```{r}
+library(dplyr)
+library(effsize)
+library(ggplot2)
+library(readr)
+library(tidyr)
+
+# 读取数据
+data <- read_csv("../3_Code/Processed_Data_Filtered_with_logRT.csv", show_col_types = FALSE)
+
+data_filtered <- data %>%
+  filter(Matching == "Nonmatching", Standarlized_Identity %in% c("Self", "Stranger"))
+
+set.seed(42)
+all_subjects <- unique(data_filtered$Subject)
+shuffled_subjects <- sample(all_subjects)
+
+sample_sizes <- seq(10, length(shuffled_subjects), by = 40)
+
+# 初始化结果列表
+boot_results <- list()
+B <- 1000  # Bootstrap次数
+
+# Bootstrapping
+for (n in sample_sizes) {
+  selected_subjects <- shuffled_subjects[1:n]
+  sample_data <- data_filtered %>%
+    filter(Subject %in% selected_subjects) %>%
+    group_by(Subject, Standarlized_Identity) %>%
+    summarise(MeanRT = mean(RT_ms, na.rm = TRUE), .groups = "drop") %>%
+    pivot_wider(names_from = Standarlized_Identity, values_from = MeanRT) %>%
+    filter(!is.na(Self) & !is.na(Stranger))
+
+  # 跳过少于2个数据点的
+  if (nrow(sample_data) < 2) next
+
+  d_values <- replicate(B, {
+    boot_sample <- sample_n(sample_data, size = nrow(sample_data), replace = TRUE)
+    cohen.d(boot_sample$Stranger, boot_sample$Self, paired = TRUE)$estimate
+  })
+
+  boot_results[[length(boot_results) + 1]] <- data.frame(
+    SampleSize = n,
+    Mean_d = mean(d_values, na.rm = TRUE),
+    SE = sd(d_values, na.rm = TRUE),
+    CI_lower = quantile(d_values, 0.025, na.rm = TRUE),
+    CI_upper = quantile(d_values, 0.975, na.rm = TRUE)
+  )
+}
+
+# 合并所有结果
+result_df <- bind_rows(boot_results)
+
+# 绘图（含置信区间）
+ggplot(result_df, aes(x = SampleSize, y = Mean_d)) +
+  geom_ribbon(aes(ymin = CI_lower, ymax = CI_upper), fill = "gray80", alpha = 0.5) +
+  geom_line(color = "black", size = 1.2) +
+  geom_point(color = "black", size = 2.5) +
+  theme_classic(base_size = 14, base_family = "serif") +
+  labs(
+    title = "Effect Size (Cohen's d) by Sample Size\nwith 95% CI (Nonmatching Condition)",
+    x = "Sample Size (Number of Participants)",
+    y = "Cohen's d (Self vs. Stranger)"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.title = element_text(face = "bold"),
+    axis.line = element_line(color = "black", size = 0.8),
+    axis.ticks = element_line(color = "black"),
+    panel.grid = element_blank()
+  )
+ggsave("Cohens_d_with_CI_APA-BN.tiff", dpi = 300, width = 6, height = 4, units = "in")
+
+```
+
+###Bootstrap Matching
+```{r}
+library(dplyr)
+library(effsize)
+library(ggplot2)
+library(readr)
+library(tidyr)
+
+# 读取数据
+data <- read_csv("../3_Code/Processed_Data_Filtered_with_logRT.csv", show_col_types = FALSE)
+
+data_filtered <- data %>%
+  filter(Matching == "Matching", Standarlized_Identity %in% c("Stranger","Self"))
+
+set.seed(44)
+all_subjects <- unique(data_filtered$Subject)
+shuffled_subjects <- sample(all_subjects)
+
+sample_sizes <- seq(60, length(shuffled_subjects), by = 40)
+
+# 初始化结果列表
+boot_results <- list()
+B <- 1000  # Bootstrap次数
+
+# Bootstrapping
+for (n in sample_sizes) {
+  selected_subjects <- shuffled_subjects[1:n]
+  sample_data <- data_filtered %>%
+    filter(Subject %in% selected_subjects) %>%
+    group_by(Subject, Standarlized_Identity) %>%
+    summarise(MeanRT = mean(RT_ms, na.rm = TRUE), .groups = "drop") %>%
+    pivot_wider(names_from = Standarlized_Identity, values_from = MeanRT) %>%
+    filter(!is.na(Self) & !is.na(Stranger))
+
+  # 跳过少于2个数据点的
+  if (nrow(sample_data) < 2) next
+
+  d_values <- replicate(B, {
+    boot_sample <- sample_n(sample_data, size = nrow(sample_data), replace = TRUE)
+    cohen.d(boot_sample$Stranger,boot_sample$Self, paired = TRUE)$estimate
+  })
+
+  boot_results[[length(boot_results) + 1]] <- data.frame(
+    SampleSize = n,
+    Mean_d = mean(d_values, na.rm = TRUE),
+    SE = sd(d_values, na.rm = TRUE),
+    CI_lower = quantile(d_values, 0.025, na.rm = TRUE),
+    CI_upper = quantile(d_values, 0.975, na.rm = TRUE)
+  )
+}
+
+# 合并所有结果
+result_df <- bind_rows(boot_results)
+
+# 绘图（含置信区间）
+ggplot(result_df, aes(x = SampleSize, y = Mean_d)) +
+  geom_ribbon(aes(ymin = CI_lower, ymax = CI_upper), fill = "gray80", alpha = 0.5) +
+  geom_line(color = "black", size = 1.2) +
+  geom_point(color = "black", size = 2.5) +
+  theme_classic(base_size = 14, base_family = "serif") +
+  labs(
+    title = "Effect Size (Cohen's d) by Sample Size\nwith 95% CI (Matching Condition)",
+    x = "Sample Size (Number of Participants)",
+    y = "Cohen's d (Self vs. Stranger)"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.title = element_text(face = "bold"),
+    axis.line = element_line(color = "black", size = 0.8),
+    axis.ticks = element_line(color = "black"),
+    panel.grid = element_blank()
+  )
+ggsave("Cohens_d_with_CI_APA-BM.tiff", dpi = 300, width = 6, height = 4, units = "in")
+
+```
+
+###Combined
+```{r}
+library(dplyr)
+library(effsize)
+library(ggplot2)
+library(readr)
+library(tidyr)
+
+# 读取数据
+data <- read_csv("../3_Code/Processed_Data_Filtered_with_logRT.csv", show_col_types = FALSE)
+
+# 定义一个函数，输入Matching条件，返回bootstrap结果数据框
+bootstrap_effect_size <- function(match_condition, seed, sample_start = 10, sample_by = 40) {
+  data_filtered <- data %>%
+    filter(Matching == match_condition, Standarlized_Identity %in% c("Self", "Stranger"))
+  
+  set.seed(seed)
+  all_subjects <- unique(data_filtered$Subject)
+  shuffled_subjects <- sample(all_subjects)
+  
+  # 设置样本量序列，Matching条件起始样本量可调整
+  sample_sizes <- seq(sample_start, length(shuffled_subjects), by = sample_by)
+  
+  boot_results <- list()
+  B <- 1000
+  
+  for (n in sample_sizes) {
+    selected_subjects <- shuffled_subjects[1:n]
+    sample_data <- data_filtered %>%
+      filter(Subject %in% selected_subjects) %>%
+      group_by(Subject, Standarlized_Identity) %>%
+      summarise(MeanRT = mean(RT_ms, na.rm = TRUE), .groups = "drop") %>%
+      pivot_wider(names_from = Standarlized_Identity, values_from = MeanRT) %>%
+      filter(!is.na(Self) & !is.na(Stranger))
+    
+    if (nrow(sample_data) < 2) next
+    
+    d_values <- replicate(B, {
+      boot_sample <- sample_n(sample_data, size = nrow(sample_data), replace = TRUE)
+      cohen.d(boot_sample$Stranger, boot_sample$Self, paired = TRUE)$estimate
+    })
+    
+    boot_results[[length(boot_results) + 1]] <- data.frame(
+      SampleSize = n,
+      Mean_d = mean(d_values, na.rm = TRUE),
+      SE = sd(d_values, na.rm = TRUE),
+      CI_lower = quantile(d_values, 0.025, na.rm = TRUE),
+      CI_upper = quantile(d_values, 0.975, na.rm = TRUE)
+    )
+  }
+  
+  df <- bind_rows(boot_results)
+  df$Condition <- match_condition
+  return(df)
+}
+
+# 分别计算两个条件的结果
+boot_nonmatching <- bootstrap_effect_size("Nonmatching", seed = 44, sample_start = 10, sample_by = 40)
+boot_matching <- bootstrap_effect_size("Matching", seed = 44, sample_start = 10, sample_by = 40)
+
+# 合并结果
+result_df <- bind_rows(boot_nonmatching, boot_matching)
+
+# 绘图，区分条件颜色
+ggplot(result_df, aes(x = SampleSize, y = Mean_d, color = Condition, fill = Condition)) +
+  geom_ribbon(aes(ymin = CI_lower, ymax = CI_upper), alpha = 0.2, color = NA) +
+  geom_line(size = 1.2) +
+  geom_point(size = 2.5) +
+  scale_color_manual(values = c("Nonmatching" = "firebrick", "Matching" = "dodgerblue")) +
+  scale_fill_manual(values = c("Nonmatching" = "firebrick", "Matching" = "dodgerblue")) +
+  theme_classic(base_size = 14, base_family = "serif") +
+  labs(
+    title = "Effect Size (Cohen's d) by Sample Size with 95% CI",
+    x = "Sample Size (Number of Participants)",
+    y = "Cohen's d (Self vs. Stranger)",
+    color = "Condition",
+    fill = "Condition"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.title = element_text(face = "bold"),
+    axis.line = element_line(color = "black", size = 0.8),
+    axis.ticks = element_line(color = "black"),
+    panel.grid = element_blank(),
+    legend.position = "top"
+  )
+
+# 保存图像
+ggsave("Cohens_d_with_CI_APA_Combined.tiff", dpi = 300, width = 7, height = 5, units = "in")
+
+```
+
 
 

@@ -651,6 +651,137 @@ ggplot(df_subject_d, aes(x = d, y = fct_reorder(Source, Cohens_d), fill = Source
   )
 ```
 
+### Drawing Map_v1
+```{r}
+library(dplyr)
+library(readr)
+library(stringr)
+
+# Step 1: 读取数据
+df_trials <- read_csv("Processed_Data_Filtered_with_logRT.csv", show_col_types = FALSE)
+df_info <- read_csv("Dataset_inf.csv", show_col_types = FALSE)
+
+# Step 2: 从 trial-level 数据中提取 File_Key 和 Source_Short
+df_trials <- df_trials %>%
+  mutate(
+    File_Key = str_extract(Source, "^[^_]+_\\d{4}_[^_]+"),  # Constable_2019_EPHPP
+    Source_Short = str_remove(Source, "_Clean\\.csv$")      # Constable_2019_EPHPP_Exp1
+  )
+
+# Step 3: 保留每个被试一行（被试级数据），例如取首次出现的信息
+df_subjects <- df_trials %>%
+  select(Source_Short, File_Key, Subject, Age, Gender) %>%
+  distinct()  # 一人一行（假设每被试只参与一个实验）
+
+# Step 4: 合并元信息
+df_merged <- df_subjects %>%
+  left_join(df_info, by = c("File_Key" = "File_Name")) %>%
+  select(Source = Source_Short, Subject, Age, Gender, Stim_Type, Country, City)
+
+# Step 5: 保存为被试级数据
+write_csv(df_merged, "Data_for_mapping.csv")
+
+
+```
+
+### Drawing Map_v2
+```{r}
+library(dplyr)
+library(readr)
+library(stringr)
+
+# Step 1: 读取数据
+df_trials <- read_csv("Processed_Data_Filtered_with_logRT.csv", show_col_types = FALSE)
+df_info <- read_csv("Dataset_inf.csv", show_col_types = FALSE)
+
+# Step 2: 提取 Source_Short 和 File_Key
+df_trials <- df_trials %>%
+  mutate(
+    Source_Short = str_remove(Source, "_Clean\\.csv$"),              # e.g., Sui_2014_Exp1
+    File_Key = str_extract(Source_Short, "^[^_]+_\\d{4}(_[^_]+)?")   # e.g., Sui_2014_Exp1 或 Constable_2019_EPHPP
+  )
+
+# Step 3: 只保留每位被试一行（Subject 在一个实验中唯一）
+df_subjects <- df_trials %>%
+  select(Source_Short, File_Key, Subject, Age, Gender) %>%
+  distinct()
+
+# Step 4: 精确匹配 Dataset 信息
+df_exact <- df_subjects %>%
+  left_join(df_info, by = c("File_Key" = "File_Name"))
+
+# Step 5: 对没有匹配到的尝试模糊匹配（前缀匹配）
+df_unmatched <- df_exact %>%
+  filter(is.na(Country))
+
+df_fuzzy <- df_unmatched %>%
+  rowwise() %>%
+  mutate(
+    best_match = {
+      matches <- df_info$File_Name[str_starts(File_Key, df_info$File_Name)]
+      if (length(matches) > 0) matches[1] else NA_character_
+    }
+  ) %>%
+  ungroup() %>%
+  left_join(df_info, by = c("best_match" = "File_Name")) %>%
+  select(-best_match)
+
+# Step 6: 合并匹配成功的数据
+df_matched <- df_exact %>%
+  filter(!is.na(Country)) %>%
+  bind_rows(df_fuzzy)
+
+# Step 7: 确保每个 Source + Subject 组合唯一
+df_final <- df_matched %>%
+  distinct(Source_Short, Subject, .keep_all = TRUE) %>%
+  select(Source = Source_Short, Subject, Age, Gender, Stim_Type, Country, City)
+
+# Step 8: 保存输出
+write_csv(df_final, "Data_for_mapping.csv")
+
+```
+
+### Drawing Map_v3
+```{r}
+library(dplyr)
+library(readr)
+library(stringr)
+
+# Step 1: 读取数据
+df_trials <- read_csv("Processed_Data_Filtered_with_logRT.csv", show_col_types = FALSE)
+df_info <- read_csv("Dataset_inf.csv", show_col_types = FALSE)
+
+# Step 2: 从 Source 提取 Source_Short 和 Match_Key（前缀：作者_年份）
+df_trials <- df_trials %>%
+  mutate(
+    Source_Short = str_remove(Source, "_Clean\\.csv$"),  # e.g., Navon_2021_Exp1
+    Match_Key = str_extract(Source_Short, "^[^_]+-[^_]+_\\d{4}|^[^_]+_\\d{4}")  
+    # 捕捉形如 Martinez-Perez_2024 或 Navon_2021
+  )
+
+# Step 3: 被试级数据（Subject 在每个实验中唯一）
+df_subjects <- df_trials %>%
+  select(Source_Short, Match_Key, Subject, Age, Gender) %>%
+  distinct()
+
+# Step 4: 匹配（与 File_Name 对齐）
+df_info <- df_info %>%
+  mutate(File_Name = str_trim(File_Name))  # 去除前后空格
+
+df_merged <- df_subjects %>%
+  left_join(df_info, by = c("Match_Key" = "File_Name"))
+
+# Step 5: 保留 Source + Subject 唯一行
+df_final <- df_merged %>%
+  distinct(Source_Short, Subject, .keep_all = TRUE) %>%
+  select(Source = Source_Short, Subject, Age, Gender, Stim_Type, Country, City)
+
+# Step 6: 输出
+write_csv(df_final, "Data_for_mapping.csv")
+
+```
+
+
 
 
 
