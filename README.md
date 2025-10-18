@@ -11,6 +11,7 @@ This project is in parallel with an on-going preregistered meta-analysis leading
 ## Leading Team
 
 - Zhenxin Cai (School of Psychology, Nanjing Normal University,email:[czx@nnu.edu.cn](czx@nnu.edu.cn))
+- Wang Qihui (School of Psychology, Nanjing Normal University,email:[baomihuabigwang@gmail.com](baomihuabigwang@gmail.com))
 - Xinru Sun (School of Psychology, Nanjing Normal University)
 - Wanke Pan (School of Psychology, Nanjing Normal University)
 - Mengzheng Hu (School of Psychology, Nanjing Normal University)
